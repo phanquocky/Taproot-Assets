@@ -97,8 +97,8 @@ fabric.properties
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-./client/.idea
-./server/.idea
-./sdk/.idea
-
+client/.idea
+server/.idea
+taproot/.idea
+.idea
 
