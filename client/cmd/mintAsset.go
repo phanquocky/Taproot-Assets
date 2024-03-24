@@ -1,6 +1,3 @@
-/*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
@@ -31,6 +28,15 @@ var mintAssetCmd = &cobra.Command{
 				return
 			}
 			amounts = append(amounts, int32(amount))
+		}
+
+		fmt.Println("Taproot client: ", TaprootClient)
+
+		err := TaprootClient.MintAsset(names, amounts)
+		if err != nil {
+			fmt.Println("Error minting asset, err: ", err)
+		} else {
+			fmt.Println("Asset minted successfully")
 		}
 
 	},
