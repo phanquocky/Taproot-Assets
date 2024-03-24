@@ -1,8 +1,16 @@
 package commitment
 
 import (
+	"bytes"
+	"context"
+	"crypto/sha256"
+	"encoding/binary"
+	"errors"
+	"fmt"
+	"github.com/btcsuite/btcd/txscript"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/mssmt"
+	"golang.org/x/exp/maps"
 )
 
 type CommittedAssets map[[32]byte]*asset.Asset
@@ -12,4 +20,153 @@ type AssetCommitment struct {
 	Root   *mssmt.BranchNode
 	tree   mssmt.Tree
 	assets CommittedAssets
+}
+
+func NewAssetCommitment(ctx context.Context, assets ...*asset.Asset) (*AssetCommitment, error) {
+	tree := mssmt.NewCompactedTree(mssmt.NewDefaultStore())
+	committedAssets := make(CommittedAssets, len(assets))
+
+	id := assets[0].ID()
+
+	for _, a := range assets {
+		if a.ID() != id {
+			return nil, fmt.Errorf("asset ID mismatch: %x vs %x", a.ID(), id)
+		}
+
+		leaf, err := a.Leaf()
+		if err != nil {
+			return nil, err
+		}
+
+		key := a.AssetCommitmentKey()
+		tree.Insert(ctx, key, leaf)
+
+		committedAssets[a.AssetCommitmentKey()] = a
+	}
+
+	root, err := tree.Root(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &AssetCommitment{
+		TapKey: id,
+		Root:   root,
+		tree:   tree,
+		assets: committedAssets,
+	}, nil
+}
+
+func (c *AssetCommitment) TapCommitmentKey() [32]byte {
+	return c.TapKey
+}
+
+func (c *AssetCommitment) Merge(other *AssetCommitment) error {
+	if other.assets == nil {
+		return fmt.Errorf("cannot merge commitments without assets")
+	}
+	if len(other.assets) == 0 {
+		return nil
+	}
+
+	for _, otherCommitment := range other.assets {
+		if err := c.Upsert(otherCommitment.Copy()); err != nil {
+			return fmt.Errorf("error upserting other commitment: "+
+				"%w", err)
+		}
+	}
+
+	return nil
+}
+
+func (c *AssetCommitment) Upsert(newAsset *asset.Asset) error {
+	if newAsset == nil {
+		return errors.New("ErrNoAssets")
+	}
+	if newAsset.TapCommitmentKey() != c.TapKey {
+		return errors.New("ErrAssetGenesisMismatch")
+	}
+
+	key := newAsset.AssetCommitmentKey()
+	ctx := context.TODO()
+
+	leaf, err := newAsset.Leaf()
+	if err != nil {
+		return err
+	}
+
+	_, err = c.tree.Insert(ctx, key, leaf)
+	if err != nil {
+		return err
+	}
+
+	c.Root, err = c.tree.Root(ctx)
+	if err != nil {
+		return err
+	}
+
+	c.assets[key] = newAsset
+
+	return nil
+}
+
+func (c *AssetCommitment) GetRoot() [sha256.Size]byte {
+	left := c.Root.Left.NodeHash()
+	right := c.Root.Right.NodeHash()
+
+	h := sha256.New()
+	_, _ = h.Write(c.TapKey[:])
+	_, _ = h.Write(left[:])
+	_, _ = h.Write(right[:])
+	_ = binary.Write(h, binary.BigEndian, c.Root.NodeSum())
+	return *(*[sha256.Size]byte)(h.Sum(nil))
+}
+
+func (c *AssetCommitment) TapCommitmentLeaf() *mssmt.LeafNode {
+	root := c.GetRoot()
+	sum := c.Root.NodeSum()
+
+	var leaf bytes.Buffer
+	_, _ = leaf.Write(root[:])
+	_ = binary.Write(&leaf, binary.BigEndian, sum)
+	return mssmt.NewLeafNode(leaf.Bytes(), sum)
+}
+
+// Assets returns the set of assets committed to in the asset commitment.
+func (c *AssetCommitment) Assets() CommittedAssets {
+	assets := make(CommittedAssets, len(c.assets))
+	maps.Copy(assets, c.assets)
+
+	return assets
+}
+
+// AssetProof computes the AssetCommitment merkle proof for the asset leaf
+// located at `key`. A `nil` asset is returned if the asset is not committed to.
+func (c *AssetCommitment) AssetProof(key [32]byte) (
+	*asset.Asset, *mssmt.Proof, error) {
+
+	if c.tree == nil {
+		return nil, nil, fmt.Errorf("missing tree to compute proofs")
+	}
+
+	// TODO(bhandras): thread the context through.
+	proof, err := c.tree.MerkleProof(context.TODO(), key)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return c.assets[key], proof, nil
+}
+
+// TapLeaf constructs a new `TapLeaf` for this `TapCommitment`.
+func (c *AssetCommitment) TapLeaf() txscript.TapLeaf {
+	rootHash := c.Root.NodeHash()
+	var rootSum [8]byte
+	binary.BigEndian.PutUint64(rootSum[:], c.Root.NodeSum())
+	leafParts := [][]byte{
+		rootHash[:],
+		rootSum[:],
+	}
+	leafScript := bytes.Join(leafParts, nil)
+	return txscript.NewBaseTapLeaf(leafScript)
 }

@@ -17,3 +17,10 @@ type Witness struct {
 
 	SplitCommitment *SplitCommitment
 }
+
+// IsSplitCommitWitness returns true if the witness is a split-commitment
+// witness.
+func IsSplitCommitWitness(witness Witness) bool {
+	return witness.PrevID != nil &&
+		witness.SplitCommitment != nil
+}
