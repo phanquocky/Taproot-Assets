@@ -9,23 +9,22 @@ import (
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
 )
 
-// AddrResult is struct contain all information of address when it is created
-type AddrResult struct {
+type TapAddress struct {
 	Address           *btcutil.AddressTaproot
-	TapscriptRootHash *chainhash.Hash
-	Pubkey            asset.SerializedKey
+	TapScriptRootHash *chainhash.Hash
+	PubKey            asset.SerializedKey
 	TapCommitment     *commitment.TapCommitment
 }
 
-// CreateTapAddrByCommitment create taproot address with public key of owner
+// CreateTapAddr create taproot address with public key of owner
 // with [32]byte data to tapscript branch. The purpose of this is insert data to
 // onchain through tap address.
-func (tap *TapAddr) CreateTapAddrByCommitment(
-	serializedPubkey asset.SerializedKey,
-	topCommitment *commitment.TapCommitment,
-) (*AddrResult, error) {
+func (tap *TapAddr) CreateTapAddr(
+	userPubKey asset.SerializedKey,
+	tapCommitment *commitment.TapCommitment,
+) (*TapAddress, error) {
 
-	pubkey, err := serializedPubkey.ToPubKey()
+	pubkey, err := userPubKey.ToPubKey()
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +33,7 @@ func (tap *TapAddr) CreateTapAddrByCommitment(
 	//                   /       \
 	//					/         \
 	//				tapleaf		tapleaf
-	tapleaf := topCommitment.TapLeaf()
+	tapleaf := tapCommitment.TapLeaf()
 
 	tapScriptTree := txscript.AssembleTaprootScriptTree(tapleaf)
 	tapScriptRootHash := tapScriptTree.LeafMerkleProofs[0].RootNode.TapHash()
@@ -52,10 +51,10 @@ func (tap *TapAddr) CreateTapAddrByCommitment(
 		return nil, err
 	}
 
-	return &AddrResult{
+	return &TapAddress{
 		Address:           address,
-		TapscriptRootHash: &tapScriptRootHash,
-		Pubkey:            serializedPubkey,
-		TapCommitment:     topCommitment,
+		TapScriptRootHash: &tapScriptRootHash,
+		PubKey:            userPubKey,
+		TapCommitment:     tapCommitment,
 	}, nil
 }

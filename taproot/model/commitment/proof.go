@@ -23,13 +23,13 @@ type AssetProof struct {
 	TapKey [32]byte
 }
 
-type TaprootAssetProof struct {
+type TapProof struct {
 	mssmt.Proof
 }
 
 type CommitmentProof struct {
-	AssetProof        *AssetProof
-	TaprootAssetProof *TaprootAssetProof
+	AssetProof *AssetProof
+	TapProof   *TapProof
 }
 
 // DeriveByAssetInclusion derives the Asset commitment containing the
@@ -60,7 +60,7 @@ func (p CommitmentProof) DeriveByAssetInclusion(asset *asset.Asset) (*TapCommitm
 
 	// Use the Taproot Asset commitment proof to arrive at the Taproot Asset
 	// commitment.
-	tapProofRoot := p.TaprootAssetProof.Root(
+	tapProofRoot := p.TapProof.Root(
 		assetCommitment.TapCommitmentKey(),
 		assetCommitment.TapCommitmentLeaf(),
 	)
@@ -84,7 +84,7 @@ func (p CommitmentProof) DeriveByAssetInclusion(asset *asset.Asset) (*TapCommitm
 // given asset identified by its key within an AssetCommitment. This consists of
 // proving with the AssetProof that an asset does not exist within the inner
 // MS-SMT, also known as the AssetCommitment. With the AssetCommitment obtained,
-// the TaprootAssetProof is used to prove that the AssetCommitment exists within
+// the TapProof is used to prove that the AssetCommitment exists within
 // the outer MS-SMT, also known as the TapCommitment.
 func (p CommitmentProof) DeriveByAssetExclusion(assetCommitmentKey [32]byte) (
 	*TapCommitment, error) {
@@ -102,7 +102,7 @@ func (p CommitmentProof) DeriveByAssetExclusion(assetCommitmentKey [32]byte) (
 
 	// Use the Taproot Asset commitment proof to arrive at the Taproot Asset
 	// commitment.
-	tapProofRoot := p.TaprootAssetProof.Root(
+	tapProofRoot := p.TapProof.Root(
 		assetCommitment.TapCommitmentKey(),
 		assetCommitment.TapCommitmentLeaf(),
 	)
@@ -115,7 +115,7 @@ func (p CommitmentProof) DeriveByAssetExclusion(assetCommitmentKey [32]byte) (
 
 // DeriveByAssetCommitmentExclusion derives the Taproot Asset commitment
 // excluding the given asset commitment identified by its key within a
-// TapCommitment. This consists of proving with the TaprootAssetProof that an
+// TapCommitment. This consists of proving with the TapProof that an
 // AssetCommitment does not exist within the outer MS-SMT, also known as the
 // TapCommitment.
 func (p CommitmentProof) DeriveByAssetCommitmentExclusion(tapCommitmentKey [32]byte) (
@@ -128,7 +128,7 @@ func (p CommitmentProof) DeriveByAssetCommitmentExclusion(tapCommitmentKey [32]b
 
 	// Use the Taproot Asset commitment proof to arrive at the Taproot Asset
 	// commitment.
-	tapProofRoot := p.TaprootAssetProof.Root(
+	tapProofRoot := p.TapProof.Root(
 		tapCommitmentKey, mssmt.EmptyLeafNode,
 	)
 	return &TapCommitment{

@@ -4,101 +4,93 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/btcsuite/btcd/btcutil"
+	"github.com/btcsuite/btcd/wire"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 	"github.com/quocky/taproot-asset/taproot/onchain"
-	"github.com/quocky/taproot-asset/taproot/utils"
 	"log"
 )
 
-func (t *Taproot) MintAsset(names []string, amounts []int32) error {
-	if len(names) != len(amounts) {
-		return errors.New("len names and amount is different")
-	}
-
-	ctx := context.Background()
-
-	var (
-		// TODO: update expected amount when have multiple mint assets
-		expectedAmount = int32(DEFAULT_OUTPUT_AMOUNT + DEFAULT_FEE)
-		pubkey         = asset.ToSerialized(t.wif.PrivKey.PubKey())
-
-		mintAssets       = make([]*asset.Asset, len(names))
-		assetCommitments = make([]*commitment.AssetCommitment, len(names))
-	)
-
-	utxosResult, err := t.btcClient.GetUTXOByAmount(expectedAmount)
+func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmounts []int32) error {
+	err := preCheckAssets(assetNames, assetAmounts)
 	if err != nil {
 		return err
 	}
 
-	for i, name := range names {
-		amount := amounts[i]
+	log.Println("[Mint Asset] Precheck assets success!")
 
-		if len(name) < 6 {
-			return fmt.Errorf("expected len your asset name is greater than or equal 6 (but len = %d) ", len(name))
-		}
+	var (
+		expectBtcAmount = int32(DEFAULT_OUTPUT_AMOUNT + DEFAULT_FEE)
+		userPubKey      = asset.ToSerialized(t.wif.PrivKey.PubKey())
+	)
 
-		if amount == 0 {
-			return fmt.Errorf("expected amount greater than 0 (but amount = %d)", len(name))
-		}
-
-		log.Printf("[Mint Asset] mintint asset! name : %v, amount : %v ! \n", name, amount)
-
-		mintAssets[i], err = asset.New(*utxosResult.UTXOs[0], name,
-			DEFAULT_MINTING_OUTPUT_INDEX, amount,
-			pubkey, nil,
-		)
-		if err != nil {
-			return err
-		}
-		fmt.Print("[Mint Asset] New asset created: ")
-		utils.PrintStruct(mintAssets[i])
-
-		assetCommitments[i], err = commitment.NewAssetCommitment(ctx, mintAssets[i])
-		if err != nil {
-			return err
-		}
-		fmt.Print("[Mint Asset] New asset commitment created: ")
-		utils.PrintStruct(assetCommitments[i])
+	btcUTXOs, err := t.btcClient.ListUTXOs()
+	if err != nil {
+		return err
 	}
+
+	if len(btcUTXOs) == 0 {
+		return errors.New("utxos is empty")
+	}
+
+	bestUTXOs, err := chooseBestUTXOs(btcUTXOs, expectBtcAmount)
+	if err != nil {
+		return err
+	}
+
+	log.Println("[Mint Asset] Choose best utxos success!")
+
+	firstPrevOut := bestUTXOs[0].Outpoint
+	mintAssets := genAssets(assetNames, assetAmounts, firstPrevOut, userPubKey)
+
+	log.Println("[Mint Asset] Generate assets success!", mintAssets)
+
+	assetCommitments, err := genAssetCommitments(ctx, mintAssets)
+	if err != nil {
+		return err
+	}
+
+	log.Println("[Mint Asset] Generate asset commitments success!")
 
 	tapCommitment, err := commitment.NewTapCommitment(assetCommitments...)
 	if err != nil {
-		log.Println("[Mint Asset] create top commitment fail", "err", err)
-
 		return err
 	}
 
-	mintAddressResult, err := t.addressMaker.CreateTapAddrByCommitment(pubkey, tapCommitment)
+	log.Println("[Mint Asset] Generate tap commitment success!")
+
+	mintTapAddress, err := t.addressMaker.CreateTapAddr(userPubKey, tapCommitment)
 	if err != nil {
 		return err
 	}
 
-	receivers := []*onchain.Receiver{
-		onchain.NewReceiver(mintAddressResult, mintAssets...),
+	log.Println("[Mint Asset] Generate tap address success!")
+
+	btcOutputInfos := []*onchain.BtcOutputInfo{
+		onchain.NewBtcOutputInfo(mintTapAddress, DEFAULT_OUTPUT_AMOUNT, mintAssets...),
 	}
 
-	txIncludeOutInternalKey, err := t.prepareTx(utxosResult, nil, DEFAULT_OUTPUT_AMOUNT,
-		receivers, true,
-	)
+	txIncludeOutPubKey, err := t.createTxOnChain(bestUTXOs, nil,
+		btcOutputInfos, btcutil.Amount(DEFAULT_FEE), true)
 	if err != nil {
 		return err
 	}
+
+	log.Println("[Mint Asset] Create tx on chain success!")
 
 	mintProof, err := createMintProof(
-		txIncludeOutInternalKey,
+		txIncludeOutPubKey,
 		DEFAULT_MINTING_OUTPUT_INDEX,
-		pubkey,
 		tapCommitment,
 	)
 
-	fmt.Println("Mint Proof: ", mintProof)
-
+	fmt.Println("Mint CreateProof: ", mintProof)
+	log.Println("[Mint Asset] Create mint proof success!")
 	//fmt.Println("Tx Include Out Internal Key: ", hex.EncodeToString(rawTxBytes.Bytes()))
-	//
-	//hash, err := t.btcClient.SendRawTx(txIncludeOutInternalKey.Tx)
+
+	//hash, err := t.btcClient.SendRawTx(txIncludeOutPubKey.Tx)
 	//if err != nil {
 	//	return err
 	//}
@@ -107,29 +99,94 @@ func (t *Taproot) MintAsset(names []string, amounts []int32) error {
 	return nil
 }
 
-// createMintProof create mint proof and store data to locator.
+func chooseBestUTXOs(utxos []*onchain.UnspentTXOut, expectAmount int32) ([]*onchain.UnspentTXOut, error) {
+	var (
+		bestUTXOs                      = make([]*onchain.UnspentTXOut, 0)
+		expectSatAmount                = btcutil.Amount(expectAmount)
+		totalAmount     btcutil.Amount = 0
+	)
+	for _, utxo := range utxos {
+		bestUTXOs = append(bestUTXOs, utxo)
+		totalAmount += utxo.Amount
+
+		if totalAmount > expectSatAmount {
+			return bestUTXOs, nil
+		}
+	}
+
+	return nil, errors.New("not enough utxos")
+}
+
+func preCheckAssets(assetNames []string, assetAmounts []int32) error {
+	if len(assetNames) != len(assetAmounts) {
+		return errors.New("len assetNames and amount is different")
+	}
+
+	for idx, assetName := range assetNames {
+		assetAmount := assetAmounts[idx]
+
+		if len(assetName) < 6 {
+			return fmt.Errorf("expected len your asset assetName is greater than or equal 6 (but len = %d) ", len(assetName))
+		}
+
+		if assetAmount == 0 {
+			return fmt.Errorf("expected assetAmount greater than 0 (but assetAmount = %d)", len(assetName))
+		}
+	}
+
+	return nil
+}
+
+func genAssets(assetNames []string, assetAmounts []int32, prevOut *wire.OutPoint, userPubKey asset.SerializedKey) []*asset.Asset {
+
+	var assets = make([]*asset.Asset, len(assetNames))
+
+	for idx, assetName := range assetNames {
+		assetAmount := assetAmounts[idx]
+
+		log.Printf("[Mint Asset] mintint asset! assetName : %v, assetAmount : %v ! \n", assetName, assetAmount)
+
+		genesis := asset.NewGenesis(*prevOut, assetName, DEFAULT_MINTING_OUTPUT_INDEX)
+		assets[idx] = asset.NewAsset(genesis, assetAmount, userPubKey, nil)
+	}
+
+	return assets
+}
+
+func genAssetCommitments(ctx context.Context, assets []*asset.Asset) ([]*commitment.AssetCommitment, error) {
+	var assetCommitments = make([]*commitment.AssetCommitment, len(assets))
+
+	for idx, a := range assets {
+		assetCommitment, err := commitment.NewAssetCommitment(ctx, a)
+		if err != nil {
+			return nil, err
+		}
+
+		assetCommitments[idx] = assetCommitment
+	}
+
+	return assetCommitments, nil
+}
+
 func createMintProof(
-	txIncludeOutPubKey *onchain.TxIncludeOutInternalKey,
+	txIncludeOutPubKey *onchain.TxIncludeOutPubKey,
 	outputIndex int32,
-	pubkey asset.SerializedKey,
 	tapCommitment *commitment.TapCommitment,
 ) (proof.AssetProofs, error) {
 	baseProof := &proof.MintParams{
 		BaseProofParams: proof.BaseProofParams{
-			Tx:               txIncludeOutPubKey.Tx,
-			OutputIndex:      outputIndex,
-			InternalKey:      pubkey,
-			TaprootAssetRoot: tapCommitment,
+			Tx:            txIncludeOutPubKey.Tx,
+			OutputIndex:   outputIndex,
+			InternalKey:   txIncludeOutPubKey.OutPubKeys[outputIndex],
+			TapCommitment: tapCommitment,
 		},
 		GenesisPoint: txIncludeOutPubKey.Tx.TxIn[0].PreviousOutPoint,
 	}
 
-	fmt.Println("Base Proof: ", baseProof)
-
 	err := baseProof.BaseProofParams.AddExclusionProofs(
 		txIncludeOutPubKey,
-		func(idx uint32) bool {
-			return idx == uint32(outputIndex)
+		func(idx int32) bool {
+			return idx == outputIndex
 		},
 	)
 	if err != nil {
@@ -137,15 +194,11 @@ func createMintProof(
 			"%w", err)
 	}
 
-	fmt.Println("Base Proof: ", baseProof)
-
 	mintProofs, err := proof.NewMintingBlobs(baseProof)
 	if err != nil {
 		return nil, fmt.Errorf("unable to construct minting "+
 			"proofs: %w", err)
 	}
-
-	fmt.Println("Mint Proofs: ", mintProofs)
 
 	return mintProofs, nil
 }

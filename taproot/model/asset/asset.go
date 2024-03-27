@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/quocky/taproot-asset/taproot/model/mssmt"
-	"log"
 )
 
 var (
@@ -24,9 +23,9 @@ func NewAsset(
 	genesis Genesis, amount int32,
 	scriptPubkey SerializedKey,
 	splitCommitmentRoot *mssmt.ComputedNode,
-) Asset {
+) *Asset {
 
-	return Asset{
+	return &Asset{
 		Genesis:             genesis,
 		Amount:              amount,
 		ScriptPubkey:        scriptPubkey,
@@ -53,7 +52,6 @@ func (a *Asset) AssetCommitmentKey() [32]byte {
 func (a *Asset) Leaf() (*mssmt.LeafNode, error) {
 	assetBytes, err := json.Marshal(a)
 	if err != nil {
-		log.Println("cannot json.marshal asset, ", err)
 		return nil, err
 	}
 
@@ -136,10 +134,10 @@ func New(
 	name string, outputIndex uint32,
 	amount int32, scriptPubkey SerializedKey,
 	splitCommitmentRoot *mssmt.ComputedNode,
-) (*Asset, error) {
+) *Asset {
 
 	genesis := NewGenesis(firstPrevOut, name, outputIndex)
 	asset := NewAsset(genesis, amount, scriptPubkey, splitCommitmentRoot)
 
-	return &asset, nil
+	return asset
 }

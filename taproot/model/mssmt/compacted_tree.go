@@ -369,7 +369,7 @@ func (t *CompactedTree) Get(ctx context.Context, key [hashSize]byte) (
 // MerkleProof generates a merkle proof for the leaf node found at the given key
 // within the MS-SMT. If a leaf node does not exist at the given key, then the
 // proof should be considered a non-inclusion proof. This is noted by the
-// returned `Proof` containing an empty leaf.
+// returned `CreateProof` containing an empty leaf.
 func (t *CompactedTree) MerkleProof(ctx context.Context, key [hashSize]byte) (
 	*Proof, error) {
 

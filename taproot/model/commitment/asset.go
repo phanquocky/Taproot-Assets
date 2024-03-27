@@ -26,11 +26,11 @@ func NewAssetCommitment(ctx context.Context, assets ...*asset.Asset) (*AssetComm
 	tree := mssmt.NewCompactedTree(mssmt.NewDefaultStore())
 	committedAssets := make(CommittedAssets, len(assets))
 
-	id := assets[0].ID()
+	tapKey := assets[0].TapCommitmentKey()
 
 	for _, a := range assets {
-		if a.ID() != id {
-			return nil, fmt.Errorf("asset ID mismatch: %x vs %x", a.ID(), id)
+		if a.TapCommitmentKey() != tapKey {
+			return nil, fmt.Errorf("asset ID mismatch: %x vs %x", a.TapCommitmentKey(), tapKey)
 		}
 
 		leaf, err := a.Leaf()
@@ -39,7 +39,10 @@ func NewAssetCommitment(ctx context.Context, assets ...*asset.Asset) (*AssetComm
 		}
 
 		key := a.AssetCommitmentKey()
-		tree.Insert(ctx, key, leaf)
+		_, err = tree.Insert(ctx, key, leaf)
+		if err != nil {
+			return nil, fmt.Errorf("error inserting asset to assetcommitment tree: %w", err)
+		}
 
 		committedAssets[a.AssetCommitmentKey()] = a
 	}
@@ -50,7 +53,7 @@ func NewAssetCommitment(ctx context.Context, assets ...*asset.Asset) (*AssetComm
 	}
 
 	return &AssetCommitment{
-		TapKey: id,
+		TapKey: tapKey,
 		Root:   root,
 		tree:   tree,
 		assets: committedAssets,
@@ -132,7 +135,6 @@ func (c *AssetCommitment) TapCommitmentLeaf() *mssmt.LeafNode {
 	return mssmt.NewLeafNode(leaf.Bytes(), sum)
 }
 
-// Assets returns the set of assets committed to in the asset commitment.
 func (c *AssetCommitment) Assets() CommittedAssets {
 	assets := make(CommittedAssets, len(c.assets))
 	maps.Copy(assets, c.assets)
@@ -140,8 +142,6 @@ func (c *AssetCommitment) Assets() CommittedAssets {
 	return assets
 }
 
-// AssetProof computes the AssetCommitment merkle proof for the asset leaf
-// located at `key`. A `nil` asset is returned if the asset is not committed to.
 func (c *AssetCommitment) AssetProof(key [32]byte) (
 	*asset.Asset, *mssmt.Proof, error) {
 
@@ -149,7 +149,6 @@ func (c *AssetCommitment) AssetProof(key [32]byte) (
 		return nil, nil, fmt.Errorf("missing tree to compute proofs")
 	}
 
-	// TODO(bhandras): thread the context through.
 	proof, err := c.tree.MerkleProof(context.TODO(), key)
 	if err != nil {
 		return nil, nil, err

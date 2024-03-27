@@ -9,37 +9,31 @@ import (
 )
 
 type BaseProofParams struct {
-	Tx               *wire.MsgTx
-	OutputIndex      int32
-	InternalKey      asset.SerializedKey
-	TaprootAssetRoot *commitment.TapCommitment
-	ExclusionProofs  []*TaprootProof
+	Tx              *wire.MsgTx
+	OutputIndex     int32
+	InternalKey     asset.SerializedKey
+	TapCommitment   *commitment.TapCommitment
+	ExclusionProofs []*TaprootProof
 }
 
 func (b *BaseProofParams) AddExclusionProofs(
-	txIncludeOutPubKey *onchain.TxIncludeOutInternalKey,
-	isAnchor func(uint32) bool,
+	txIncludeOutPubKey *onchain.TxIncludeOutPubKey,
+	isAnchor func(int32) bool,
 ) error {
 	tx := txIncludeOutPubKey.Tx
 
 	for outIdx := range tx.TxOut {
 		txOut := tx.TxOut[outIdx]
 
-		// Skip any anchor output since that will get an inclusion proof
-		// instead.
-		if isAnchor(uint32(outIdx)) {
+		if isAnchor(int32(outIdx)) {
 			continue
 		}
 
-		// We only need to add exclusion Proofs for P2TR outputs as only
-		// those could commit to a Taproot Asset tree.
 		if !txscript.IsPayToTaproot(txOut.PkScript) {
 			continue
 		}
 
-		// For a P2TR output the internal key must be declared and must
-		// be a valid 32-byte x-only public key.
-		internalKey := txIncludeOutPubKey.OutInternalKeys[outIdx]
+		internalKey := txIncludeOutPubKey.OutPubKeys[int32(outIdx)]
 
 		// Okay, we now know this is a normal BIP-0086 key spend and can
 		// add the exclusion proof accordingly.

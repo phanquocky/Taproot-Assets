@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/binary"
-	"fmt"
+	"errors"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/mssmt"
@@ -74,55 +74,39 @@ func (c *TapCommitment) TapLeaf() txscript.TapLeaf {
 	return txscript.NewBaseTapLeaf(leafScript)
 }
 
-// CommittedAssets returns the set of assets committed to in the Taproot Asset
-// commitment.
-func (c *TapCommitment) CommittedAssets() []*asset.Asset {
+func (c *TapCommitment) Assets() []*asset.Asset {
 	var assets []*asset.Asset
 	for _, commitment := range c.assetCommitments {
-		commitmentClone := commitment
-
-		committedAssets := maps.Values(commitmentClone.Assets())
+		committedAssets := maps.Values(commitment.Assets())
 		assets = append(assets, committedAssets...)
 	}
 
 	return assets
 }
 
-// Proof computes the full TapCommitment merkle proof for the asset leaf
-// located at `assetCommitmentKey` within the AssetCommitment located at
-// `tapCommitmentKey`.
-func (c *TapCommitment) Proof(tapCommitmentKey,
+func (c *TapCommitment) CreateProof(tapCommitmentKey,
 	assetCommitmentKey [32]byte) (*asset.Asset, *CommitmentProof, error) {
 
 	if c.assetCommitments == nil || c.tree == nil {
-		panic("missing asset commitments to compute proofs")
+		return nil, nil, errors.New("missing asset commitments to compute proofs")
 	}
 
-	// TODO(bhandras): thread the context through.
 	merkleProof, err := c.tree.MerkleProof(context.TODO(), tapCommitmentKey)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	proof := &CommitmentProof{
-		TaprootAssetProof: &TaprootAssetProof{
+		TapProof: &TapProof{
 			Proof: *merkleProof,
 		},
 	}
-
-	// If the corresponding AssetCommitment does not exist, return the Proof
-	// as is.
-
-	fmt.Println("key2: ", tapCommitmentKey)
 
 	assetCommitment, ok := c.assetCommitments[tapCommitmentKey]
 	if !ok {
 		return nil, proof, nil
 	}
 
-	// Otherwise, compute the AssetProof and include it in the result. It's
-	// possible for the asset to not be found, leading to a non-inclusion
-	// proof.
 	a, assetProof, err := assetCommitment.AssetProof(assetCommitmentKey)
 	if err != nil {
 		return nil, nil, err
@@ -132,8 +116,6 @@ func (c *TapCommitment) Proof(tapCommitmentKey,
 		Proof:  *assetProof,
 		TapKey: assetCommitment.TapKey,
 	}
-
-	fmt.Println("aaaaaaaaaaaa: ", a)
 
 	return a, proof, nil
 }
