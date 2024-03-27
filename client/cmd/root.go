@@ -3,7 +3,9 @@ package cmd
 import (
 	"github.com/joho/godotenv"
 	"github.com/quocky/taproot-asset/taproot"
+	"github.com/quocky/taproot-asset/taproot/address"
 	"github.com/quocky/taproot-asset/taproot/config"
+	"github.com/quocky/taproot-asset/taproot/onchain"
 	"log"
 	"os"
 
@@ -32,8 +34,20 @@ func init() {
 	}
 
 	networkCfg := config.LoadNetworkConfig()
-	TaprootClient, err = taproot.NewTaproot(networkCfg)
+
+	btcClient, err := onchain.New(networkCfg)
 	if err != nil {
-		log.Fatalf("Error create taproot client, err: %s", err.Error())
+		log.Fatalf("Error create btc client, err: %s \n", err.Error())
 	}
+
+	wif, err := btcClient.DumpWIF()
+	if err != nil {
+		log.Fatalf("Error dump wif, err: %s \n", err.Error())
+	}
+
+	addressMaker := address.New(networkCfg.ParamsObject)
+
+	TaprootClient = taproot.NewTaproot(btcClient, wif, addressMaker)
+
+	log.Println("Create taproot client success!")
 }

@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 
@@ -24,20 +26,20 @@ var mintAssetCmd = &cobra.Command{
 			names = append(names, tmp[0])
 			amount, err := strconv.ParseInt(tmp[1], 10, 32)
 			if err != nil {
-				fmt.Println("Error parsing amount")
-				return
+				log.Fatalln("Error parsing amount")
 			}
 			amounts = append(amounts, int32(amount))
 		}
 
 		fmt.Println("Taproot client: ", TaprootClient)
 
-		err := TaprootClient.MintAsset(names, amounts)
+		ctx := context.Background()
+		err := TaprootClient.MintAsset(ctx, names, amounts)
 		if err != nil {
-			fmt.Println("Error minting asset, err: ", err)
-		} else {
-			fmt.Println("Asset minted successfully")
+			log.Fatalln("Error minting asset, err: ", err)
 		}
+
+		fmt.Println("Asset minted successfully")
 
 	},
 }
