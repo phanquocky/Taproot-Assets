@@ -13,7 +13,7 @@ func (c *Client) OpenWallet() error {
 		return err
 	}
 
-	log.Println("Open wallet success!")
+	log.Println("[OpenWallet] Open wallet success!")
 	return nil
 }
 

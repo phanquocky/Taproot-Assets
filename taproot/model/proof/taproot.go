@@ -44,7 +44,7 @@ func (p TapscriptProof) DeriveTaprootKeys(internalKey asset.SerializedKey) (
 
 	pubkey, err := internalKey.ToPubKey()
 	if err != nil {
-		log.Println("[DeriveTaprootKeys] convert SerializedKey to Pubkey fail", err)
+		log.Println("[DeriveTaprootKeys] convert SerializedKey to PubKey fail", err)
 
 		return nil, err
 	}

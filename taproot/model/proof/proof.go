@@ -49,7 +49,7 @@ type Interface interface {
 }
 
 type Proof struct {
-	PrevOut          wire.OutPoint
+	PrevOut          wire.OutPoint // TODO: genesisPoint
 	AnchorTx         wire.MsgTx
 	Asset            asset.Asset
 	InclusionProof   TaprootProof

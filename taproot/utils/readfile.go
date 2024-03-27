@@ -1,18 +1,16 @@
 package utils
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/btcsuite/btcd/btcutil"
 )
 
-func ReadCertFile() ([]byte, error) {
-	certPath := filepath.Join(btcutil.AppDataDir("btcwallet", false), "rpc.cert")
+func ReadCertFile(dir, filename string) ([]byte, error) {
+	certPath := filepath.Join(btcutil.AppDataDir(dir, false), filename)
 	cert, err := os.ReadFile(certPath)
 	if err != nil {
-		log.Println("cannot read cert file, ", err)
 		return nil, err
 	}
 

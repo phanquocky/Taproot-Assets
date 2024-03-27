@@ -3,48 +3,17 @@ package onchain
 import (
 	"encoding/binary"
 	"errors"
-	"fmt"
 	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
-	"github.com/quocky/taproot-asset/taproot/address"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"log"
 )
 
-type TxIncludeOutInternalKey struct {
-	Tx              *wire.MsgTx
-	OutInternalKeys map[int]asset.SerializedKey
-}
-
-// Receiver is struct contain all information of a btc output
-type Receiver struct {
-	AddrResult  *address.AddrResult
-	OutputAsset []*asset.Asset
-}
-
-func (r *Receiver) GetAddrResult() *address.AddrResult {
-	if r == nil {
-		return nil
-	}
-
-	return r.AddrResult
-}
-
-func (r *Receiver) GetOutputAsset() []*asset.Asset {
-	if r == nil {
-		return nil
-	}
-
-	return r.OutputAsset
-}
-
-func NewReceiver(addrResult *address.AddrResult, outputAsset ...*asset.Asset) *Receiver {
-	return &Receiver{
-		AddrResult:  addrResult,
-		OutputAsset: outputAsset,
-	}
+type TxIncludeOutPubKey struct {
+	Tx         *wire.MsgTx
+	OutPubKeys map[int32]asset.SerializedKey
 }
 
 type UnspentAssetsByIdResult struct {
@@ -57,75 +26,75 @@ type UnspentAssetsByIdResult struct {
 
 // TxMaker struct using create format onchain tx
 type TxMaker struct {
-	utxos               *UTXOResult
-	unspentAssets       []*UnspentAssetsByIdResult
-	senderAddress       btcutil.Address
-	defaultOutputAmount int32
-	receivers           []*Receiver
+	UTXOs          []*UnspentTXOut
+	unspentAssets  []*UnspentAssetsByIdResult
+	senderAddress  btcutil.Address
+	btcOutputInfos []*BtcOutputInfo
+	fee            btcutil.Amount
 
-	Tx                 *wire.MsgTx
-	OutputInternalKeys map[int]asset.SerializedKey
+	Tx            *wire.MsgTx
+	OutputPubKeys map[int32]asset.SerializedKey
 }
 
-// NewTxMaker func create new TxMaker struct
 func (c *Client) NewTxMaker(
-	utxos *UTXOResult,
+	UTXOs []*UnspentTXOut,
 	unspentAssets []*UnspentAssetsByIdResult,
-	defaultOutputAmount int32,
-	receivers []*Receiver,
+	outputInfos []*BtcOutputInfo,
+	senderBtcAddress btcutil.Address,
+	fee btcutil.Amount,
 ) (*TxMaker, error) {
 
-	senderAddrBtc, err := btcutil.DecodeAddress(c.networkConfig.SenderAddress, c.networkConfig.ParamsObject)
-	if err != nil {
-		panic("your sender address is invalid, " + c.networkConfig.SenderAddress + err.Error())
-		return nil, err
-	}
-
 	return &TxMaker{
-		utxos:               utxos,
-		unspentAssets:       unspentAssets,
-		senderAddress:       senderAddrBtc,
-		defaultOutputAmount: defaultOutputAmount,
-		receivers:           receivers,
-		Tx:                  nil,
-		OutputInternalKeys:  make(map[int]asset.SerializedKey),
+		UTXOs:          UTXOs,
+		unspentAssets:  unspentAssets,
+		senderAddress:  senderBtcAddress,
+		btcOutputInfos: outputInfos,
+		fee:            fee,
+		Tx:             nil,
+		OutputPubKeys:  make(map[int32]asset.SerializedKey),
 	}, nil
 }
 
-// CreateTemplateTx function assign inputs, and outputs to tx, return amount btc
-// with no reveal data,
 func (t *TxMaker) CreateTemplateTx() error {
 	tx := wire.NewMsgTx(2)
 
-	if t.unspentAssets != nil {
+	inputAmount := btcutil.Amount(0)
+	outputAmount := btcutil.Amount(0)
+
+	if t.unspentAssets != nil { // TODO:
 		for _, unspent := range t.unspentAssets {
+			inputAmount += btcutil.Amount(unspent.AmtSats)
 			tx.AddTxIn(wire.NewTxIn(unspent.Outpoint, nil, nil))
 		}
 	}
 
-	for _, utxo := range t.utxos.UTXOs {
-		tx.AddTxIn(wire.NewTxIn(utxo, nil, nil))
+	for _, u := range t.UTXOs {
+		inputAmount += u.Amount
+		tx.AddTxIn(wire.NewTxIn(u.Outpoint, nil, nil))
 	}
 
-	for i, receiver := range t.receivers {
-		pkscript, err := txscript.PayToAddrScript(receiver.AddrResult.Address)
+	for i, output := range t.btcOutputInfos {
+		outputAmount += btcutil.Amount(output.SatAmount)
+		pkScript, err := txscript.PayToAddrScript(output.AddrResult.Address)
 		if err != nil {
-			log.Println("cannot create pkscript from tapaddress: ", receiver)
 			return err
 		}
 
-		t.OutputInternalKeys[i] = receiver.AddrResult.Pubkey
+		t.OutputPubKeys[int32(i)] = output.AddrResult.PubKey
 
-		tx.AddTxOut(wire.NewTxOut(int64(t.defaultOutputAmount), pkscript))
+		tx.AddTxOut(wire.NewTxOut(int64(output.SatAmount), pkScript))
 	}
 
-	if t.utxos.TotalAmount > t.utxos.ActualAmount {
-		pkscript, err := txscript.PayToAddrScript(t.senderAddress)
+	if outputAmount > inputAmount {
+		return errors.New("output amount is greater than input amount")
+	}
+
+	if inputAmount-outputAmount-t.fee > 0 {
+		pkScript, err := txscript.PayToAddrScript(t.senderAddress)
 		if err != nil {
-			log.Println("cannot create pkscript from tapaddress: ", t.senderAddress)
 			return err
 		}
-		tx.AddTxOut(wire.NewTxOut(int64(t.utxos.TotalAmount-t.utxos.ActualAmount), pkscript))
+		tx.AddTxOut(wire.NewTxOut(int64(inputAmount-outputAmount-t.fee), pkScript))
 	}
 
 	t.Tx = tx
@@ -139,7 +108,7 @@ func (t *TxMaker) AddRevealData(isMint bool) error {
 	// map assetID = [][outputindex, asset amount]
 	AssetIDmap := make(map[[32]byte][][2]uint32)
 
-	//for i, receiver := range t.receivers {
+	//for i, receiver := range t.btcOutputInfos {
 	//	assetID := receiver.OutputAsset.ID()
 	//	AssetIDmap[assetID] = append(AssetIDmap[assetID], [2]uint32{uint32(i), uint32(receiver.OutputAsset.Amount)})
 	//}
@@ -188,34 +157,41 @@ func (t *TxMaker) AddRevealData(isMint bool) error {
 
 	return nil
 }
+func (t *TxMaker) createPrevOutFetchers() *txscript.MultiPrevOutFetcher {
+	prevOutFetchers := txscript.NewMultiPrevOutFetcher(nil)
+
+	for _, u := range t.UTXOs {
+		prevOutFetchers.AddPrevOut(*u.Outpoint, wire.NewTxOut(int64(u.Amount), u.LockScript))
+	}
+
+	// TODO:
+	for _, unspent := range t.unspentAssets {
+		prevOutFetchers.AddPrevOut(*unspent.Outpoint, wire.NewTxOut(int64(unspent.AmtSats), unspent.ScriptOutput))
+	}
+
+	return prevOutFetchers
+}
 
 // SignTaprootInput function sign only taproot input in onchain transaction
 func (t *TxMaker) SignTaprootInput(privKey *btcec.PrivateKey) error {
+	prevOutFetchers := t.createPrevOutFetchers()
 
 	if t.unspentAssets != nil {
 
-		var inputFetchers = t.utxos.InputFetcher
-		// this for loop create unspent
-		for _, unspent := range t.unspentAssets {
-			inputFetchers.AddPrevOut(*unspent.Outpoint, wire.NewTxOut(int64(unspent.AmtSats), unspent.ScriptOutput))
-		}
-
-		//sign taproot asset input
 		for index, unspent := range t.unspentAssets {
 
-			sigHashes := txscript.NewTxSigHashes(t.Tx, inputFetchers)
-			tapscriptRootHash := unspent.TaprootAssetRoot
+			sigHashes := txscript.NewTxSigHashes(t.Tx, prevOutFetchers)
+			tapScriptRootHash := unspent.TaprootAssetRoot
 
 			sig, err := txscript.RawTxInTaprootSignature(
 				t.Tx, sigHashes, index,
 				unspent.AmtSats,
 				unspent.InternalKey,
-				tapscriptRootHash,
+				tapScriptRootHash,
 				txscript.SigHashSingle,
 				privKey,
 			)
 			if err != nil {
-				fmt.Println("[signTaprootInput] txscript.RawTxInTaprootSignature, err ", err)
 				return err
 			}
 

@@ -1,40 +1,42 @@
 package taproot
 
 import (
+	"github.com/btcsuite/btcd/btcutil"
 	"github.com/quocky/taproot-asset/taproot/onchain"
-	"log"
 )
 
 type GetUnspentAssetsByIdResult struct {
 }
 
-// prepareTx create simple minting asset template
-func (t *Taproot) prepareTx(
-	utxosResult *onchain.UTXOResult,
-	unspentAssets *GetUnspentAssetsByIdResult,
-	defaultOutputAmount int32,
-	receivers []*onchain.Receiver,
+func (t *Taproot) createTxOnChain(
+	UTXOs []*onchain.UnspentTXOut,
+	unspentAssets *GetUnspentAssetsByIdResult, // TODO:
+	outputInfos []*onchain.BtcOutputInfo,
+	fee btcutil.Amount,
 	isMint bool,
-) (*onchain.TxIncludeOutInternalKey, error) {
-	unspentAssetsOnchains, err := makeUnspentAssetsByIdResult(unspentAssets)
+) (*onchain.TxIncludeOutPubKey, error) {
+	unspentAssetsOnChains, err := makeUnspentAssetsByIdResult(unspentAssets)
 	if err != nil {
-		log.Println("makeUnspentAssetsByIdResult err", err)
+		return nil, err
+	}
 
+	senderBtcAddr, err := t.btcClient.GetSenderAddress()
+	if err != nil {
 		return nil, err
 	}
 
 	txMaker, err := t.btcClient.NewTxMaker(
-		utxosResult, unspentAssetsOnchains,
-		defaultOutputAmount, receivers,
+		UTXOs, unspentAssetsOnChains,
+		outputInfos,
+		senderBtcAddr,
+		fee,
 	)
 	if err != nil {
-		log.Println("[prepare tx] cannot create TxMaker, ", err)
 		return nil, err
 	}
 
 	err = txMaker.CreateTemplateTx()
 	if err != nil {
-		log.Println("[prepare tx] cannot create templateTx, ", err)
 		return nil, err
 	}
 
@@ -45,21 +47,17 @@ func (t *Taproot) prepareTx(
 	//}
 
 	if err := txMaker.SignTaprootInput(t.wif.PrivKey); err != nil {
-		log.Println("txMaker.SignTaprootInput err", err)
-
 		return nil, err
 	}
 
 	finalTx, err := t.btcClient.SignRawTx(txMaker.Tx)
 	if err != nil {
-		log.Println("t.onchain.SignRawTx(txMaker.Tx) fail", err)
-
 		return nil, err
 	}
 
-	return &onchain.TxIncludeOutInternalKey{
-		Tx:              finalTx,
-		OutInternalKeys: txMaker.OutputInternalKeys,
+	return &onchain.TxIncludeOutPubKey{
+		Tx:         finalTx,
+		OutPubKeys: txMaker.OutputPubKeys,
 	}, nil
 }
 
@@ -85,7 +83,7 @@ func makeUnspentAssetsByIdResult(
 	//		AmtSats:          int64(unspentOutpoint.AmtSats),
 	//		ScriptOutput:     unspentOutpoint.ScriptOutput,
 	//		InternalKey:      unspentOutpoint.InternalKey,
-	//		TaprootAssetRoot: unspentOutpoint.TaprootAssetRoot,
+	//		TapCommitment: unspentOutpoint.TapCommitment,
 	//	}
 	//}
 	//

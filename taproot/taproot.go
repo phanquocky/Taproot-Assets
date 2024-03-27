@@ -1,9 +1,9 @@
 package taproot
 
 import (
+	"context"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/quocky/taproot-asset/taproot/address"
-	"github.com/quocky/taproot-asset/taproot/config"
 	"github.com/quocky/taproot-asset/taproot/onchain"
 )
 
@@ -22,7 +22,7 @@ const (
 )
 
 type Interface interface {
-	MintAsset(names []string, amounts []int32) error
+	MintAsset(ctx context.Context, names []string, amounts []int32) error
 }
 
 type Taproot struct {
@@ -31,22 +31,10 @@ type Taproot struct {
 	addressMaker address.TapAddrMaker
 }
 
-func NewTaproot(networkCfg *config.NetworkConfig) (Interface, error) {
-	btcClient, err := onchain.New(networkCfg)
-	if err != nil {
-		return nil, err
-	}
-
-	wif, err := btcClient.DumpWIF()
-	if err != nil {
-		return nil, err
-	}
-
-	addressMaker := address.New(networkCfg.ParamsObject)
-
+func NewTaproot(btcClient onchain.Interface, wif *btcutil.WIF, addressMaker address.TapAddrMaker) Interface {
 	return &Taproot{
 		btcClient:    btcClient,
 		wif:          wif,
 		addressMaker: addressMaker,
-	}, nil
+	}
 }

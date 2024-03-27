@@ -7,10 +7,9 @@ import (
 )
 
 type TapAddrMaker interface {
-	CreateTapAddrByCommitment(asset.SerializedKey, *commitment.TapCommitment) (*AddrResult, error)
+	CreateTapAddr(asset.SerializedKey, *commitment.TapCommitment) (*TapAddress, error)
 }
 
-// TapAddr is used to create Taproot Address
 type TapAddr struct {
 	NetWork *chaincfg.Params
 }
