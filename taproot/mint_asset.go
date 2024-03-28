@@ -8,9 +8,11 @@ import (
 	"github.com/btcsuite/btcd/wire"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
+	"github.com/quocky/taproot-asset/taproot/model/mint"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 	"github.com/quocky/taproot-asset/taproot/onchain"
 	"log"
+	"os"
 )
 
 func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmounts []int32) error {
@@ -88,14 +90,22 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 
 	fmt.Println("Mint CreateProof: ", mintProof)
 	log.Println("[Mint Asset] Create mint proof success!")
-	//fmt.Println("Tx Include Out Internal Key: ", hex.EncodeToString(rawTxBytes.Bytes()))
 
-	//hash, err := t.btcClient.SendRawTx(txIncludeOutPubKey.Tx)
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//fmt.Println("Mint asset success! Tx hash: ", hash.String())
+	data := mint.MintAssetReq{
+		AmountSats:        expectBtcAmount,
+		TapScriptRootHash: mintTapAddress.TapScriptRootHash,
+		MintProof:         &mintProof,
+	}
+
+	postResp, err := t.httpClient.R().SetBody(data).Post(os.Getenv("SERVER_BASE_URL") + "/mint-asset")
+	if err != nil {
+		log.Println("c.httpClient.R().SetBody(data).Post(\"/mint-asset\")", err)
+
+		return err
+	}
+
+	log.Println("[Mint Asset] Post mint asset success!", postResp)
+
 	return nil
 }
 
