@@ -3,12 +3,13 @@ package proof
 import (
 	"context"
 	"fmt"
+	"log"
+
 	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
-	"log"
 )
 
 // Verify verifies the proof by ensuring that:
@@ -92,7 +93,7 @@ func (p *Proof) Verify(
 		OutputIndex: p.InclusionProof.OutputIndex,
 		InternalKey: p.InclusionProof.InternalKey,
 		ScriptRoot:  assetCommitment,
-		SplitAsset:  splitAsset, // TODO: mint process -> no-existed Split Asset
+		SplitAsset:  splitAsset, // TODO: genesis process -> no-existed Split Asset
 		// TapscriptSibling: tapscriptPreimage,
 		// MetaReveal:       p.MetaReveal,
 	}, nil
