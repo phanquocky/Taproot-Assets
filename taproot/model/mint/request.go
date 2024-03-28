@@ -2,6 +2,7 @@ package mint
 
 import (
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/quocky/taproot-asset/taproot/model/proof"
 )
 
 type MintAssetReq struct {
