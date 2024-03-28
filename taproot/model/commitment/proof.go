@@ -1,6 +1,8 @@
 package commitment
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"github.com/lightninglabs/taproot-assets/fn"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
@@ -30,6 +32,89 @@ type TapProof struct {
 type CommitmentProof struct {
 	AssetProof *AssetProof
 	TapProof   *TapProof
+}
+
+type CommitmentProofByte struct {
+	AssetProof []byte
+	TapProof   []byte
+	TapKey     [32]byte
+}
+
+// MarshalJSON function custom CommitmentProof when using json.Marshal function
+func (u CommitmentProof) MarshalJSON() ([]byte, error) {
+	var assetProofBytes bytes.Buffer
+
+	err := u.AssetProof.Compress().Encode(&assetProofBytes)
+	if err != nil {
+		log.Println("[MarshalJSON] u.Proof.Compress().Encode(&proofBytes), err ", err)
+
+		return nil, err
+	}
+
+	var tapProofBytes bytes.Buffer
+	if err := u.AssetProof.Compress().Encode(&tapProofBytes); err != nil {
+		log.Println("[MarshalJSON] u.Proof.Compress().Encode(&proofBytes), err ", err)
+
+		return nil, err
+	}
+
+	cbyte, _ := json.Marshal(CommitmentProofByte{
+		AssetProof: assetProofBytes.Bytes(),
+		TapProof:   tapProofBytes.Bytes(),
+		TapKey:     u.AssetProof.TapKey,
+	})
+
+	log.Println("byte ", cbyte)
+
+	return json.Marshal(CommitmentProofByte{
+		AssetProof: assetProofBytes.Bytes(),
+		TapProof:   tapProofBytes.Bytes(),
+		TapKey:     u.AssetProof.TapKey,
+	})
+}
+
+func (b *CommitmentProof) UnmarshalJSON(data []byte) error {
+	var (
+		commitBytes CommitmentProofByte
+		assetProof  mssmt.CompressedProof
+		tapProof    mssmt.CompressedProof
+	)
+
+	if err := json.Unmarshal(data, &commitBytes); err != nil {
+		log.Println("err := json.Unmarshal(data, &commitBytes), err ", err)
+
+		return err
+	}
+
+	//b.AssetProof.Compress()
+	// commitBytes.Proof
+	assetProof.Decode(bytes.NewReader(commitBytes.AssetProof))
+	bufAssetProof, err := assetProof.Decompress()
+	if err != nil {
+		log.Println("err := compressProof.Decompress(), err ", err)
+
+		return err
+	}
+
+	b.AssetProof = &AssetProof{
+		Proof:  *bufAssetProof,
+		TapKey: commitBytes.TapKey,
+	}
+
+	//b.TaprootAssetProof.Compress()
+	// commitBytes.Proof
+	tapProof.Decode(bytes.NewReader(commitBytes.AssetProof))
+	bufTapAssetProof, err := tapProof.Decompress()
+	if err != nil {
+		log.Println("err := compressProof.Decompress(), err ", err)
+
+		return err
+	}
+	b.TapProof = &TapProof{
+		Proof: *bufTapAssetProof,
+	}
+
+	return nil
 }
 
 // DeriveByAssetInclusion derives the Asset commitment containing the

@@ -94,7 +94,7 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 	data := mint.MintAssetReq{
 		AmountSats:        expectBtcAmount,
 		TapScriptRootHash: mintTapAddress.TapScriptRootHash,
-		MintProof:         &mintProof,
+		MintProof:         mintProof,
 	}
 
 	postResp, err := t.httpClient.R().SetBody(data).Post(os.Getenv("SERVER_BASE_URL") + "/mint-asset")

@@ -85,7 +85,7 @@ func committedProofs(template *Proof, tapCommitment *commitment.TapCommitment) (
 		assetProof.InclusionProof.CommitmentProof = commitmentProof
 		assetProof.GenesisReveal = &newAsset.Genesis
 
-		proofs[newAsset.ScriptPubkey] = &assetProof
+		proofs[i] = &assetProof
 	}
 
 	return proofs, nil
