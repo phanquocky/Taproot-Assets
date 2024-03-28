@@ -3,6 +3,7 @@ package taproot
 import (
 	"context"
 	"github.com/btcsuite/btcd/btcutil"
+	"github.com/go-resty/resty/v2"
 	"github.com/quocky/taproot-asset/taproot/address"
 	"github.com/quocky/taproot-asset/taproot/onchain"
 )
@@ -29,6 +30,7 @@ type Taproot struct {
 	btcClient    onchain.Interface
 	wif          *btcutil.WIF
 	addressMaker address.TapAddrMaker
+	httpClient   *resty.Client
 }
 
 func NewTaproot(btcClient onchain.Interface, wif *btcutil.WIF, addressMaker address.TapAddrMaker) Interface {
@@ -36,5 +38,6 @@ func NewTaproot(btcClient onchain.Interface, wif *btcutil.WIF, addressMaker addr
 		btcClient:    btcClient,
 		wif:          wif,
 		addressMaker: addressMaker,
+		httpClient:   resty.New(),
 	}
 }
