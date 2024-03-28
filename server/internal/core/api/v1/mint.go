@@ -26,7 +26,14 @@ func (c *MintController) MintAsset(g *gin.Context) {
 		return
 	}
 
-	_ = c.useCase.MintAsset(g, req.AmountSats, req.TapScriptRootHash, req.MintProof)
+	err := c.useCase.MintAsset(g, req.AmountSats, req.TapScriptRootHash, req.MintProof)
+	if err != nil {
+		g.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+
+		return
+	}
 
 	g.JSON(http.StatusOK, nil)
 }

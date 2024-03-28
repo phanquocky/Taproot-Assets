@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
+
 	"github.com/lightninglabs/taproot-assets/fn"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/mssmt"
-	"log"
 )
 
 var (
@@ -52,7 +53,7 @@ func (u CommitmentProof) MarshalJSON() ([]byte, error) {
 	}
 
 	var tapProofBytes bytes.Buffer
-	if err := u.AssetProof.Compress().Encode(&tapProofBytes); err != nil {
+	if err := u.TapProof.Compress().Encode(&tapProofBytes); err != nil {
 		log.Println("[MarshalJSON] u.Proof.Compress().Encode(&proofBytes), err ", err)
 
 		return nil, err
@@ -87,8 +88,15 @@ func (b *CommitmentProof) UnmarshalJSON(data []byte) error {
 	}
 
 	//b.AssetProof.Compress()
+
 	// commitBytes.Proof
-	assetProof.Decode(bytes.NewReader(commitBytes.AssetProof))
+	err := assetProof.Decode(bytes.NewReader(commitBytes.AssetProof))
+	if err != nil {
+		log.Println("assetProof.Decode(bytes.NewReader(commitBytes.AssetProof))", err.Error())
+
+		return err
+	}
+
 	bufAssetProof, err := assetProof.Decompress()
 	if err != nil {
 		log.Println("err := compressProof.Decompress(), err ", err)
@@ -101,9 +109,10 @@ func (b *CommitmentProof) UnmarshalJSON(data []byte) error {
 		TapKey: commitBytes.TapKey,
 	}
 
-	//b.TaprootAssetProof.Compress()
+	//b.TapProof.Compress()
+
 	// commitBytes.Proof
-	tapProof.Decode(bytes.NewReader(commitBytes.AssetProof))
+	tapProof.Decode(bytes.NewReader(commitBytes.TapProof))
 	bufTapAssetProof, err := tapProof.Decompress()
 	if err != nil {
 		log.Println("err := compressProof.Decompress(), err ", err)

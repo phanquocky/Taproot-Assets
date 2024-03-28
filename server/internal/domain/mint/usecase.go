@@ -12,6 +12,6 @@ type UseCaseInterface interface {
 		ctx context.Context,
 		amountSats int32,
 		tapScriptRootHash *chainhash.Hash,
-		mintProof *proof.AssetProofs,
+		mintProof proof.AssetProofs,
 	) error
 }

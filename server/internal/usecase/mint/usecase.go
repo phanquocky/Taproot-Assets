@@ -3,6 +3,8 @@ package mint
 import (
 	"bytes"
 	"context"
+	"encoding/json"
+	"log"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/rpcclient"
@@ -14,6 +16,7 @@ import (
 	"github.com/quocky/taproot-asset/server/internal/domain/genesis"
 	manageutxo "github.com/quocky/taproot-asset/server/internal/domain/manage_utxo"
 	"github.com/quocky/taproot-asset/server/internal/domain/mint"
+	"github.com/quocky/taproot-asset/server/pkg/logger"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 )
 
@@ -25,11 +28,24 @@ type UseCase struct {
 	rpcClient        *rpcclient.Client
 }
 
-func (u *UseCase) MintAsset(ctx context.Context, amountSats int32, tapScriptRootHash *chainhash.Hash, mintProof *proof.AssetProofs) error {
+func (u *UseCase) MintAsset(
+	ctx context.Context,
+	amountSats int32,
+	tapScriptRootHash *chainhash.Hash,
+	mintProof proof.AssetProofs,
+) error {
 	proofs := make([]proof.Proof, 0)
-	for _, p := range *mintProof {
+
+	log.Println(" len(mintProof): ", len(mintProof))
+
+	for _, p := range mintProof {
+		pBytes, _ := json.Marshal(p)
+		log.Println("===", pBytes)
+
 		_, err := p.Verify(ctx, nil)
 		if err != nil {
+			logger.Errorw("verify fail", "err", err.Error())
+
 			return err
 		}
 
@@ -38,21 +54,25 @@ func (u *UseCase) MintAsset(ctx context.Context, amountSats int32, tapScriptRoot
 
 	file, err := proof.NewFile(proofs...)
 	if err != nil {
+		logger.Errorw("create new file fail", "err", err.Error())
+
 		return err
 	}
 
 	locatorHash, err := file.Store()
 	if err != nil {
+		logger.Errorw("create new locator hash fail", "err", err.Error())
+
 		return err
 	}
 
-	for pubKey, p := range *mintProof {
+	for _, p := range mintProof {
 		data := mint.InsertMintTxParams{
 			Asset:             &p.Asset,
 			OutputIdx:         int32(p.GenesisReveal.OutputIndex),
 			AnchorTx:          &p.AnchorTx,
 			AmountSats:        amountSats,
-			AddressInfoPubkey: pubKey,
+			AddressInfoPubkey: p.Asset.ScriptPubkey,
 			TapScriptRootHash: tapScriptRootHash,
 			ProofLocator:      locatorHash,
 			MintProof:         p,
