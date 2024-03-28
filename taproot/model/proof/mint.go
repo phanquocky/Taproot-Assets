@@ -3,13 +3,13 @@ package proof
 import (
 	"context"
 	"fmt"
-	"github.com/btcsuite/btcd/wire"
-	"github.com/quocky/taproot-asset/taproot/model/asset"
-	"github.com/quocky/taproot-asset/taproot/model/commitment"
 	"log"
+
+	"github.com/btcsuite/btcd/wire"
+	"github.com/quocky/taproot-asset/taproot/model/commitment"
 )
 
-type AssetProofs map[asset.SerializedKey]*Proof
+type AssetProofs []*Proof
 
 type MintParams struct {
 	BaseProofParams
