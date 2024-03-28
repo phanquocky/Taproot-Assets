@@ -18,8 +18,8 @@ var mintAssetCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("mintAsset called")
 
-		names := []string{}
-		amounts := []int32{}
+		names := make([]string, 0)
+		amounts := make([]int32, 0)
 
 		for _, arg := range args {
 			tmp := strings.Split(arg, ":")
