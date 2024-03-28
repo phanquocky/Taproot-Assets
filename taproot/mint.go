@@ -4,12 +4,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
+
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 	"github.com/quocky/taproot-asset/taproot/onchain"
 	"github.com/quocky/taproot-asset/taproot/utils"
-	"log"
 )
 
 func (t *Taproot) MintAsset(names []string, amounts []int32) error {
@@ -20,7 +21,7 @@ func (t *Taproot) MintAsset(names []string, amounts []int32) error {
 	ctx := context.Background()
 
 	var (
-		// TODO: update expected amount when have multiple mint assets
+		// TODO: update expected amount when have multiple genesis assets
 		expectedAmount = int32(DEFAULT_OUTPUT_AMOUNT + DEFAULT_FEE)
 		pubkey         = asset.ToSerialized(t.wif.PrivKey.PubKey())
 
@@ -107,7 +108,7 @@ func (t *Taproot) MintAsset(names []string, amounts []int32) error {
 	return nil
 }
 
-// createMintProof create mint proof and store data to locator.
+// createMintProof create genesis proof and store data to locator.
 func createMintProof(
 	txIncludeOutPubKey *onchain.TxIncludeOutInternalKey,
 	outputIndex int32,

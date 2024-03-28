@@ -10,7 +10,7 @@ import (
 
 // mintAssetCmd represents the mintAsset command
 var mintAssetCmd = &cobra.Command{
-	Use:   "mint-asset",
+	Use:   "genesis-asset",
 	Short: "A brief description of your command",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
