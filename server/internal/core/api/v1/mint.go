@@ -15,7 +15,7 @@ type MintController struct {
 }
 
 func (c *MintController) RegisterRoutes(route gin.IRoutes) {
-	route.POST("/genesis-asset", c.MintAsset)
+	route.POST("/mint-asset", c.MintAsset)
 }
 
 func (c *MintController) MintAsset(g *gin.Context) {
