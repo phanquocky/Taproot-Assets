@@ -6,6 +6,6 @@ import (
 
 type GenesisPoint struct {
 	common.Entity `json:",inline"`
-	PrevOut       string `json:"prev_out"`
-	AnchorTxID    int32  `json:"anchor_tx_id"`
+	PrevOut       string    `json:"prev_out"`
+	AnchorTxID    common.ID `json:"anchor_tx_id"`
 }

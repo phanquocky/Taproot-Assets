@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"log"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -21,11 +22,12 @@ import (
 )
 
 type UseCase struct {
-	genesisPointRepo genesis.RepoInterface
-	chainTxRepo      chaintx.RepoInterface
-	assetRepo        asset.RepoInterface
-	manageUtxoRepo   manageutxo.RepoInterface
-	rpcClient        *rpcclient.Client
+	genesisPointRepo  genesis.RepoInterface
+	chainTxRepo       chaintx.RepoInterface
+	assetRepo         asset.RepoInterface
+	assetOutpointRepo assetoutpoint.RepoInterface
+	manageUtxoRepo    manageutxo.RepoInterface
+	rpcClient         *rpcclient.Client
 }
 
 func (u *UseCase) MintAsset(
@@ -34,9 +36,11 @@ func (u *UseCase) MintAsset(
 	tapScriptRootHash *chainhash.Hash,
 	mintProof proof.AssetProofs,
 ) error {
-	proofs := make([]proof.Proof, 0)
+	if len(mintProof) == 0 {
+		return errors.New("mint proof empty")
+	}
 
-	log.Println(" len(mintProof): ", len(mintProof))
+	proofs := make([]proof.Proof, 0)
 
 	for _, p := range mintProof {
 		pBytes, _ := json.Marshal(p)
@@ -66,6 +70,11 @@ func (u *UseCase) MintAsset(
 		return err
 	}
 
+	chainTxID, genesisPointID, manageUtxoID, err := u.insertCommonComp(ctx, amountSats, tapScriptRootHash, mintProof[0])
+	if err != nil {
+		return err
+	}
+
 	for _, p := range mintProof {
 		data := mint.InsertMintTxParams{
 			Asset:             &p.Asset,
@@ -79,66 +88,46 @@ func (u *UseCase) MintAsset(
 		}
 
 		// insert to db
-		_, err := u.insertTxMint(ctx, data)
-		if err != nil {
-			return err
-		}
-
-		// send raw tx
-		_, err = u.rpcClient.SendRawTransaction(data.AnchorTx, true)
+		_, err := u.insertDiffCompTxMint(ctx, data, *chainTxID, *genesisPointID, *manageUtxoID)
 		if err != nil {
 			return err
 		}
 	}
 
+	// send raw tx
+	_, err = u.rpcClient.SendRawTransaction(&mintProof[0].AnchorTx, true)
+	if err != nil {
+		logger.Errorw("SendRawTransaction fail", err)
+
+		return err
+	}
+
 	return nil
 }
 
-func (u *UseCase) insertTxMint(
+func (u *UseCase) insertDiffCompTxMint(
 	ctx context.Context,
 	data mint.InsertMintTxParams,
+	chainTxID, genesisPointID, manageUtxoID common.ID,
 ) (*mint.InsertMintTxResult, error) {
 	var (
-		result  mint.InsertMintTxResult
+		result  = mint.InsertMintTxResult{}
 		assetID = data.Asset.ID()
-		txID    = data.AnchorTx.TxHash()
-		txBytes bytes.Buffer
 
 		dbTxs = make([]common.TransactionCallbackFunc, 0)
 	)
 
+	result.AnchorTx.ID = chainTxID
+	result.GenesisPoint.ID = genesisPointID
+
 	dbTxs = append(dbTxs,
-		func(ctx context.Context) error {
-			result.GenesisPoint = genesis.GenesisPoint{
-				PrevOut:    "",
-				AnchorTxID: 0,
-			}
-
-			docID, err := u.genesisPointRepo.InsertOne(ctx, result.GenesisPoint)
-
-			result.GenesisPoint.ID = docID
-
-			return err
-		},
-		func(ctx context.Context) error {
-			result.AnchorTx = chaintx.ChainTx{
-				TxID:     txID[:],
-				AnchorTx: txBytes.Bytes(),
-			}
-
-			docID, err := u.chainTxRepo.InsertOne(ctx, result.AnchorTx)
-
-			result.AnchorTx.ID = docID
-
-			return err
-		},
 		func(ctx context.Context) error {
 			result.GenesisAsset = asset.GenesisAsset{
 				AssetID:        assetID[:],
 				AssetName:      data.Asset.Name,
 				Supply:         data.Asset.Amount,
 				OutputIndex:    data.OutputIdx,
-				GenesisPointID: 0,
+				GenesisPointID: result.GenesisPoint.ID,
 			}
 
 			docID, err := u.assetRepo.InsertOne(ctx, result.GenesisAsset)
@@ -148,32 +137,15 @@ func (u *UseCase) insertTxMint(
 			return err
 		},
 		func(ctx context.Context) error {
-			utxoOutpoint := wire.NewOutPoint(&txID, uint32(data.OutputIdx))
-			result.ManagedUTXO = manageutxo.ManagedUtxo{
-				Outpoint:         utxoOutpoint.String(),
-				AmtSats:          data.AmountSats,
-				InternalKey:      data.AddressInfoPubkey[:],
-				TaprootAssetRoot: data.TapScriptRootHash[:],
-				ScriptOutput:     data.AnchorTx.TxOut[data.OutputIdx].PkScript,
-				TxID:             result.AnchorTx.ID,
-			}
-
-			docID, err := u.manageUtxoRepo.InsertOne(ctx, result.ManagedUTXO)
-
-			result.ManagedUTXO.ID = docID
-
-			return err
-		},
-		func(ctx context.Context) error {
 			result.AssetOutpoint = assetoutpoint.AssetOutpoint{
 				GenesisID:    result.GenesisAsset.ID,
 				ScriptKey:    data.Asset.ScriptPubkey[:],
 				Amount:       data.Asset.Amount,
-				AnchorUtxoID: result.ManagedUTXO.ID,
+				AnchorUtxoID: manageUtxoID,
 				ProofLocator: data.ProofLocator[:],
 			}
 
-			docID, err := u.assetRepo.InsertOne(ctx, result.AssetOutpoint)
+			docID, err := u.assetOutpointRepo.InsertOne(ctx, result.AssetOutpoint)
 
 			result.AssetOutpoint.ID = docID
 
@@ -188,18 +160,69 @@ func (u *UseCase) insertTxMint(
 	return &result, nil
 }
 
+func (u *UseCase) insertCommonComp(
+	ctx context.Context,
+	amountSats int32,
+	tapScriptRootHash *chainhash.Hash,
+	p *proof.Proof,
+) (*common.ID, *common.ID, *common.ID, error) {
+	var (
+		txHash  = p.AnchorTx.TxHash()
+		txBytes bytes.Buffer
+	)
+
+	if err := p.AnchorTx.Serialize(&txBytes); err != nil {
+		logger.Errorw("p.AnchorTx.Serialize fail", err.Error())
+
+		return nil, nil, nil, err
+	}
+
+	chainTxID, err := u.chainTxRepo.InsertOne(ctx, chaintx.ChainTx{
+		TxID:     txHash[:],
+		AnchorTx: txBytes.Bytes(),
+	})
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	genesisPointID, err := u.genesisPointRepo.InsertOne(ctx, genesis.GenesisPoint{
+		PrevOut:    p.Asset.FirstPrevOut.String(),
+		AnchorTxID: chainTxID,
+	})
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	utxoOutpoint := wire.NewOutPoint(&txHash, p.Asset.OutputIndex)
+	manageUtxoID, err := u.manageUtxoRepo.InsertOne(ctx, manageutxo.ManagedUtxo{
+		Outpoint:         utxoOutpoint.String(),
+		AmtSats:          amountSats,
+		InternalKey:      p.Asset.ScriptPubkey[:],
+		TaprootAssetRoot: tapScriptRootHash[:],
+		ScriptOutput:     p.AnchorTx.TxOut[p.Asset.OutputIndex].PkScript,
+		TxID:             chainTxID,
+	})
+	if err != nil {
+		return nil, nil, nil, err
+	}
+
+	return &chainTxID, &genesisPointID, &manageUtxoID, nil
+}
+
 func NewUseCase(
 	assetRepo asset.RepoInterface,
+	assetOutpointRepo assetoutpoint.RepoInterface,
 	chainTxRepo chaintx.RepoInterface,
 	genesisPointRepo genesis.RepoInterface,
 	manageUtxoRepo manageutxo.RepoInterface,
 	rpcClient *rpcclient.Client,
 ) mint.UseCaseInterface {
 	return &UseCase{
-		genesisPointRepo: genesisPointRepo,
-		chainTxRepo:      chainTxRepo,
-		assetRepo:        assetRepo,
-		manageUtxoRepo:   manageUtxoRepo,
-		rpcClient:        rpcClient,
+		assetOutpointRepo: assetOutpointRepo,
+		genesisPointRepo:  genesisPointRepo,
+		chainTxRepo:       chainTxRepo,
+		assetRepo:         assetRepo,
+		manageUtxoRepo:    manageUtxoRepo,
+		rpcClient:         rpcClient,
 	}
 }

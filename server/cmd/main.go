@@ -12,6 +12,7 @@ import (
 	"github.com/quocky/taproot-asset/server/internal/core/api"
 	v1 "github.com/quocky/taproot-asset/server/internal/core/api/v1"
 	"github.com/quocky/taproot-asset/server/internal/repo/asset"
+	assetoutpoint "github.com/quocky/taproot-asset/server/internal/repo/asset_outpoint"
 	chaintx "github.com/quocky/taproot-asset/server/internal/repo/chain_tx"
 	genesispoint "github.com/quocky/taproot-asset/server/internal/repo/genesis_point"
 	manageutxo "github.com/quocky/taproot-asset/server/internal/repo/manage_utxo"
@@ -39,13 +40,13 @@ func main() {
 
 	// repo
 	assetRepo := asset.NewRepoMongo(db)
-	//assetOutpointRepo := assetoutpoint.NewRepoMongo(db)
+	assetOutpointRepo := assetoutpoint.NewRepoMongo(db)
 	chainTxRepo := chaintx.NewRepoMongo(db)
 	genesisPointRepo := genesispoint.NewRepoMongo(db)
 	manageUtxoRepo := manageutxo.NewRepoMongo(db)
 
 	// use case
-	mintUseCase := mintU.NewUseCase(assetRepo, chainTxRepo, genesisPointRepo, manageUtxoRepo, rpcClient)
+	mintUseCase := mintU.NewUseCase(assetRepo, assetOutpointRepo, chainTxRepo, genesisPointRepo, manageUtxoRepo, rpcClient)
 
 	// controller
 	mintController := v1.NewMintController(mintUseCase)

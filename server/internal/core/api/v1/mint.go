@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/quocky/taproot-asset/server/internal/core/api"
 	"github.com/quocky/taproot-asset/server/internal/domain/mint"
-	mint2 "github.com/quocky/taproot-asset/taproot/model/mint"
+	mint2 "github.com/quocky/taproot-asset/taproot/http_model/mint"
 )
 
 // MintController define genesis controller.
