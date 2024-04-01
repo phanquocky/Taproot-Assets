@@ -1,6 +1,9 @@
 package assetoutpoint
 
-import "github.com/quocky/taproot-asset/server/internal/domain/common"
+import (
+	"github.com/quocky/taproot-asset/server/internal/domain/common"
+	manageutxo "github.com/quocky/taproot-asset/server/internal/domain/manage_utxo"
+)
 
 type AssetOutpoint struct {
 	common.Entity            `json:",inline"`
@@ -12,4 +15,9 @@ type AssetOutpoint struct {
 	AnchorUtxoID             common.ID `json:"anchor_utxo_id"`
 	ProofLocator             []byte    `json:"proof_locator"`
 	Spent                    bool      `json:"spent"`
+}
+
+type UnspentOutpoint struct {
+	AssetOutpoint          `json:",inline"`
+	manageutxo.ManagedUtxo `json:"res"`
 }
