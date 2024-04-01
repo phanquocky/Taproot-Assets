@@ -3,17 +3,24 @@ package onchain
 import (
 	"encoding/binary"
 	"errors"
+	"log"
+
 	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/btcsuite/btcd/wire"
+	"github.com/quocky/taproot-asset/taproot/address"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
-	"log"
 )
 
 type TxIncludeOutPubKey struct {
 	Tx         *wire.MsgTx
 	OutPubKeys map[int32]asset.SerializedKey
+}
+
+type Receiver struct {
+	AddrResult  *address.AddrResult
+	OutputAsset []*asset.Asset
 }
 
 type UnspentAssetsByIdResult struct {

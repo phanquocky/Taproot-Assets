@@ -3,6 +3,7 @@ package asset
 import (
 	"crypto/sha256"
 	"encoding/binary"
+
 	"github.com/btcsuite/btcd/wire"
 )
 
@@ -10,6 +11,20 @@ type Genesis struct {
 	FirstPrevOut wire.OutPoint
 	Name         string
 	OutputIndex  uint32
+}
+
+type GenesisAsset struct {
+	// AssetID have to use hex.Encoder to convert to []byte
+	AssetID        string `json:"asset_id"`
+	AssetName      string `json:"asset_name"`
+	Supply         int32  `json:"supply"`
+	OutputIndex    int32  `json:"output_index"`
+	GenesisPointID string `json:"genesis_point_id"`
+}
+
+type GenesisPoint struct {
+	PrevOut    string `json:"prev_out"`
+	AnchorTxID string `json:"anchor_tx_id"`
 }
 
 func NewGenesis(firstPrevOut wire.OutPoint, name string, outputIndex uint32) Genesis {
