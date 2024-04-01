@@ -29,7 +29,7 @@ func (u *UseCase) GetUnspentAssetsById(
 	assetID string,
 	amount int32,
 	pubKey []byte,
-) (interface{}, error) {
+) (*utxoassetsdk.UnspentAssetResp, error) {
 	var (
 		genesisAssets    []*asset.GenesisAsset
 		genesisAsset     asset.GenesisAsset
@@ -90,7 +90,7 @@ func (u *UseCase) GetUnspentAssetsById(
 		inputFilesBytes[i] = fileBytes
 	}
 
-	return utxoassetsdk.UnspentAssetResp{
+	return &utxoassetsdk.UnspentAssetResp{
 		GenesisAsset: assetsdk.GenesisAsset{
 			AssetID:        genesisAsset.ID.String(),
 			AssetName:      genesisAsset.AssetName,

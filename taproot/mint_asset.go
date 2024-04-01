@@ -4,15 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/btcsuite/btcd/btcutil"
-	"github.com/btcsuite/btcd/wire"
-	"github.com/quocky/taproot-asset/taproot/model/asset"
-	"github.com/quocky/taproot-asset/taproot/model/commitment"
-	"github.com/quocky/taproot-asset/taproot/model/mint"
-	"github.com/quocky/taproot-asset/taproot/model/proof"
-	"github.com/quocky/taproot-asset/taproot/onchain"
 	"log"
 	"os"
+
+	"github.com/btcsuite/btcd/btcutil"
+	"github.com/btcsuite/btcd/wire"
+	"github.com/quocky/taproot-asset/taproot/http_model/mint"
+	"github.com/quocky/taproot-asset/taproot/model/asset"
+	"github.com/quocky/taproot-asset/taproot/model/commitment"
+	"github.com/quocky/taproot-asset/taproot/model/proof"
+	"github.com/quocky/taproot-asset/taproot/onchain"
 )
 
 func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmounts []int32) error {

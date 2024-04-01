@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/btcsuite/btcd/wire"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
 	"github.com/quocky/taproot-asset/taproot/utils"
-	"log"
-	"os"
 )
 
 const LocatorFilePath = "./locator/%x"
@@ -198,7 +199,7 @@ func FileBytesFromName(nameFile string) ([]byte, error) {
 	if err != nil {
 		log.Println("[FileFromName] fileByte, err := os.ReadFile(nameFile)", err)
 
-		return nil, err
+		return nil, errors.New("[FileFromName] read filename fail " + err.Error())
 	}
 
 	return fileByte, nil

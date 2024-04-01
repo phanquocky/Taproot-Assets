@@ -1,6 +1,7 @@
 package utxoasset
 
 import (
+	utxoassetsdk "github.com/quocky/taproot-asset/taproot/http_model/utxo_asset"
 	"golang.org/x/net/context"
 )
 
@@ -10,5 +11,5 @@ type UseCaseInterface interface {
 		assetID string,
 		amount int32,
 		pubKey []byte,
-	) (interface{}, error)
+	) (*utxoassetsdk.UnspentAssetResp, error)
 }

@@ -33,6 +33,10 @@ func (r *RepoMongo) FindManyWithManagedUTXO(
 				"path": "$result",
 			},
 		}},
+		bson.D{{
+			Key:   "$sort",
+			Value: bson.M{"amount": -1},
+		}},
 	}
 
 	unspentUtxos := make([]*assetoutpoint.UnspentOutpoint, 0)

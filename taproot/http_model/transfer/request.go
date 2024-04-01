@@ -1,10 +1,18 @@
 package transfer
 
+import (
+	"github.com/btcsuite/btcd/wire"
+	"github.com/quocky/taproot-asset/taproot/model/asset"
+	manageutxo "github.com/quocky/taproot-asset/taproot/model/manage_utxo"
+	"github.com/quocky/taproot-asset/taproot/model/proof"
+	"github.com/quocky/taproot-asset/taproot/onchain"
+)
+
 type TransferReq struct {
-	//GenesisAsset     *GenesisAsset
-	//AnchorTx         *wire.MsgTx
-	//AmtSats          int32
-	//Receivers        []*onchain.Receiver
-	//UnspentOutpoints []GetUnspentOutpointsRow
-	//Files            []*proof.File
+	GenesisAsset     *asset.GenesisAsset
+	AnchorTx         *wire.MsgTx
+	AmtSats          int32
+	Receivers        []*onchain.Receiver
+	UnspentOutpoints []manageutxo.UnspentOutpoint
+	Files            []*proof.File
 }
