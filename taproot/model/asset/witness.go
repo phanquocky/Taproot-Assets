@@ -1,6 +1,9 @@
 package asset
 
-import "github.com/btcsuite/btcd/wire"
+import (
+	"github.com/btcsuite/btcd/wire"
+	"reflect"
+)
 
 type ID [32]byte
 
@@ -23,4 +26,18 @@ type Witness struct {
 func IsSplitCommitWitness(witness Witness) bool {
 	return witness.PrevID != nil &&
 		witness.SplitCommitment != nil
+}
+
+// DeepEqual returns true if this witness is equal with the given witness.
+func (w *Witness) DeepEqual(o *Witness) bool {
+	if w == nil || o == nil {
+		return w == o
+	}
+
+	if !reflect.DeepEqual(w.PrevID, o.PrevID) {
+		return false
+	}
+
+	return w.SplitCommitment.DeepEqual(o.SplitCommitment)
+	//return w.SplitCommitment.DeepEqual(o.SplitCommitment)
 }

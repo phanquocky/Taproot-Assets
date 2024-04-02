@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/quocky/taproot-asset/taproot/model/mssmt"
+	"reflect"
 )
 
 var (
@@ -127,6 +128,39 @@ func (a *Asset) HasGenesisWitness() bool {
 	}
 
 	return *witness.PrevID == ZeroPrevID
+}
+
+// DeepEqual returns true if this asset is equal with the given asset.
+func (a *Asset) DeepEqual(o *Asset) bool {
+
+	// The ID commits to everything in the Genesis, including the type.
+	if a.ID() != o.ID() {
+		return false
+	}
+
+	if a.Amount != o.Amount {
+		return false
+	}
+
+	if !mssmt.IsEqualNode(a.SplitCommitmentRoot, o.SplitCommitmentRoot) {
+		return false
+	}
+
+	if !reflect.DeepEqual(a.ScriptPubkey, o.ScriptPubkey) {
+		return false
+	}
+
+	if len(a.PrevWitnesses) != len(o.PrevWitnesses) {
+		return false
+	}
+
+	for i := range a.PrevWitnesses {
+		if !a.PrevWitnesses[i].DeepEqual(&o.PrevWitnesses[i]) {
+			return false
+		}
+	}
+
+	return true
 }
 
 func New(

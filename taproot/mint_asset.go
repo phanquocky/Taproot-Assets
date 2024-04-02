@@ -89,7 +89,6 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		tapCommitment,
 	)
 
-	fmt.Println("Mint CreateProof: ", mintProof)
 	log.Println("[Mint Asset] Create mint proof success!")
 
 	data := mint.MintAssetReq{
