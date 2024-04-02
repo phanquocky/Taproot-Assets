@@ -2,6 +2,7 @@ package taproot
 
 import (
 	"context"
+
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/go-resty/resty/v2"
 	"github.com/quocky/taproot-asset/taproot/address"

@@ -31,7 +31,7 @@ func (u *UseCase) GetUnspentAssetsById(
 	pubKey []byte,
 ) (*utxoassetsdk.UnspentAssetResp, error) {
 	var (
-		genesisAssets    []*asset.GenesisAsset
+		genesisAssets    []asset.GenesisAsset
 		genesisAsset     asset.GenesisAsset
 		unspentOutpoints []*manageutxosdk.UnspentOutpoint
 		genesisPoint     genesis.GenesisPoint
@@ -51,12 +51,17 @@ func (u *UseCase) GetUnspentAssetsById(
 		return nil, err
 	}
 
-	genesisAsset = *genesisAssets[0]
+	genesisAsset = genesisAssets[0]
 
 	err = u.genesisPointRepo.FindOneByID(ctx, genesisAsset.GenesisPointID, &genesisPoint)
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("genesisAsset", genesisAsset.ID)
+	fmt.Println("ScriptKey", pubKey)
+	b, _ := hex.DecodeString("03b8c02eea17224cf1cba71fe0c23a9cda8b89e62f6382b6654140fe6d71c919cc")
+	fmt.Println("db Scriptkey byte", b)
 
 	allUnspentOutpoints, err := u.assetOutpointRepo.FindManyWithManagedUTXO(
 		ctx,
@@ -70,9 +75,13 @@ func (u *UseCase) GetUnspentAssetsById(
 		return nil, err
 	}
 
+	fmt.Println("len allUnspentOutpoints: ", len(allUnspentOutpoints))
+
 	unspentOutpoints, actualAmount = extractFromAllUnspentOutpoints(allUnspentOutpoints, amount)
 
 	if actualAmount < amount {
+		logger.Errorw("not enough amount", "actual_amount", actualAmount, "required_amount", amount)
+
 		return nil, errors.New(fmt.Sprintf("not enough amount actual_amount %d required_amount %d", actualAmount, amount))
 	}
 
@@ -114,6 +123,8 @@ func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.Unspent
 	)
 
 	for _, uo := range allUnspentOutpoints {
+		fmt.Println("unspentOutpoint", uo.TxID)
+
 		unspentOutpoints = append(unspentOutpoints, &manageutxosdk.UnspentOutpoint{
 			GenesisID:                uo.GenesisID.String(),
 			ScriptKey:                uo.ScriptKey,

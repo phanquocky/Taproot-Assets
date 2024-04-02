@@ -100,7 +100,7 @@ func (r *RepoMongo) FindMany(
 		return common.ErrKeySystemInternalServer
 	}
 
-	if err := cursor.All(ctx, &dest); err != nil {
+	if err := cursor.All(ctx, dest); err != nil {
 		logger.Errorw("FindMany: decode docs to struct err", "collection", r.collName, "Filter", filter, "err", err)
 
 		return common.ErrKeySystemInternalServer
@@ -124,7 +124,7 @@ func (r *RepoMongo) FindAggregate(
 		return err
 	}
 
-	if err := cursor.All(ctx, &dest); err != nil {
+	if err := cursor.All(ctx, dest); err != nil {
 		logger.Errorw("FindAggregate: decode docs to struct err", "err", err)
 
 		return err

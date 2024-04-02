@@ -5,16 +5,15 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/btcsuite/btcd/btcutil"
+	"log"
+
 	"github.com/btcsuite/btcd/wire"
-	"github.com/quocky/taproot-asset/taproot/http_model/transfer"
 	utxoasset "github.com/quocky/taproot-asset/taproot/http_model/utxo_asset"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
 	"github.com/quocky/taproot-asset/taproot/model/mssmt"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 	"github.com/quocky/taproot-asset/taproot/onchain"
-	"log"
 )
 
 func (t *Taproot) TransferAsset(receiverPubKey asset.SerializedKey, assetId string, amount int32) error {
@@ -40,49 +39,52 @@ func (t *Taproot) TransferAsset(receiverPubKey asset.SerializedKey, assetId stri
 		return err
 	}
 
-	assetGenOutpoint, err := wire.NewOutPointFromString(assetUTXOs.GenesisPoint.PrevOut)
-	if err != nil {
-		return err
-	}
+	log.Println("bestUTXOs", bestUTXOs)
+	log.Println("assetUTXOs", assetUTXOs)
 
-	transferAsset := prepareAssets(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, []int32{amount}, []asset.SerializedKey{receiverPubKey})
-
-	returnAsset, err := t.createReturnAsset(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, assetUTXOs, transferAsset)
-	if err != nil {
-		return err
-	}
-
-	btcOutputInfos, _, err := t.prepareBtcOutputs(ctx, assetUTXOs, transferAsset, returnAsset)
-	if err != nil {
-		log.Println("t.createTransferAddresses(ctx, unspentAssets, transferAsset),  err ", err)
-		return err
-	}
-
-	txIncludeOutPubKey, err := t.createTxOnChain(bestUTXOs, nil,
-		btcOutputInfos, btcutil.Amount(DEFAULT_FEE), true)
-	if err != nil {
-		return err
-	}
-
-	files, err := createFiles(
-		assetUTXOs.InputFilesBytes,
-		btcOutputInfos,
-		txIncludeOutPubKey.Tx,
-	)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println("files: ", files)
-
-	data := transfer.TransferReq{
-		GenesisAsset:     &assetUTXOs.GenesisAsset,
-		AnchorTx:         txIncludeOutPubKey.Tx,
-		AmtSats:          DEFAULT_OUTPUT_AMOUNT,
-		BtcOutputInfos:   btcOutputInfos,
-		UnspentOutpoints: assetUTXOs.UnspentOutpoints,
-		Files:            files,
-	}
+	//assetGenOutpoint, err := wire.NewOutPointFromString(assetUTXOs.GenesisPoint.PrevOut)
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//transferAsset := prepareAssets(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, []int32{amount}, []asset.SerializedKey{receiverPubKey})
+	//
+	//returnAsset, err := t.createReturnAsset(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, assetUTXOs, transferAsset)
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//btcOutputInfos, _, err := t.prepareBtcOutputs(ctx, assetUTXOs, transferAsset, returnAsset)
+	//if err != nil {
+	//	log.Println("t.createTransferAddresses(ctx, unspentAssets, transferAsset),  err ", err)
+	//	return err
+	//}
+	//
+	//txIncludeOutPubKey, err := t.createTxOnChain(bestUTXOs, nil,
+	//	btcOutputInfos, btcutil.Amount(DEFAULT_FEE), true)
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//files, err := createFiles(
+	//	assetUTXOs.InputFilesBytes,
+	//	btcOutputInfos,
+	//	txIncludeOutPubKey.Tx,
+	//)
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//fmt.Println("files: ", files)
+	//
+	//data := transfer.TransferReq{
+	//	GenesisAsset:     &assetUTXOs.GenesisAsset,
+	//	AnchorTx:         txIncludeOutPubKey.Tx,
+	//	AmtSats:          DEFAULT_OUTPUT_AMOUNT,
+	//	BtcOutputInfos:   btcOutputInfos,
+	//	UnspentOutpoints: assetUTXOs.UnspentOutpoints,
+	//	Files:            files,
+	//}
 
 	if err != nil {
 		return err

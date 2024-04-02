@@ -2,23 +2,22 @@ package taproot
 
 import (
 	"context"
-	"encoding/hex"
 	"encoding/json"
 	"errors"
-	utxoasset "github.com/quocky/taproot-asset/taproot/http_model/utxo_asset"
 	"net/http"
 	"os"
-	"strconv"
+
+	utxoasset "github.com/quocky/taproot-asset/taproot/http_model/utxo_asset"
 )
 
 func (t *Taproot) GetAssetUTXOs(ctx context.Context, assetID string, amount int32) (*utxoasset.UnspentAssetResp, error) {
 	resp, err := t.httpClient.R().
-		SetContext(ctx).SetPathParams(map[string]string{
-		"AssetID": assetID,
-		"Amount":  strconv.FormatInt(int64(amount), 10),
-		"PubKey":  hex.EncodeToString(t.wif.PrivKey.PubKey().SerializeCompressed()),
+		SetContext(ctx).SetBody(map[string]any{
+		"asset_id": assetID,
+		"amount":   amount,
+		"pub_key":  t.wif.PrivKey.PubKey().SerializeCompressed(),
 	}).
-		Get(os.Getenv("SERVER_BASE_URL") + "/unspent-asset-id")
+		Post(os.Getenv("SERVER_BASE_URL") + "/unspent-asset-id")
 
 	if err != nil {
 		return nil, err

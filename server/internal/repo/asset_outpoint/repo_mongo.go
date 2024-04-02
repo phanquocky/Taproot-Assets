@@ -21,16 +21,16 @@ func (r *RepoMongo) FindManyWithManagedUTXO(
 		bson.D{{
 			Key: "$lookup",
 			Value: bson.M{
-				"from":         "manage_utxos",
+				"from":         "managed_utxos",
 				"localField":   "anchor_utxo_id",
 				"foreignField": "_id",
-				"as":           "result",
+				"as":           "res",
 			},
 		}},
 		bson.D{{
 			Key: "$unwind",
 			Value: bson.M{
-				"path": "$result",
+				"path": "$res",
 			},
 		}},
 		bson.D{{
