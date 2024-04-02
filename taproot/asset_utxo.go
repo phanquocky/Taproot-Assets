@@ -18,7 +18,7 @@ func (t *Taproot) GetAssetUTXOs(ctx context.Context, assetID string, amount int3
 		"Amount":  strconv.FormatInt(int64(amount), 10),
 		"PubKey":  hex.EncodeToString(t.wif.PrivKey.PubKey().SerializeCompressed()),
 	}).
-		Get(os.Getenv("SERVER_BASE_URL") + "/asset-utxo")
+		Get(os.Getenv("SERVER_BASE_URL") + "/unspent-asset-id")
 
 	if err != nil {
 		return nil, err

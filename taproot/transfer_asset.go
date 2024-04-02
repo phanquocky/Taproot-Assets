@@ -75,7 +75,14 @@ func (t *Taproot) TransferAsset(receiverPubKey asset.SerializedKey, assetId stri
 
 	fmt.Println("files: ", files)
 
-	data := transfer.TransferReq{}
+	data := transfer.TransferReq{
+		GenesisAsset:     &assetUTXOs.GenesisAsset,
+		AnchorTx:         txIncludeOutPubKey.Tx,
+		AmtSats:          DEFAULT_OUTPUT_AMOUNT,
+		BtcOutputInfos:   btcOutputInfos,
+		UnspentOutpoints: assetUTXOs.UnspentOutpoints,
+		Files:            files,
+	}
 
 	if err != nil {
 		return err

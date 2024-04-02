@@ -12,7 +12,7 @@ type TransferReq struct {
 	GenesisAsset     *asset.GenesisAsset
 	AnchorTx         *wire.MsgTx
 	AmtSats          int32
-	Receivers        []*onchain.Receiver
-	UnspentOutpoints []manageutxo.UnspentOutpoint
+	BtcOutputInfos   []*onchain.BtcOutputInfo
+	UnspentOutpoints []*manageutxo.UnspentOutpoint
 	Files            []*proof.File
 }
