@@ -6,20 +6,24 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/quocky/taproot-asset/server/internal/core/api"
 	"github.com/quocky/taproot-asset/server/internal/domain/mint"
+	"github.com/quocky/taproot-asset/server/internal/domain/transfer"
 	"github.com/quocky/taproot-asset/server/internal/domain/utxo_asset"
 	mint2 "github.com/quocky/taproot-asset/taproot/http_model/mint"
+	transfermodel "github.com/quocky/taproot-asset/taproot/http_model/transfer"
 	utxoassetmodel "github.com/quocky/taproot-asset/taproot/http_model/utxo_asset"
 )
 
 // MintController define genesis controller.
 type MintController struct {
-	mintUseCase mint.UseCaseInterface
-	utxoUseCase utxoasset.UseCaseInterface
+	mintUseCase     mint.UseCaseInterface
+	utxoUseCase     utxoasset.UseCaseInterface
+	transferUseCase transfer.UseCaseInterface
 }
 
 func (c *MintController) RegisterRoutes(route gin.IRoutes) {
 	route.POST("/mint-asset", c.MintAsset)
 	route.POST("/unspent-asset-id", c.UnspentAssetsByID)
+	route.POST("/transfer-asset", c.TransferAsset)
 }
 
 func (c *MintController) MintAsset(g *gin.Context) {
@@ -62,6 +66,32 @@ func (c *MintController) UnspentAssetsByID(g *gin.Context) {
 	}
 
 	g.JSON(http.StatusOK, unspentAsset)
+}
+
+func (c *MintController) TransferAsset(g *gin.Context) {
+	var req transfermodel.TransferReq
+	if err := g.ShouldBindJSON(&req); err != nil {
+		g.JSON(http.StatusBadRequest, nil)
+
+		return
+	}
+
+	err := c.transferUseCase.TransferAsset(
+		g,
+		req.GenesisAsset,
+		req.AnchorTx,
+		req.AmtSats,
+		req.BtcOutputInfos,
+		req.UnspentOutpoints,
+		req.Files,
+	)
+	if err != nil {
+		g.JSON(http.StatusInternalServerError, nil)
+
+		return
+	}
+
+	g.JSON(http.StatusNoContent, nil)
 }
 
 func NewMintController(

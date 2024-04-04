@@ -1,6 +1,7 @@
-package manageutxo
+package assetoutpointmodel
 
 type UnspentOutpoint struct {
+	ID                       string `json:"id"`
 	GenesisID                string `json:"genesis_id"`
 	ScriptKey                []byte `json:"script_key"`
 	Amount                   int32  `json:"amount"`
