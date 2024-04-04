@@ -12,7 +12,7 @@ import (
 	"github.com/quocky/taproot-asset/server/pkg/logger"
 	utxoassetsdk "github.com/quocky/taproot-asset/taproot/http_model/utxo_asset"
 	assetsdk "github.com/quocky/taproot-asset/taproot/model/asset"
-	manageutxosdk "github.com/quocky/taproot-asset/taproot/model/manage_utxo"
+	"github.com/quocky/taproot-asset/taproot/model/asset_outpoint"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 	"github.com/quocky/taproot-asset/taproot/utils"
 	"golang.org/x/net/context"
@@ -33,7 +33,7 @@ func (u *UseCase) GetUnspentAssetsById(
 	var (
 		genesisAssets    []asset.GenesisAsset
 		genesisAsset     asset.GenesisAsset
-		unspentOutpoints []*manageutxosdk.UnspentOutpoint
+		unspentOutpoints []*assetoutpointmodel.UnspentOutpoint
 		genesisPoint     genesis.GenesisPoint
 		inputFilesBytes  [][]byte
 		actualAmount     int32 = 0
@@ -58,11 +58,6 @@ func (u *UseCase) GetUnspentAssetsById(
 		return nil, err
 	}
 
-	fmt.Println("genesisAsset", genesisAsset.ID)
-	fmt.Println("ScriptKey", pubKey)
-	b, _ := hex.DecodeString("03b8c02eea17224cf1cba71fe0c23a9cda8b89e62f6382b6654140fe6d71c919cc")
-	fmt.Println("db Scriptkey byte", b)
-
 	allUnspentOutpoints, err := u.assetOutpointRepo.FindManyWithManagedUTXO(
 		ctx,
 		assetoutpoint.UnspentOutpointFilter{
@@ -74,8 +69,6 @@ func (u *UseCase) GetUnspentAssetsById(
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("len allUnspentOutpoints: ", len(allUnspentOutpoints))
 
 	unspentOutpoints, actualAmount = extractFromAllUnspentOutpoints(allUnspentOutpoints, amount)
 
@@ -116,16 +109,17 @@ func (u *UseCase) GetUnspentAssetsById(
 	}, nil
 }
 
-func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.UnspentOutpoint, amount int32) ([]*manageutxosdk.UnspentOutpoint, int32) {
+func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.UnspentOutpoint, amount int32) ([]*assetoutpointmodel.UnspentOutpoint, int32) {
 	var (
 		actualAmount     int32 = 0
-		unspentOutpoints       = make([]*manageutxosdk.UnspentOutpoint, 0)
+		unspentOutpoints       = make([]*assetoutpointmodel.UnspentOutpoint, 0)
 	)
 
 	for _, uo := range allUnspentOutpoints {
 		fmt.Println("unspentOutpoint", uo.TxID)
 
-		unspentOutpoints = append(unspentOutpoints, &manageutxosdk.UnspentOutpoint{
+		unspentOutpoints = append(unspentOutpoints, &assetoutpointmodel.UnspentOutpoint{
+			ID:                       uo.AssetOutpoint.ID.String(),
 			GenesisID:                uo.GenesisID.String(),
 			ScriptKey:                uo.ScriptKey,
 			Amount:                   uo.Amount,
