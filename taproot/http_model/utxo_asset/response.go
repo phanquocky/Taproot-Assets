@@ -2,12 +2,12 @@ package utxoasset
 
 import (
 	"github.com/quocky/taproot-asset/taproot/model/asset"
-	manageutxo "github.com/quocky/taproot-asset/taproot/model/manage_utxo"
+	assetoutpointmodel "github.com/quocky/taproot-asset/taproot/model/asset_outpoint"
 )
 
 type UnspentAssetResp struct {
 	GenesisAsset     asset.GenesisAsset
-	UnspentOutpoints []*manageutxo.UnspentOutpoint
+	UnspentOutpoints []*assetoutpointmodel.UnspentOutpoint
 	GenesisPoint     asset.GenesisPoint
 	InputFilesBytes  [][]byte
 }

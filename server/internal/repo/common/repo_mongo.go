@@ -133,6 +133,24 @@ func (r *RepoMongo) FindAggregate(
 	return nil
 }
 
+// UpdateMany update documents of collection by filter.
+func (r *RepoMongo) UpdateMany(ctx context.Context, filterM, update any) error {
+	_, err := r.Collection().UpdateMany(ctx, filterM, update)
+	if err != nil {
+		logger.Errorw(
+			"UpdateMany: update documents fail",
+			"collection", r.collName,
+			"filterM", filterM,
+			"update", update,
+			"err", err,
+		)
+
+		return err
+	}
+
+	return nil
+}
+
 func (r *RepoMongo) RunTransactions(ctx context.Context, txs []common.TransactionCallbackFunc) error {
 	client := r.db.Client()
 
