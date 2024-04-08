@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -16,8 +17,7 @@ func (t *Taproot) GetAssetUTXOs(ctx context.Context, assetID string, amount int3
 		"asset_id": assetID,
 		"amount":   amount,
 		"pub_key":  t.wif.PrivKey.PubKey().SerializeCompressed(),
-	}).
-		Post(os.Getenv("SERVER_BASE_URL") + "/unspent-asset-id")
+	}).Post(os.Getenv("SERVER_BASE_URL") + "/unspent-asset-id")
 
 	if err != nil {
 		return nil, err
@@ -27,11 +27,16 @@ func (t *Taproot) GetAssetUTXOs(ctx context.Context, assetID string, amount int3
 		return nil, errors.New("get asset UTXOs failed")
 	}
 
-	var UTXOs *utxoasset.UnspentAssetResp
+	var UTXOs utxoasset.UnspentAssetResp
 	err = json.Unmarshal(resp.Body(), &UTXOs)
 	if err != nil {
+		fmt.Println("Unmarshal error: ", err)
+
 		return nil, err
 	}
 
-	return UTXOs, nil
+	fmt.Println("UTXOs.UnspentOutpoints: ", UTXOs.UnspentOutpoints[0].ID, UTXOs.UnspentOutpoints[0].Amount)
+	fmt.Println("UTXOs.GenesisPoint", UTXOs.GenesisPoint.AnchorTxID, UTXOs.GenesisPoint.PrevOut)
+
+	return &UTXOs, nil
 }

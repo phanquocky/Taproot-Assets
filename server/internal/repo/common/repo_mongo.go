@@ -60,7 +60,7 @@ func (r *RepoMongo) InsertOne(ctx context.Context, doc any) (common.ID, error) {
 func (r *RepoMongo) FindOneByID(ctx context.Context, id common.ID, dest any) error {
 	result := r.Collection().FindOne(ctx, bson.M{"_id": id})
 
-	if err := result.Decode(&dest); err != nil {
+	if err := result.Decode(dest); err != nil {
 		logger.Errorw(
 			"find one collection fail",
 			"collection", r.collName,

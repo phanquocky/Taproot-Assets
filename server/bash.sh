@@ -33,6 +33,8 @@ sudo kill $btcdid
 echo "remove rpc key"
 rm "$BTCPATH/Btcd/rpc.cert" "$BTCPATH/Btcd/rpc.key"
 
+sleep 2
+
 ~/go/bin/btcd --simnet --rpcuser=admin --rpcpass=admin123 --txindex --rpclisten="$ip_address:18556" --miningaddr=$miningaddr &
 
 sleep 2

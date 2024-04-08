@@ -119,7 +119,7 @@ func chooseBestUTXOs(utxos []*onchain.UnspentTXOut, expectAmount int32) ([]*onch
 		bestUTXOs = append(bestUTXOs, utxo)
 		totalAmount += utxo.Amount
 
-		if totalAmount > expectSatAmount {
+		if totalAmount >= expectSatAmount {
 			return bestUTXOs, nil
 		}
 	}

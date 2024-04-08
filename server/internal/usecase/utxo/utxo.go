@@ -116,7 +116,7 @@ func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.Unspent
 	)
 
 	for _, uo := range allUnspentOutpoints {
-		fmt.Println("unspentOutpoint", uo.TxID)
+		fmt.Println("unspentOutpoint", uo.TxID, uo.Amount)
 
 		unspentOutpoints = append(unspentOutpoints, &assetoutpointmodel.UnspentOutpoint{
 			ID:                       uo.AssetOutpoint.ID.String(),
