@@ -3,8 +3,10 @@ package proof
 import (
 	"context"
 	"fmt"
+
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
+	"github.com/quocky/taproot-asset/taproot/utils"
 
 	"github.com/btcsuite/btcd/wire"
 )
@@ -60,6 +62,11 @@ func AppendTransition(
 			err)
 	}
 
+	_, err = lastProof.Verify(context.TODO(), nil)
+	if err != nil {
+		return nil, nil, fmt.Errorf("error verifying last proof: %w", err)
+	}
+
 	lastPrevOut := wire.OutPoint{
 		Hash:  lastProof.AnchorTx.TxHash(),
 		Index: lastProof.InclusionProof.OutputIndex,
@@ -92,6 +99,10 @@ func AppendTransition(
 		newProof.AdditionalInputs = additionalFiles
 	}
 
+	if _, err := newProof.Verify(ctx, nil); err != nil {
+		return nil, nil, fmt.Errorf("error verifying proof new proof: %w", err)
+	}
+
 	// Before we encode and return the proof, we want to validate it. For
 	// that we need to start at the beginning.
 	if err := f.AppendProof(*newProof); err != nil {
@@ -113,6 +124,10 @@ func CreateTransitionProof(prevOut wire.OutPoint,
 	proof := createTemplateProof(&params.BaseProofParams, prevOut)
 
 	proof.Asset = *params.NewAsset.Copy()
+	proof.Asset.PrevWitnesses[0].SplitCommitment = nil
+
+	fmt.Println("proof.Assetproof.Assetproof.Assetproof.Assetproof.Asset")
+	utils.PrintStruct(proof.Asset.PrevWitnesses[0].PrevID)
 
 	_, assetMerkleProof, err := params.TapCommitment.CreateProof(
 		proof.Asset.TapCommitmentKey(),
@@ -123,36 +138,36 @@ func CreateTransitionProof(prevOut wire.OutPoint,
 	}
 
 	proof.InclusionProof.CommitmentProof = assetMerkleProof
-
-	if proof.Asset.HasSplitCommitmentWitness() {
-		splitAsset := proof.Asset
-		rootAsset := &splitAsset.PrevWitnesses[0].SplitCommitment.RootAsset
-
-		rootTree := params.RootTaprootAssetTree
-		committedRoot, rootMerkleProof, err := rootTree.CreateProof(
-			rootAsset.TapCommitmentKey(),
-			rootAsset.AssetCommitmentKey(),
-		)
-		if err != nil {
-			return nil, err
-		}
-
-		// If the asset wasn't committed to, the proof is invalid.
-		if committedRoot == nil {
-			return nil, fmt.Errorf("no asset commitment found")
-		}
-
-		// Make sure the committed asset matches the root asset exactly.
-		if !committedRoot.DeepEqual(rootAsset) {
-			return nil, fmt.Errorf("root asset mismatch")
-		}
-
-		proof.SplitRootProof = &TaprootProof{
-			OutputIndex:     params.RootOutputIndex,
-			InternalKey:     params.RootInternalKey,
-			CommitmentProof: rootMerkleProof,
-		}
-	}
+	//
+	//if proof.Asset.HasSplitCommitmentWitness() {
+	//	splitAsset := proof.Asset
+	//	rootAsset := &splitAsset.PrevWitnesses[0].SplitCommitment.RootAsset
+	//
+	//	rootTree := params.RootTaprootAssetTree
+	//	committedRoot, rootMerkleProof, err := rootTree.CreateProof(
+	//		rootAsset.TapCommitmentKey(),
+	//		rootAsset.AssetCommitmentKey(),
+	//	)
+	//	if err != nil {
+	//		return nil, err
+	//	}
+	//
+	//	// If the asset wasn't committed to, the proof is invalid.
+	//	if committedRoot == nil {
+	//		return nil, fmt.Errorf("no asset commitment found")
+	//	}
+	//
+	//	// Make sure the committed asset matches the root asset exactly.
+	//	if !committedRoot.DeepEqual(rootAsset) {
+	//		return nil, fmt.Errorf("root asset mismatch")
+	//	}
+	//
+	//	proof.SplitRootProof = &TaprootProof{
+	//		OutputIndex:     params.RootOutputIndex,
+	//		InternalKey:     params.RootInternalKey,
+	//		CommitmentProof: rootMerkleProof,
+	//	}
+	//}
 
 	return proof, nil
 }

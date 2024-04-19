@@ -17,6 +17,7 @@ import (
 	"github.com/quocky/taproot-asset/taproot/model/mssmt"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 	"github.com/quocky/taproot-asset/taproot/onchain"
+	"github.com/quocky/taproot-asset/taproot/utils"
 )
 
 func (t *Taproot) TransferAsset(receiverPubKey asset.SerializedKey, assetId string, amount int32) error {
@@ -57,6 +58,11 @@ func (t *Taproot) TransferAsset(receiverPubKey asset.SerializedKey, assetId stri
 
 		return err
 	}
+
+	fmt.Println("proof.Assetproof.Assetproof.Assetproof.Assetproof.Asset 2")
+	utils.PrintStruct(transferAsset[0].PrevWitnesses[0].PrevID)
+	fmt.Println("proof.Assetproof.Assetproof.Assetproof.Assetproof.Asset 3")
+	utils.PrintStruct(returnAsset.PrevWitnesses[0].PrevID)
 
 	btcOutputInfos, _, err := t.prepareBtcOutputs(ctx, assetUTXOs, transferAsset, returnAsset)
 	if err != nil {
@@ -140,6 +146,8 @@ func makeLocatorTransitionParams(
 	btcOutputInfos []*onchain.BtcOutputInfo,
 	exclusionProofs []*proof.TaprootProof,
 ) *proof.TransitionParams {
+	fmt.Println("btcOutputInfos[i].AddrResult", btcOutputInfos[i].AddrResult.TapCommitment)
+
 	return &proof.TransitionParams{
 		BaseProofParams: proof.BaseProofParams{
 			Tx:              tx,
@@ -157,12 +165,18 @@ func makeLocatorTransitionParams(
 
 func makeExclusionProofs(curID int, btcOutputInfos []*onchain.BtcOutputInfo) ([]*proof.TaprootProof, error) {
 	curAsset := btcOutputInfos[curID].GetOutputAsset()[0].Copy()
+	curAsset.PrevWitnesses[0].SplitCommitment = nil
+
+	fmt.Println("curAssetcurAssetcurAssetcurAssetcurAssetcurAssetcurAsset")
+	utils.PrintStruct(curAsset)
 
 	exclusionProofs := make([]*proof.TaprootProof, 0)
 	for idx, exclusion := range btcOutputInfos {
 		if idx == curID {
 			continue
 		}
+
+		utils.PrintStruct(exclusion.OutputAsset[0])
 
 		_, commitmentProof, err := exclusion.GetAddrResult().TapCommitment.CreateProof(
 			curAsset.TapCommitmentKey(),
@@ -242,13 +256,17 @@ func (t *Taproot) prepareBtcOutputs(
 		return nil, nil, err
 	}
 
-	returnCommitment, err := commitment.NewAssetCommitment(ctx, splitCommitment.RootAsset)
+	returnCommitment, err := commitment.NewAssetCommitment(ctx, returnAsset)
 	if err != nil {
 		log.Println("[prepareBtcOutputs] commitment.NewAssetCommitment(splitCommitment.RootAsset), err ", err)
 		return nil, nil, err
 	}
 
 	tapReturnCommitment, err := commitment.NewTapCommitment(returnCommitment)
+
+	fmt.Println("tapReturnCommitment: ", tapReturnCommitment.TreeRoot.NodeHash(), tapReturnCommitment.TreeRoot.NodeSum())
+	utils.PrintStruct(tapReturnCommitment)
+
 	returnOutputInfo, err := t.addressMaker.CreateTapAddr(returnPubKey, tapReturnCommitment)
 	if err != nil {
 		return nil, nil, err
@@ -273,6 +291,9 @@ func (t *Taproot) prepareBtcOutputs(
 		if err != nil {
 			return nil, nil, err
 		}
+
+		fmt.Println("tapTransferCommitment: ", tapTransferCommitment.TreeRoot.NodeHash(), tapTransferCommitment.TreeRoot.NodeSum())
+		utils.PrintStruct(tapTransferCommitment)
 
 		transferOutputInfo, err := t.addressMaker.CreateTapAddr(splitAsset.Asset.ScriptPubkey, tapTransferCommitment)
 		if err != nil {

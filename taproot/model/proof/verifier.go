@@ -2,6 +2,7 @@ package proof
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/btcsuite/btcd/btcec/v2"
@@ -9,6 +10,7 @@ import (
 	"github.com/btcsuite/btcd/wire"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
+	"github.com/quocky/taproot-asset/taproot/utils"
 )
 
 func (p *Proof) Verify(
@@ -177,10 +179,16 @@ func verifyTaprootProof(
 
 	case proof.CommitmentProof != nil:
 		log.Printf("Verifying exclusion proof for asset with id %x \n", asset.ID())
+
 		derivedKey, err = proof.DeriveByAssetExclusion(
 			asset.AssetCommitmentKey(),
 			asset.TapCommitmentKey(),
 		)
+
+		fmt.Println("proof.CommitmentProof.AssetProofproof.CommitmentProof.AssetProofproof.CommitmentProof.AssetProof")
+		utils.PrintStruct(proof.CommitmentProof.AssetProof)
+		fmt.Println("proof.CommitmentProof.TapProofproof.CommitmentProof.TapProof")
+		utils.PrintStruct(proof.CommitmentProof.TapProof)
 
 	case proof.TapscriptProof != nil:
 		log.Println("Verifying tapscript proof")
@@ -189,6 +197,8 @@ func verifyTaprootProof(
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("derivedKey.IsEqualderivedKey.IsEqualderivedKey.IsEqualderivedKey.IsEqual", derivedKey, expectedTaprootKey)
 
 	if derivedKey.IsEqual(expectedTaprootKey) {
 		return tapCommitment, nil
