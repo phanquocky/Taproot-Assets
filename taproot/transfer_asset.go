@@ -116,6 +116,8 @@ func createFiles(
 	curFiles := make([]*proof.File, len(btcOutputInfos))
 
 	for i := range btcOutputInfos {
+		log.Println("btcOutputInfos[i].GetOutputAsset()[0].Amount", btcOutputInfos[i].GetOutputAsset()[0].Amount)
+
 		exclusionProofs, err := makeExclusionProofs(i, btcOutputInfos)
 		if err != nil {
 			log.Println("[createFiles] makeExclusionProofs fail", err)
@@ -158,14 +160,21 @@ func makeLocatorTransitionParams(
 		},
 		NewAsset:             btcOutputInfos[i].OutputAsset[0].Copy(), // TODO:
 		RootOutputIndex:      uint32(outIndex),
-		RootInternalKey:      btcOutputInfos[i].AddrResult.PubKey,
-		RootTaprootAssetTree: btcOutputInfos[i].AddrResult.TapCommitment,
+		RootInternalKey:      btcOutputInfos[outIndex].AddrResult.PubKey,
+		RootTaprootAssetTree: btcOutputInfos[outIndex].AddrResult.TapCommitment,
 	}
 }
 
 func makeExclusionProofs(curID int, btcOutputInfos []*onchain.BtcOutputInfo) ([]*proof.TaprootProof, error) {
+	log.Println("makeExclusionProofs: ")
+	utils.PrintStruct(btcOutputInfos[0].OutputAsset[0])
+	utils.PrintStruct(btcOutputInfos[1].OutputAsset[0])
+
+	log.Println("----=-==makeExclusionProofs: ")
+	log.Println(btcOutputInfos[curID].GetOutputAsset()[0].Copy().PrevWitnesses[0].SplitCommitment)
+
 	curAsset := btcOutputInfos[curID].GetOutputAsset()[0].Copy()
-	curAsset.PrevWitnesses[0].SplitCommitment = nil
+	//curAsset.PrevWitnesses[0].SplitCommitment = nil
 
 	fmt.Println("curAssetcurAssetcurAssetcurAssetcurAssetcurAssetcurAsset")
 	utils.PrintStruct(curAsset)
@@ -256,7 +265,7 @@ func (t *Taproot) prepareBtcOutputs(
 		return nil, nil, err
 	}
 
-	returnCommitment, err := commitment.NewAssetCommitment(ctx, returnAsset)
+	returnCommitment, err := commitment.NewAssetCommitment(ctx, splitCommitment.RootAsset)
 	if err != nil {
 		log.Println("[prepareBtcOutputs] commitment.NewAssetCommitment(splitCommitment.RootAsset), err ", err)
 		return nil, nil, err
@@ -271,7 +280,7 @@ func (t *Taproot) prepareBtcOutputs(
 	if err != nil {
 		return nil, nil, err
 	}
-	btcOutputInfos = append(btcOutputInfos, onchain.NewBtcOutputInfo(returnOutputInfo, DEFAULT_OUTPUT_AMOUNT, returnAsset))
+	btcOutputInfos = append(btcOutputInfos, onchain.NewBtcOutputInfo(returnOutputInfo, DEFAULT_OUTPUT_AMOUNT, splitCommitment.RootAsset))
 
 	rootLocator := commitment.NewLocatorByAsset(returnAsset)
 
@@ -280,9 +289,13 @@ func (t *Taproot) prepareBtcOutputs(
 			continue
 		}
 
-		splitAsset.Asset.PrevWitnesses[0].SplitCommitment = nil
+		log.Println("bdefore Copy: splitAsset.Asset.PrevWitnesses[0].SplitCommitment", splitAsset.Asset.PrevWitnesses[0].SplitCommitment)
+		splitAssetCopy := splitAsset.Asset.Copy()
+		splitAssetCopy.PrevWitnesses[0].SplitCommitment = nil
 
-		transferCommitment, err := commitment.NewAssetCommitment(ctx, &splitAsset.Asset)
+		log.Println("after Copy: splitAsset.Asset.PrevWitnesses[0].SplitCommitment", splitAsset.Asset.PrevWitnesses[0].SplitCommitment)
+
+		transferCommitment, err := commitment.NewAssetCommitment(ctx, splitAssetCopy)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -295,7 +308,7 @@ func (t *Taproot) prepareBtcOutputs(
 		fmt.Println("tapTransferCommitment: ", tapTransferCommitment.TreeRoot.NodeHash(), tapTransferCommitment.TreeRoot.NodeSum())
 		utils.PrintStruct(tapTransferCommitment)
 
-		transferOutputInfo, err := t.addressMaker.CreateTapAddr(splitAsset.Asset.ScriptPubkey, tapTransferCommitment)
+		transferOutputInfo, err := t.addressMaker.CreateTapAddr(splitAssetCopy.ScriptPubkey, tapTransferCommitment)
 		if err != nil {
 			return nil, nil, err
 		}

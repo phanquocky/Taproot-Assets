@@ -3,9 +3,10 @@ package asset
 import (
 	"crypto/sha256"
 	"encoding/json"
+	"reflect"
+
 	"github.com/btcsuite/btcd/wire"
 	"github.com/quocky/taproot-asset/taproot/model/mssmt"
-	"reflect"
 )
 
 var (
@@ -45,6 +46,7 @@ func (a *Asset) AssetCommitmentKey() [32]byte {
 
 	genesisID := a.Genesis.ID()
 	h.Write(genesisID[:])
+	//h.Write([]byte(strconv.Itoa(int(a.Amount))))
 	h.Write(a.ScriptPubkey.SchnorrSerialized())
 
 	return [32]byte(h.Sum(nil))

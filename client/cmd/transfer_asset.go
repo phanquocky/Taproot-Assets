@@ -24,6 +24,7 @@ to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("transferAsset called")
 
+		// 03bcbc720d1fba2172fd413e28e778ec3a6cc640629990f97428f8beb50060faf4
 		receiverPubKeyStr := "02498ecf86fb261f380e469524538b9b536a9eb1daa763001a1ddaec7b71279271"
 		receiverPubKey, err := hex.DecodeString(receiverPubKeyStr)
 		if err != nil {
@@ -37,7 +38,7 @@ to quickly create a Cobra application.`,
 
 		err = TaprootClient.TransferAsset(
 			rcvSerializedKey,
-			"bd5c0864e129542c90430511b5ccc34e38d514351e145bc15f3cf119afadb81d",
+			"b29bef20a4da6777928ecc9ac6677e229558160213a79bc6c44f70286dca623f",
 			1,
 		)
 		if err != nil {

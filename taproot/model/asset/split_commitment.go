@@ -2,8 +2,10 @@ package asset
 
 import (
 	"bytes"
-	"github.com/quocky/taproot-asset/taproot/model/mssmt"
+	"encoding/json"
 	"log"
+
+	"github.com/quocky/taproot-asset/taproot/model/mssmt"
 )
 
 type SplitCommitment struct {
@@ -52,4 +54,56 @@ func (s *SplitCommitment) DeepEqual(o *SplitCommitment) bool {
 	}
 
 	return bytes.Equal(leadO.Value, leafS.Value)
+}
+
+type SplitCommitmentByte struct {
+	Proof []byte
+
+	RootAsset Asset
+}
+
+// MarshalJSON function custom CommitmentProof when using json.Marshal function
+func (u SplitCommitment) MarshalJSON() ([]byte, error) {
+	var proofBytes bytes.Buffer
+
+	err := u.Proof.Compress().Encode(&proofBytes)
+	if err != nil {
+		log.Println("[MarshalJSON] u.Proof.Compress().Encode(&proofBytes), err ", err)
+
+		return nil, err
+	}
+
+	return json.Marshal(SplitCommitmentByte{
+		Proof:     proofBytes.Bytes(),
+		RootAsset: u.RootAsset,
+	})
+}
+
+func (b *SplitCommitment) UnmarshalJSON(data []byte) error {
+
+	var (
+		commitBytes   SplitCommitmentByte
+		compressProof mssmt.CompressedProof
+	)
+
+	if err := json.Unmarshal(data, &commitBytes); err != nil {
+		log.Println("err := json.Unmarshal(data, &commitBytes), err ", err)
+
+		return err
+	}
+
+	b.Proof.Compress()
+	// commitBytes.Proof
+	compressProof.Decode(bytes.NewReader(commitBytes.Proof))
+	proof, err := compressProof.Decompress()
+	if err != nil {
+		log.Println("err := compressProof.Decompress(), err ", err)
+
+		return err
+	}
+
+	b.Proof = *proof
+	b.RootAsset = commitBytes.RootAsset
+
+	return nil
 }
