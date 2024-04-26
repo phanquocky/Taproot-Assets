@@ -38,7 +38,7 @@ to quickly create a Cobra application.`,
 
 		err = TaprootClient.TransferAsset(
 			rcvSerializedKey,
-			"b29bef20a4da6777928ecc9ac6677e229558160213a79bc6c44f70286dca623f",
+			"6a84887816c5109e69a169dd181d3e1ba0fbd088aa52ca270a03630093460fb1",
 			1,
 		)
 		if err != nil {

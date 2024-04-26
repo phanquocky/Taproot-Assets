@@ -97,9 +97,11 @@ func (c *MintController) TransferAsset(g *gin.Context) {
 func NewMintController(
 	mintUseCase mint.UseCaseInterface,
 	utxoUseCase utxoasset.UseCaseInterface,
+	transferUseCase transfer.UseCaseInterface,
 ) api.ControllerInterface {
 	return &MintController{
-		mintUseCase: mintUseCase,
-		utxoUseCase: utxoUseCase,
+		mintUseCase:     mintUseCase,
+		utxoUseCase:     utxoUseCase,
+		transferUseCase: transferUseCase,
 	}
 }

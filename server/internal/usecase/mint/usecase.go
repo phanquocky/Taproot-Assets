@@ -3,9 +3,7 @@ package mint
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
-	"log"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/rpcclient"
@@ -43,9 +41,6 @@ func (u *UseCase) MintAsset(
 	proofs := make([]proof.Proof, 0)
 
 	for _, p := range mintProof {
-		pBytes, _ := json.Marshal(p)
-		log.Println("===", pBytes)
-
 		_, err := p.Verify(ctx, nil)
 		if err != nil {
 			logger.Errorw("verify fail", "err", err.Error())
@@ -98,6 +93,13 @@ func (u *UseCase) MintAsset(
 	_, err = u.rpcClient.SendRawTransaction(&mintProof[0].AnchorTx, true)
 	if err != nil {
 		logger.Errorw("SendRawTransaction fail", err)
+
+		return err
+	}
+
+	_, err = u.rpcClient.Generate(1)
+	if err != nil {
+		logger.Errorw("Generate fail", err)
 
 		return err
 	}

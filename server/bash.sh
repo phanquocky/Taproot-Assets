@@ -1,6 +1,7 @@
 #!/bin/zsh
 
-ip_address=$(ifconfig | awk '/inet /{print $2}' | grep -oE "192\.168\.[0-9]{1,3}\.[0-9]{1,3}")
+#ip_address=$(ifconfig | awk '/inet /{print $2}' | grep -oE "192\.168\.[0-9]{1,3}\.[0-9]{1,3}")
+ip_address=$(ifconfig | awk '/inet /{print $2}' | grep -oE "172\.20\.[0-9]{1,3}\.[0-9]{1,3}")
 echo $ip_address
 
 echo "Creating btcd"

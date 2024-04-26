@@ -118,7 +118,9 @@ func (u *UseCase) insertDBTransferTx(
 			return err
 		}
 
-		curAsset := btcOut.GetOutputAsset()[outID]
+		btcOutAssets := btcOut.GetOutputAsset()
+		// little confused
+		curAsset := btcOutAssets[0]
 
 		insertAssetOutpointParam := assetoutpoint.AssetOutpoint{
 			GenesisID:    common.ID(genesisAsset.GenesisPointID),
@@ -172,5 +174,6 @@ func NewUseCase(
 		assetOutpointRepo: assetOutpointRepo,
 		chainTXRepo:       chainTXRepo,
 		manageUtxoRepo:    manageUtxoRepo,
+		rpcClient:         rpcClient,
 	}
 }

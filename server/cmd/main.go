@@ -17,6 +17,7 @@ import (
 	genesispoint "github.com/quocky/taproot-asset/server/internal/repo/genesis_point"
 	manageutxo "github.com/quocky/taproot-asset/server/internal/repo/manage_utxo"
 	mintU "github.com/quocky/taproot-asset/server/internal/usecase/mint"
+	transferU "github.com/quocky/taproot-asset/server/internal/usecase/transfer"
 	utxoU "github.com/quocky/taproot-asset/server/internal/usecase/utxo"
 	"github.com/quocky/taproot-asset/server/pkg/database"
 	"github.com/quocky/taproot-asset/server/pkg/logger"
@@ -49,9 +50,10 @@ func main() {
 	// use case
 	mintUseCase := mintU.NewUseCase(assetRepo, assetOutpointRepo, chainTxRepo, genesisPointRepo, manageUtxoRepo, rpcClient)
 	utxoUseCase := utxoU.NewUseCase(assetRepo, assetOutpointRepo, genesisPointRepo)
+	transferUseCase := transferU.NewUseCase(assetOutpointRepo, chainTxRepo, manageUtxoRepo, rpcClient)
 
 	// controller
-	mintController := v1.NewMintController(mintUseCase, utxoUseCase)
+	mintController := v1.NewMintController(mintUseCase, utxoUseCase, transferUseCase)
 
 	// register routes
 	api.RegisterRoutes(router, mintController)
