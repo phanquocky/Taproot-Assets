@@ -129,6 +129,8 @@ func (u *UseCase) insertDBTransferTx(
 			AnchorUtxoID: utxoID,
 			ProofLocator: locatorName[:],
 			Spent:        false,
+			// TODO duyba
+			TapCommitment: btcOut.AddrResult.TapCommitment[:],
 		}
 
 		if curAsset.SplitCommitmentRoot != nil {
