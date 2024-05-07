@@ -3,6 +3,7 @@ package mint
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -16,6 +17,7 @@ import (
 	manageutxo "github.com/quocky/taproot-asset/server/internal/domain/manage_utxo"
 	"github.com/quocky/taproot-asset/server/internal/domain/mint"
 	"github.com/quocky/taproot-asset/server/pkg/logger"
+	"github.com/quocky/taproot-asset/taproot/model/commitment"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 )
 
@@ -33,32 +35,13 @@ func (u *UseCase) MintAsset(
 	amountSats int32,
 	tapScriptRootHash *chainhash.Hash,
 	mintProof proof.AssetProofs,
+	tapCommitment *commitment.TapCommitment,
 ) error {
 	if len(mintProof) == 0 {
 		return errors.New("mint proof empty")
 	}
 
-	proofs := make([]proof.Proof, 0)
-
-	for _, p := range mintProof {
-		_, err := p.Verify(ctx, nil)
-		if err != nil {
-			logger.Errorw("verify fail", "err", err.Error())
-
-			return err
-		}
-
-		proofs = append(proofs, *p)
-	}
-
-	file, err := proof.NewFile(proofs...)
-	if err != nil {
-		logger.Errorw("create new file fail", "err", err.Error())
-
-		return err
-	}
-
-	locatorHash, err := file.Store()
+	locatorHash, err := generateLocatorHash(ctx, mintProof)
 	if err != nil {
 		logger.Errorw("create new locator hash fail", "err", err.Error())
 
@@ -68,6 +51,11 @@ func (u *UseCase) MintAsset(
 	chainTxID, genesisPointID, manageUtxoID, err := u.insertCommonComp(ctx, amountSats, tapScriptRootHash, mintProof[0])
 	if err != nil {
 		return err
+	}
+
+	tapCommitmentBytes, err := json.Marshal(tapCommitment)
+	if err != nil {
+		return errors.New("[MintAsset] marshal tap commitment fail " + err.Error())
 	}
 
 	for _, p := range mintProof {
@@ -80,6 +68,7 @@ func (u *UseCase) MintAsset(
 			TapScriptRootHash: tapScriptRootHash,
 			ProofLocator:      locatorHash,
 			MintProof:         p,
+			TapCommitment:     tapCommitmentBytes,
 		}
 
 		// insert to db
@@ -105,6 +94,30 @@ func (u *UseCase) MintAsset(
 	}
 
 	return nil
+}
+
+func generateLocatorHash(ctx context.Context, mintProof proof.AssetProofs) ([32]byte, error) {
+	proofs := make([]proof.Proof, 0)
+
+	for _, p := range mintProof {
+		_, err := p.Verify(ctx, nil)
+		if err != nil {
+			logger.Errorw("verify fail", "err", err.Error())
+
+			return [32]byte{}, err
+		}
+
+		proofs = append(proofs, *p)
+	}
+
+	file, err := proof.NewFile(proofs...)
+	if err != nil {
+		logger.Errorw("create new file fail", "err", err.Error())
+
+		return [32]byte{}, err
+	}
+
+	return file.Store()
 }
 
 func (u *UseCase) insertDiffCompTxMint(
@@ -145,7 +158,7 @@ func (u *UseCase) insertDiffCompTxMint(
 				Amount:        data.Asset.Amount,
 				AnchorUtxoID:  manageUtxoID,
 				ProofLocator:  data.ProofLocator[:],
-				TapCommitment: nil,
+				TapCommitment: data.TapCommitment,
 			}
 
 			docID, err := u.assetOutpointRepo.InsertOne(ctx, result.AssetOutpoint)

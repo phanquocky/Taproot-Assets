@@ -2,6 +2,8 @@ package transfer
 
 import (
 	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 
@@ -122,6 +124,11 @@ func (u *UseCase) insertDBTransferTx(
 		// little confused
 		curAsset := btcOutAssets[0]
 
+		tapCommitmentBytes, err := json.Marshal(btcOut.AddrResult.TapCommitment)
+		if err != nil {
+			return errors.New("[insertDBTransferTx] marshal tap commitment fail " + err.Error())
+		}
+
 		insertAssetOutpointParam := assetoutpoint.AssetOutpoint{
 			GenesisID:    common.ID(genesisAsset.GenesisPointID),
 			ScriptKey:    curAsset.ScriptPubkey[:],
@@ -130,7 +137,7 @@ func (u *UseCase) insertDBTransferTx(
 			ProofLocator: locatorName[:],
 			Spent:        false,
 			// TODO duyba
-			TapCommitment: btcOut.AddrResult.TapCommitment[:],
+			TapCommitment: tapCommitmentBytes,
 		}
 
 		if curAsset.SplitCommitmentRoot != nil {

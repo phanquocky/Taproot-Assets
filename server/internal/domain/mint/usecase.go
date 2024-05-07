@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/quocky/taproot-asset/taproot/model/commitment"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 )
 
@@ -13,5 +14,6 @@ type UseCaseInterface interface {
 		amountSats int32,
 		tapScriptRootHash *chainhash.Hash,
 		mintProof proof.AssetProofs,
+		tapCommitment *commitment.TapCommitment,
 	) error
 }

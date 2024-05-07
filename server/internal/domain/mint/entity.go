@@ -22,6 +22,7 @@ type InsertMintTxParams struct {
 	TapScriptRootHash *chainhash.Hash        `json:"tap_script_root_hash"`
 	ProofLocator      [32]byte               `json:"proof_locator"`
 	MintProof         *proof.Proof           `json:"mint_proof"`
+	TapCommitment     []byte                 `json:"tap_commitment"`
 }
 
 type InsertMintTxResult struct {
