@@ -19,7 +19,7 @@ type AssetCommitment struct {
 	TapKey [32]byte
 	Root   *mssmt.BranchNode
 	tree   mssmt.Tree
-	assets CommittedAssets
+	Assets CommittedAssets
 }
 
 func NewAssetCommitment(ctx context.Context, assets ...*asset.Asset) (*AssetCommitment, error) {
@@ -56,7 +56,7 @@ func NewAssetCommitment(ctx context.Context, assets ...*asset.Asset) (*AssetComm
 		TapKey: tapKey,
 		Root:   root,
 		tree:   tree,
-		assets: committedAssets,
+		Assets: committedAssets,
 	}, nil
 }
 
@@ -65,14 +65,14 @@ func (c *AssetCommitment) TapCommitmentKey() [32]byte {
 }
 
 func (c *AssetCommitment) Merge(other *AssetCommitment) error {
-	if other.assets == nil {
-		return fmt.Errorf("cannot merge commitments without assets")
+	if other.Assets == nil {
+		return fmt.Errorf("cannot merge commitments without Assets")
 	}
-	if len(other.assets) == 0 {
+	if len(other.Assets) == 0 {
 		return nil
 	}
 
-	for _, otherCommitment := range other.assets {
+	for _, otherCommitment := range other.Assets {
 		if err := c.Upsert(otherCommitment.Copy()); err != nil {
 			return fmt.Errorf("error upserting other commitment: "+
 				"%w", err)
@@ -108,7 +108,7 @@ func (c *AssetCommitment) Upsert(newAsset *asset.Asset) error {
 		return err
 	}
 
-	c.assets[key] = newAsset
+	c.Assets[key] = newAsset
 
 	return nil
 }
@@ -135,9 +135,9 @@ func (c *AssetCommitment) TapCommitmentLeaf() *mssmt.LeafNode {
 	return mssmt.NewLeafNode(leaf.Bytes(), sum)
 }
 
-func (c *AssetCommitment) Assets() CommittedAssets {
-	assets := make(CommittedAssets, len(c.assets))
-	maps.Copy(assets, c.assets)
+func (c *AssetCommitment) GetAssets() CommittedAssets {
+	assets := make(CommittedAssets, len(c.Assets))
+	maps.Copy(assets, c.Assets)
 
 	return assets
 }
@@ -154,7 +154,7 @@ func (c *AssetCommitment) AssetProof(key [32]byte) (
 		return nil, nil, err
 	}
 
-	return c.assets[key], proof, nil
+	return c.Assets[key], proof, nil
 }
 
 // TapLeaf constructs a new `TapLeaf` for this `TapCommitment`.

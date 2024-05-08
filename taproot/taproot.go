@@ -28,7 +28,7 @@ const (
 type Interface interface {
 	MintAsset(ctx context.Context, names []string, amounts []int32) error
 	GetAssetUTXOs(ctx context.Context, assetID string, amount int32) (*utxoasset.UnspentAssetResp, error)
-	TransferAsset(receiverPubKey asset.SerializedKey, assetId string, amount int32) error
+	TransferAsset(receiverPubKey []asset.SerializedKey, assetId string, amount []int32) error
 }
 
 type Taproot struct {

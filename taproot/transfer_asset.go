@@ -2,7 +2,6 @@ package taproot
 
 import (
 	"context"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"log"
@@ -20,8 +19,7 @@ import (
 	"github.com/quocky/taproot-asset/taproot/utils"
 )
 
-func (t *Taproot) TransferAsset(receiverPubKey asset.SerializedKey, assetId string, amount int32) error {
-	fmt.Printf("Transfer asset: asset id: %s, amount: %d, receiverPubKey: %s \n", assetId, amount, hex.EncodeToString(receiverPubKey[:]))
+func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId string, amount []int32) error {
 	ctx := context.Background()
 
 	var (
@@ -38,7 +36,9 @@ func (t *Taproot) TransferAsset(receiverPubKey asset.SerializedKey, assetId stri
 		return err
 	}
 
-	assetUTXOs, err := t.GetAssetUTXOs(ctx, assetId, amount)
+	totalAmount := utils.CalcSum(amount)
+
+	assetUTXOs, err := t.GetAssetUTXOs(ctx, assetId, totalAmount)
 	if err != nil {
 		return err
 	}
@@ -50,23 +50,18 @@ func (t *Taproot) TransferAsset(receiverPubKey asset.SerializedKey, assetId stri
 		return err
 	}
 
-	transferAsset := prepareAssets(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, []int32{amount}, []asset.SerializedKey{receiverPubKey})
+	transferAssets := prepareAssets(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, amount, receiverPubKey)
 
-	returnAsset, err := t.createReturnAsset(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, assetUTXOs, transferAsset)
+	returnAssets, err := t.createReturnAsset(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, assetUTXOs, transferAssets)
 	if err != nil {
-		fmt.Println("t.createReturnAsset(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, assetUTXOs, transferAsset) got error", err)
+		fmt.Println("t.createReturnAsset(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, assetUTXOs, transferAssets) got error", err)
 
 		return err
 	}
 
-	fmt.Println("proof.Assetproof.Assetproof.Assetproof.Assetproof.Asset 2")
-	utils.PrintStruct(transferAsset[0].PrevWitnesses[0].PrevID)
-	fmt.Println("proof.Assetproof.Assetproof.Assetproof.Assetproof.Asset 3")
-	utils.PrintStruct(returnAsset.PrevWitnesses[0].PrevID)
-
-	btcOutputInfos, _, err := t.prepareBtcOutputs(ctx, assetUTXOs, transferAsset, returnAsset)
+	btcOutputInfos, _, err := t.prepareBtcOutputs(ctx, assetUTXOs, transferAssets, returnAssets.assets)
 	if err != nil {
-		fmt.Println("t.createTransferAddresses(ctx, unspentAssets, transferAsset),  err ", err)
+		fmt.Println("t.createTransferAddresses(ctx, unspentAssets, transferAssets),  err ", err)
 		return err
 	}
 
@@ -109,7 +104,7 @@ func (t *Taproot) TransferAsset(receiverPubKey asset.SerializedKey, assetId stri
 }
 
 func createFiles(
-	inputFilesBytes [][]byte,
+	inputFilesBytes [][]byte, // TODO: nen doi thanh map ?
 	btcOutputInfos []*onchain.BtcOutputInfo,
 	tx *wire.MsgTx,
 ) ([]*proof.File, error) {
@@ -205,17 +200,22 @@ func makeExclusionProofs(curID int, btcOutputInfos []*onchain.BtcOutputInfo) ([]
 	return exclusionProofs, nil
 }
 
+type returnAssets struct {
+	assets []*asset.Asset
+}
+
 func (t *Taproot) createReturnAsset(assetGenOutpoint *wire.OutPoint,
 	assetName string,
-	assetUTXOs *utxoasset.UnspentAssetResp, transferAsset []*asset.Asset) (*asset.Asset, error) {
+	assetUTXOs *utxoasset.UnspentAssetResp, transferAsset []*asset.Asset) (*returnAssets, error) {
 
 	if len(assetUTXOs.UnspentOutpoints) == 0 || len(transferAsset) == 0 {
 		return nil, errors.New("createReturnAsset: assetUTXOs or transferAsset is empty")
 	}
 
+	passiveAssets := getPassiveAssets(assetUTXOs, transferAsset[0])
+
 	totalAmount := int32(0)
 	transferAmount := int32(0)
-
 	for _, a := range assetUTXOs.UnspentOutpoints {
 		totalAmount += a.Amount
 	}
@@ -228,50 +228,72 @@ func (t *Taproot) createReturnAsset(assetGenOutpoint *wire.OutPoint,
 		return nil, errors.New("createReturnAsset: totalAmount - transferAmount < 0")
 	}
 
-	returnAsset := asset.New(*assetGenOutpoint, assetName,
+	returnAsset := []*asset.Asset{asset.New(*assetGenOutpoint, assetName,
 		DEFAULT_RETURN_OUTPUT_INDEX, totalAmount-transferAmount,
 		asset.ToSerialized(t.wif.PrivKey.PubKey()), nil,
-	)
+	)}
+	returnAsset = append(returnAsset, passiveAssets...)
 
-	return returnAsset, nil
+	return &returnAssets{
+		assets: passiveAssets,
+	}, nil
+}
+
+func getPassiveAssets(utxOs *utxoasset.UnspentAssetResp, transferAsset *asset.Asset) []*asset.Asset {
+	activeAssetId := transferAsset.ID()
+	passiveAssets := make([]*asset.Asset, 0)
+	for _, u := range utxOs.UnspentOutpoints {
+		for _, ac := range u.TapCommitment.AssetCommitments {
+			for _, a := range ac.Assets {
+				if a.ID() != activeAssetId {
+					passiveAssets = append(passiveAssets, a)
+				}
+			}
+		}
+	}
+
+	return passiveAssets
 }
 
 func prepareAssets(assetGenOutpoint *wire.OutPoint,
 	assetName string, amount []int32,
 	receiverPubKey []asset.SerializedKey,
 ) []*asset.Asset {
-	transferAsset := asset.New(*assetGenOutpoint, assetName,
-		DEFAULT_TRANSFER_OUTPUT_INDEX, amount[0], receiverPubKey[0],
-		nil,
-	)
 
-	return []*asset.Asset{transferAsset}
+	transferAsset := make([]*asset.Asset, len(amount))
+
+	for idx, a := range amount {
+		transferAsset[idx] = asset.New(*assetGenOutpoint, assetName,
+			DEFAULT_TRANSFER_OUTPUT_INDEX, a, receiverPubKey[idx], nil,
+		)
+	}
+
+	return transferAsset
 }
 
 func (t *Taproot) prepareBtcOutputs(
 	ctx context.Context,
 	assetUTXOs *utxoasset.UnspentAssetResp,
 	transferAsset []*asset.Asset,
-	returnAsset *asset.Asset,
+	returnAsset []*asset.Asset,
 ) ([]*onchain.BtcOutputInfo, *commitment.SplitCommitment, error) {
 	var (
 		returnPubKey   = asset.ToSerialized(t.wif.PrivKey.PubKey())
 		btcOutputInfos = make([]*onchain.BtcOutputInfo, 0)
 	)
 
-	splitCommitment, err := createSplitCommitment(ctx, assetUTXOs, returnAsset, transferAsset)
+	splitCommitment, err := createSplitCommitment(ctx, assetUTXOs, returnAsset[0], transferAsset) // returnAsset[0] is active asset
 	if err != nil {
 		log.Println("[prepareBtcOutputs] createSplitCommitment(ctx, unspentAssets, returnAsset, transferAsset), err ", err)
 		return nil, nil, err
 	}
 
-	returnCommitment, err := commitment.NewAssetCommitment(ctx, splitCommitment.RootAsset)
-	if err != nil {
-		log.Println("[prepareBtcOutputs] commitment.NewAssetCommitment(splitCommitment.RootAsset), err ", err)
-		return nil, nil, err
-	}
+	returnAsset[0] = splitCommitment.RootAsset
 
-	tapReturnCommitment, err := commitment.NewTapCommitment(returnCommitment)
+	ca := classifyAsset(returnAsset)
+
+	returnAssetCommitments := createReturnAssetCommitments(ctx, ca)
+	tapReturnCommitment, err := commitment.NewTapCommitment(returnAssetCommitments...)
 
 	fmt.Println("tapReturnCommitment: ", tapReturnCommitment.TreeRoot.NodeHash(), tapReturnCommitment.TreeRoot.NodeSum())
 	utils.PrintStruct(tapReturnCommitment)
@@ -280,9 +302,9 @@ func (t *Taproot) prepareBtcOutputs(
 	if err != nil {
 		return nil, nil, err
 	}
-	btcOutputInfos = append(btcOutputInfos, onchain.NewBtcOutputInfo(returnOutputInfo, DEFAULT_OUTPUT_AMOUNT, splitCommitment.RootAsset))
+	btcOutputInfos = append(btcOutputInfos, onchain.NewBtcOutputInfo(returnOutputInfo, DEFAULT_OUTPUT_AMOUNT, returnAsset...))
 
-	rootLocator := commitment.NewLocatorByAsset(returnAsset)
+	rootLocator := commitment.NewLocatorByAsset(returnAsset[0])
 
 	for locator, splitAsset := range splitCommitment.SplitAssets {
 		if locator == *rootLocator {
@@ -317,6 +339,34 @@ func (t *Taproot) prepareBtcOutputs(
 	}
 
 	return btcOutputInfos, splitCommitment, nil
+}
+
+func createReturnAssetCommitments(ctx context.Context, ca map[[32]byte][]*asset.Asset) []*commitment.AssetCommitment {
+
+	returnAssetCommitments := make([]*commitment.AssetCommitment, 0)
+	for _, assets := range ca {
+		assetCommitments, err := commitment.NewAssetCommitment(ctx, assets...)
+		if err != nil {
+			log.Println("[createReturnAssetCommitments] commitment.NewAssetCommitment(ctx, assets...), err ", err)
+			return nil
+		}
+
+		returnAssetCommitments = append(returnAssetCommitments, assetCommitments)
+	}
+
+	return returnAssetCommitments
+}
+
+func classifyAsset(returnAsset []*asset.Asset) map[[32]byte][]*asset.Asset {
+	ca := make(map[[32]byte][]*asset.Asset)
+	for _, a := range returnAsset {
+		if ca[a.AssetCommitmentKey()] == nil {
+			ca[a.AssetCommitmentKey()] = make([]*asset.Asset, 0)
+		}
+		ca[a.TapCommitmentKey()] = append(ca[a.TapCommitmentKey()], a)
+	}
+
+	return ca
 }
 
 func createSplitCommitment(ctx context.Context,

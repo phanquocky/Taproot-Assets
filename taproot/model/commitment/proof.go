@@ -170,7 +170,7 @@ func (p CommitmentProof) DeriveByAssetInclusion(asset *asset.Asset) (*TapCommitm
 	return &TapCommitment{
 		TreeRoot:         tapProofRoot,
 		tree:             nil,
-		assetCommitments: nil,
+		AssetCommitments: nil,
 	}, nil
 }
 
@@ -203,7 +203,7 @@ func (p CommitmentProof) DeriveByAssetExclusion(assetCommitmentKey [32]byte) (
 	return &TapCommitment{
 		TreeRoot:         tapProofRoot,
 		tree:             nil,
-		assetCommitments: nil,
+		AssetCommitments: nil,
 	}, nil
 }
 
@@ -228,6 +228,6 @@ func (p CommitmentProof) DeriveByAssetCommitmentExclusion(tapCommitmentKey [32]b
 	return &TapCommitment{
 		TreeRoot:         tapProofRoot,
 		tree:             nil,
-		assetCommitments: nil,
+		AssetCommitments: nil,
 	}, nil
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -30,13 +29,8 @@ func (t *Taproot) GetAssetUTXOs(ctx context.Context, assetID string, amount int3
 	var UTXOs utxoasset.UnspentAssetResp
 	err = json.Unmarshal(resp.Body(), &UTXOs)
 	if err != nil {
-		fmt.Println("Unmarshal error: ", err)
-
 		return nil, err
 	}
-
-	fmt.Println("UTXOs.UnspentOutpoints: ", UTXOs.UnspentOutpoints[0].ID, UTXOs.UnspentOutpoints[0].Amount)
-	fmt.Println("UTXOs.GenesisPoint", UTXOs.GenesisPoint.AnchorTxID, UTXOs.GenesisPoint.PrevOut)
 
 	return &UTXOs, nil
 }

@@ -16,7 +16,7 @@ type AssetCommitments map[[32]byte]*AssetCommitment
 type TapCommitment struct {
 	TreeRoot         *mssmt.BranchNode
 	tree             mssmt.Tree
-	assetCommitments AssetCommitments
+	AssetCommitments AssetCommitments
 }
 
 func NewTapCommitment(newCommitments ...*AssetCommitment) (*TapCommitment,
@@ -57,7 +57,7 @@ func NewTapCommitment(newCommitments ...*AssetCommitment) (*TapCommitment,
 
 	return &TapCommitment{
 		TreeRoot:         root,
-		assetCommitments: assetCommitments,
+		AssetCommitments: assetCommitments,
 		tree:             tree,
 	}, nil
 }
@@ -76,8 +76,8 @@ func (c *TapCommitment) TapLeaf() txscript.TapLeaf {
 
 func (c *TapCommitment) Assets() []*asset.Asset {
 	var assets []*asset.Asset
-	for _, commitment := range c.assetCommitments {
-		committedAssets := maps.Values(commitment.Assets())
+	for _, commitment := range c.AssetCommitments {
+		committedAssets := maps.Values(commitment.GetAssets())
 		assets = append(assets, committedAssets...)
 	}
 
@@ -87,7 +87,7 @@ func (c *TapCommitment) Assets() []*asset.Asset {
 func (c *TapCommitment) CreateProof(tapCommitmentKey,
 	assetCommitmentKey [32]byte) (*asset.Asset, *CommitmentProof, error) {
 
-	if c.assetCommitments == nil || c.tree == nil {
+	if c.AssetCommitments == nil || c.tree == nil {
 		return nil, nil, errors.New("missing asset commitments to compute proofs")
 	}
 
@@ -102,7 +102,7 @@ func (c *TapCommitment) CreateProof(tapCommitmentKey,
 		},
 	}
 
-	assetCommitment, ok := c.assetCommitments[tapCommitmentKey]
+	assetCommitment, ok := c.AssetCommitments[tapCommitmentKey]
 	if !ok {
 		return nil, proof, nil
 	}
