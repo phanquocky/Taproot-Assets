@@ -39,7 +39,6 @@ func (c *MintController) MintAsset(g *gin.Context) {
 		req.AmountSats,
 		req.TapScriptRootHash,
 		req.MintProof,
-		req.TapCommitment,
 	)
 	if err != nil {
 		g.JSON(http.StatusInternalServerError, gin.H{

@@ -15,10 +15,10 @@ type AssetOutpoint struct {
 	AnchorUtxoID             common.ID `json:"anchor_utxo_id"`
 	ProofLocator             []byte    `json:"proof_locator"`
 	Spent                    bool      `json:"spent"`
-	TapCommitment            []byte    `json:"tap_commitment"`
 }
 
 type UnspentOutpoint struct {
 	AssetOutpoint          `json:",inline"`
 	manageutxo.ManagedUtxo `json:"res"`
+	RelatedAssets          []*AssetOutpoint `json:"related_assets"`
 }

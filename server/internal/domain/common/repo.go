@@ -6,6 +6,7 @@ type TransactionCallbackFunc func(ctx context.Context) error
 
 type RepoInterface interface {
 	InsertOne(ctx context.Context, doc any) (ID, error)
+	FindOne(ctx context.Context, filter, dest any) error
 	FindOneByID(ctx context.Context, id ID, dest any) error
 	FindMany(ctx context.Context, filter, dest any) error
 	FindAggregate(ctx context.Context, filter, dest any) error

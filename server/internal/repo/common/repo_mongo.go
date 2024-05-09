@@ -2,6 +2,7 @@ package common
 
 import (
 	"context"
+	"errors"
 	"strings"
 
 	"github.com/quocky/taproot-asset/server/internal/domain/common"
@@ -54,6 +55,29 @@ func (r *RepoMongo) InsertOne(ctx context.Context, doc any) (common.ID, error) {
 	}
 
 	return common.ID(objectID.Hex()), nil
+}
+
+// FindOne find a document by filterM in collection and assign it to dest.
+func (r *RepoMongo) FindOne(ctx context.Context, filterM, dest any) error {
+	result := r.Collection().FindOne(ctx, filterM)
+
+	err := DecodeOne(ctx, result, dest)
+	if errors.Is(err, mongo.ErrNoDocuments) {
+		return common.ErrDatabaseNotFound
+	}
+
+	if err != nil {
+		logger.Errorw(
+			"find one collection fail",
+			"collection", r.collName,
+			"field", filterM,
+			"err", err,
+		)
+
+		return common.ErrKeySystemInternalServer
+	}
+
+	return nil
 }
 
 // FindOneByID find a document by id and assign it to dest.

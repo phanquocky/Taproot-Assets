@@ -7,6 +7,7 @@ import (
 
 var (
 	ErrKeySystemInternalServer     = errors.New("error.system.internal")
+	ErrDatabaseNotFound            = errors.New("error.database.not_found_data")
 	ErrDatabaseDuplicateIndexedKey = errors.New("error.database.duplicate_indexed_key")
 )
 

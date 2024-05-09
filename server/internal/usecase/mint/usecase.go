@@ -3,7 +3,6 @@ package mint
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"errors"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -17,7 +16,6 @@ import (
 	manageutxo "github.com/quocky/taproot-asset/server/internal/domain/manage_utxo"
 	"github.com/quocky/taproot-asset/server/internal/domain/mint"
 	"github.com/quocky/taproot-asset/server/pkg/logger"
-	"github.com/quocky/taproot-asset/taproot/model/commitment"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 )
 
@@ -35,7 +33,6 @@ func (u *UseCase) MintAsset(
 	amountSats int32,
 	tapScriptRootHash *chainhash.Hash,
 	mintProof proof.AssetProofs,
-	tapCommitment *commitment.TapCommitment,
 ) error {
 	if len(mintProof) == 0 {
 		return errors.New("mint proof empty")
@@ -53,11 +50,6 @@ func (u *UseCase) MintAsset(
 		return err
 	}
 
-	tapCommitmentBytes, err := json.Marshal(tapCommitment)
-	if err != nil {
-		return errors.New("[MintAsset] marshal tap commitment fail " + err.Error())
-	}
-
 	for _, p := range mintProof {
 		data := mint.InsertMintTxParams{
 			Asset:             &p.Asset,
@@ -68,7 +60,6 @@ func (u *UseCase) MintAsset(
 			TapScriptRootHash: tapScriptRootHash,
 			ProofLocator:      locatorHash,
 			MintProof:         p,
-			TapCommitment:     tapCommitmentBytes,
 		}
 
 		// insert to db
@@ -153,12 +144,11 @@ func (u *UseCase) insertDiffCompTxMint(
 		},
 		func(ctx context.Context) error {
 			result.AssetOutpoint = assetoutpoint.AssetOutpoint{
-				GenesisID:     result.GenesisAsset.ID,
-				ScriptKey:     data.Asset.ScriptPubkey[:],
-				Amount:        data.Asset.Amount,
-				AnchorUtxoID:  manageUtxoID,
-				ProofLocator:  data.ProofLocator[:],
-				TapCommitment: data.TapCommitment,
+				GenesisID:    result.GenesisAsset.ID,
+				ScriptKey:    data.Asset.ScriptPubkey[:],
+				Amount:       data.Asset.Amount,
+				AnchorUtxoID: manageUtxoID,
+				ProofLocator: data.ProofLocator[:],
 			}
 
 			docID, err := u.assetOutpointRepo.InsertOne(ctx, result.AssetOutpoint)

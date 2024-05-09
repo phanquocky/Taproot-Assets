@@ -2,6 +2,7 @@ package utxo
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -31,7 +32,6 @@ func (u *UseCase) GetUnspentAssetsById(
 	pubKey []byte,
 ) (*utxoassetsdk.UnspentAssetResp, error) {
 	var (
-		genesisAssets    []asset.GenesisAsset
 		genesisAsset     asset.GenesisAsset
 		unspentOutpoints []*assetoutpointmodel.UnspentOutpoint
 		genesisPoint     genesis.GenesisPoint
@@ -46,12 +46,10 @@ func (u *UseCase) GetUnspentAssetsById(
 		return nil, err
 	}
 
-	err = u.assetRepo.FindMany(ctx, map[string]any{"asset_id": assetIdBytes}, &genesisAssets)
+	err = u.assetRepo.FindOne(ctx, map[string]any{"asset_id": assetIdBytes}, &genesisAsset)
 	if err != nil {
 		return nil, err
 	}
-
-	genesisAsset = genesisAssets[0]
 
 	err = u.genesisPointRepo.FindOneByID(ctx, genesisAsset.GenesisPointID, &genesisPoint)
 	if err != nil {
@@ -118,6 +116,40 @@ func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.Unspent
 	for _, uo := range allUnspentOutpoints {
 		fmt.Println("unspentOutpoint", uo.TxID, uo.Amount)
 
+		filename := fmt.Sprintf(proof.LocatorFilePath, uo.ProofLocator)
+
+		fileBytes, err := proof.FileBytesFromName(filename)
+		if err != nil {
+			logger.Errorw("get file bytes fail", "filename", filename, "err", err.Error())
+
+			return nil, 0
+		}
+
+		relatedAnchorAssets := make([][]byte, len(uo.RelatedAssets))
+		relatedAnchorAssetProofs := make([][]byte, len(uo.RelatedAssets))
+
+		for _, ra := range uo.RelatedAssets {
+			raBytes, err := json.Marshal(ra)
+			if err != nil {
+				logger.Errorw("marshal related asset fail", "related_asset_id", ra.ID.String(), "err", err.Error())
+
+				return nil, 0
+			}
+
+			relatedAnchorAssets = append(relatedAnchorAssets, raBytes)
+
+			filenameRa := fmt.Sprintf(proof.LocatorFilePath, ra.ProofLocator)
+
+			fileByteRas, err := proof.FileBytesFromName(filenameRa)
+			if err != nil {
+				logger.Errorw("get file bytes fail", "filename", filename, "err", err.Error())
+
+				return nil, 0
+			}
+
+			relatedAnchorAssetProofs = append(relatedAnchorAssetProofs, fileByteRas)
+		}
+
 		unspentOutpoints = append(unspentOutpoints, &assetoutpointmodel.UnspentOutpoint{
 			ID:                       uo.AssetOutpoint.ID.String(),
 			GenesisID:                uo.GenesisID.String(),
@@ -127,6 +159,7 @@ func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.Unspent
 			SplitCommitmentRootValue: uo.SplitCommitmentRootValue,
 			AnchorUtxoID:             uo.AnchorUtxoID.String(),
 			ProofLocator:             uo.ProofLocator,
+			Proof:                    fileBytes,
 			Spent:                    uo.Spent,
 			Outpoint:                 uo.Outpoint,
 			AmtSats:                  uo.AmtSats,
@@ -134,6 +167,8 @@ func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.Unspent
 			TaprootAssetRoot:         uo.TaprootAssetRoot,
 			ScriptOutput:             uo.ScriptOutput,
 			TxID:                     uo.TxID.String(),
+			RelatedAnchorAssets:      relatedAnchorAssets,
+			RelatedAnchorAssetProofs: relatedAnchorAssetProofs,
 		})
 
 		actualAmount += uo.Amount

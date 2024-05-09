@@ -28,6 +28,25 @@ func (r *RepoMongo) FindManyWithManagedUTXO(
 			},
 		}},
 		bson.D{{
+			Key: "$lookup",
+			Value: bson.M{
+				"from":         "asset_outpoints",
+				"localField":   "anchor_utxo_id",
+				"foreignField": "anchor_utxo_id",
+				"let":          bson.M{"outer_id": "$_id"},
+				"pipeline": bson.A{
+					bson.M{
+						"$match": bson.M{
+							"$expr": bson.M{
+								"$ne": bson.A{"$_id", "$$outer_id"},
+							},
+						},
+					},
+				},
+				"as": "related_assets",
+			},
+		}},
+		bson.D{{
 			Key: "$unwind",
 			Value: bson.M{
 				"path": "$res",
