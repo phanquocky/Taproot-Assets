@@ -22,6 +22,7 @@ type MintController struct {
 
 func (c *MintController) RegisterRoutes(route gin.IRoutes) {
 	route.POST("/mint-asset", c.MintAsset)
+	route.POST("/asset", c.ListAssetsByPubKey)
 	route.POST("/unspent-asset-id", c.UnspentAssetsByID)
 	route.POST("/transfer-asset", c.TransferAsset)
 }
@@ -97,6 +98,24 @@ func (c *MintController) TransferAsset(g *gin.Context) {
 	}
 
 	g.JSON(http.StatusNoContent, nil)
+}
+
+func (c *MintController) ListAssetsByPubKey(g *gin.Context) {
+	var req utxoassetmodel.ListAssetReq
+	if err := g.ShouldBindJSON(&req); err != nil {
+		g.JSON(http.StatusBadRequest, nil)
+
+		return
+	}
+
+	assets, err := c.utxoUseCase.ListAllAssetsWithAmount(g, req.Pubkey)
+	if err != nil {
+		g.JSON(http.StatusInternalServerError, nil)
+
+		return
+	}
+
+	g.JSON(http.StatusOK, assets)
 }
 
 func NewMintController(

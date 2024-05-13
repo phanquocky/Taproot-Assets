@@ -6,9 +6,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/quocky/taproot-asset/server/internal/domain/asset"
 	assetoutpoint "github.com/quocky/taproot-asset/server/internal/domain/asset_outpoint"
 	"github.com/quocky/taproot-asset/server/internal/domain/genesis"
+	genesisasset "github.com/quocky/taproot-asset/server/internal/domain/genesis_asset"
 	utxoasset "github.com/quocky/taproot-asset/server/internal/domain/utxo_asset"
 	"github.com/quocky/taproot-asset/server/pkg/logger"
 	utxoassetsdk "github.com/quocky/taproot-asset/taproot/http_model/utxo_asset"
@@ -20,9 +20,16 @@ import (
 )
 
 type UseCase struct {
-	assetRepo         asset.RepoInterface
+	genesisAssetRepo  genesisasset.RepoInterface
 	assetOutpointRepo assetoutpoint.RepoInterface
 	genesisPointRepo  genesis.RepoInterface
+}
+
+func (u *UseCase) ListAllAssetsWithAmount(
+	ctx context.Context,
+	pubkey []byte,
+) (utxoassetsdk.ListAssetsResp, error) {
+	return u.genesisAssetRepo.FindAvailableAssetsWithAmount(ctx, pubkey)
 }
 
 func (u *UseCase) GetUnspentAssetsById(
@@ -32,7 +39,7 @@ func (u *UseCase) GetUnspentAssetsById(
 	pubKey []byte,
 ) (*utxoassetsdk.UnspentAssetResp, error) {
 	var (
-		genesisAsset     asset.GenesisAsset
+		genesisAsset     genesisasset.GenesisAsset
 		unspentOutpoints []*assetoutpointmodel.UnspentOutpoint
 		genesisPoint     genesis.GenesisPoint
 		inputFilesBytes  [][]byte
@@ -41,12 +48,12 @@ func (u *UseCase) GetUnspentAssetsById(
 
 	assetIdBytes, err := hex.DecodeString(assetID)
 	if err != nil {
-		logger.Errorw("decode asset id fail", "asset_id", assetID, "err", err.Error())
+		logger.Errorw("decode genesis_asset id fail", "asset_id", assetID, "err", err.Error())
 
 		return nil, err
 	}
 
-	err = u.assetRepo.FindOne(ctx, map[string]any{"asset_id": assetIdBytes}, &genesisAsset)
+	err = u.genesisAssetRepo.FindOne(ctx, map[string]any{"asset_id": assetIdBytes}, &genesisAsset)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +138,7 @@ func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.Unspent
 		for _, ra := range uo.RelatedAssets {
 			raBytes, err := json.Marshal(ra)
 			if err != nil {
-				logger.Errorw("marshal related asset fail", "related_asset_id", ra.ID.String(), "err", err.Error())
+				logger.Errorw("marshal related genesis_asset fail", "related_asset_id", ra.ID.String(), "err", err.Error())
 
 				return nil, 0
 			}
@@ -181,12 +188,12 @@ func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.Unspent
 }
 
 func NewUseCase(
-	assetRepo asset.RepoInterface,
+	genesisAssetRepo genesisasset.RepoInterface,
 	assetOutpointRepo assetoutpoint.RepoInterface,
 	genesisPointRepo genesis.RepoInterface,
 ) utxoasset.UseCaseInterface {
 	return &UseCase{
-		assetRepo:         assetRepo,
+		genesisAssetRepo:  genesisAssetRepo,
 		assetOutpointRepo: assetOutpointRepo,
 		genesisPointRepo:  genesisPointRepo,
 	}

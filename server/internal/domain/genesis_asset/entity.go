@@ -1,4 +1,4 @@
-package asset
+package genesis_asset
 
 import "github.com/quocky/taproot-asset/server/internal/domain/common"
 

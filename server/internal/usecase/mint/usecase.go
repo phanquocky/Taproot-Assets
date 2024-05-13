@@ -8,11 +8,11 @@ import (
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcd/wire"
-	"github.com/quocky/taproot-asset/server/internal/domain/asset"
 	assetoutpoint "github.com/quocky/taproot-asset/server/internal/domain/asset_outpoint"
 	chaintx "github.com/quocky/taproot-asset/server/internal/domain/chain_tx"
 	"github.com/quocky/taproot-asset/server/internal/domain/common"
 	"github.com/quocky/taproot-asset/server/internal/domain/genesis"
+	genesisasset "github.com/quocky/taproot-asset/server/internal/domain/genesis_asset"
 	manageutxo "github.com/quocky/taproot-asset/server/internal/domain/manage_utxo"
 	"github.com/quocky/taproot-asset/server/internal/domain/mint"
 	"github.com/quocky/taproot-asset/server/pkg/logger"
@@ -22,7 +22,7 @@ import (
 type UseCase struct {
 	genesisPointRepo  genesis.RepoInterface
 	chainTxRepo       chaintx.RepoInterface
-	assetRepo         asset.RepoInterface
+	assetRepo         genesisasset.RepoInterface
 	assetOutpointRepo assetoutpoint.RepoInterface
 	manageUtxoRepo    manageutxo.RepoInterface
 	rpcClient         *rpcclient.Client
@@ -128,7 +128,7 @@ func (u *UseCase) insertDiffCompTxMint(
 
 	dbTxs = append(dbTxs,
 		func(ctx context.Context) error {
-			result.GenesisAsset = asset.GenesisAsset{
+			result.GenesisAsset = genesisasset.GenesisAsset{
 				AssetID:        assetID[:],
 				AssetName:      data.Asset.Name,
 				Supply:         data.Asset.Amount,
@@ -216,7 +216,7 @@ func (u *UseCase) insertCommonComp(
 }
 
 func NewUseCase(
-	assetRepo asset.RepoInterface,
+	assetRepo genesisasset.RepoInterface,
 	assetOutpointRepo assetoutpoint.RepoInterface,
 	chainTxRepo chaintx.RepoInterface,
 	genesisPointRepo genesis.RepoInterface,

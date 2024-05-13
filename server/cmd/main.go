@@ -11,9 +11,9 @@ import (
 	"github.com/quocky/taproot-asset/server/config/core"
 	"github.com/quocky/taproot-asset/server/internal/core/api"
 	v1 "github.com/quocky/taproot-asset/server/internal/core/api/v1"
-	"github.com/quocky/taproot-asset/server/internal/repo/asset"
 	assetoutpoint "github.com/quocky/taproot-asset/server/internal/repo/asset_outpoint"
 	chaintx "github.com/quocky/taproot-asset/server/internal/repo/chain_tx"
+	genesisasset "github.com/quocky/taproot-asset/server/internal/repo/genesis_asset"
 	genesispoint "github.com/quocky/taproot-asset/server/internal/repo/genesis_point"
 	manageutxo "github.com/quocky/taproot-asset/server/internal/repo/manage_utxo"
 	mintU "github.com/quocky/taproot-asset/server/internal/usecase/mint"
@@ -41,15 +41,15 @@ func main() {
 	router := NewServer()
 
 	// repo
-	assetRepo := asset.NewRepoMongo(db)
+	genesisAssetRepo := genesisasset.NewRepoMongo(db)
 	assetOutpointRepo := assetoutpoint.NewRepoMongo(db)
 	chainTxRepo := chaintx.NewRepoMongo(db)
 	genesisPointRepo := genesispoint.NewRepoMongo(db)
 	manageUtxoRepo := manageutxo.NewRepoMongo(db)
 
 	// use case
-	mintUseCase := mintU.NewUseCase(assetRepo, assetOutpointRepo, chainTxRepo, genesisPointRepo, manageUtxoRepo, rpcClient)
-	utxoUseCase := utxoU.NewUseCase(assetRepo, assetOutpointRepo, genesisPointRepo)
+	mintUseCase := mintU.NewUseCase(genesisAssetRepo, assetOutpointRepo, chainTxRepo, genesisPointRepo, manageUtxoRepo, rpcClient)
+	utxoUseCase := utxoU.NewUseCase(genesisAssetRepo, assetOutpointRepo, genesisPointRepo)
 	transferUseCase := transferU.NewUseCase(assetOutpointRepo, chainTxRepo, manageUtxoRepo, rpcClient)
 
 	// controller

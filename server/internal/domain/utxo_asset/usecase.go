@@ -12,4 +12,5 @@ type UseCaseInterface interface {
 		amount int32,
 		pubKey []byte,
 	) (*utxoassetsdk.UnspentAssetResp, error)
+	ListAllAssetsWithAmount(ctx context.Context, pubkey []byte) (utxoassetsdk.ListAssetsResp, error)
 }
