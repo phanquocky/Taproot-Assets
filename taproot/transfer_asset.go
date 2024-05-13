@@ -2,6 +2,7 @@ package taproot
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -212,8 +213,10 @@ func (t *Taproot) createReturnAsset(assetGenOutpoint *wire.OutPoint,
 		return nil, errors.New("createReturnAsset: assetUTXOs or transferAsset is empty")
 	}
 
-	passiveAssets := getPassiveAssets(assetUTXOs, transferAsset[0])
+	passiveAssets, err := getPassiveAssets(assetUTXOs, transferAsset[0])
+	if err != nil {
 
+	}
 	totalAmount := int32(0)
 	transferAmount := int32(0)
 	for _, a := range assetUTXOs.UnspentOutpoints {
@@ -239,20 +242,26 @@ func (t *Taproot) createReturnAsset(assetGenOutpoint *wire.OutPoint,
 	}, nil
 }
 
-func getPassiveAssets(utxOs *utxoasset.UnspentAssetResp, transferAsset *asset.Asset) []*asset.Asset {
+func getPassiveAssets(utxOs *utxoasset.UnspentAssetResp, transferAsset *asset.Asset) ([]*asset.Asset, error) {
 	activeAssetId := transferAsset.ID()
 	passiveAssets := make([]*asset.Asset, 0)
 	for _, u := range utxOs.UnspentOutpoints {
-		for _, ac := range u.TapCommitment.AssetCommitments {
-			for _, a := range ac.Assets {
-				if a.ID() != activeAssetId {
-					passiveAssets = append(passiveAssets, a)
-				}
+		for _, a := range u.RelatedAnchorAssets {
+			var curAsset *asset.Asset
+
+			err := json.Unmarshal([]byte(a), &curAsset)
+			if err != nil {
+				log.Println("json.Unmarshal([]byte(a), &curAsset) got error", err)
+				return nil, err
 			}
+			if curAsset.ID() != activeAssetId {
+				passiveAssets = append(passiveAssets, curAsset)
+			}
+
 		}
 	}
 
-	return passiveAssets
+	return passiveAssets, nil
 }
 
 func prepareAssets(assetGenOutpoint *wire.OutPoint,
