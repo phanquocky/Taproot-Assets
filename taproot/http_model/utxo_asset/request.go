@@ -5,3 +5,15 @@ type UnspentAssetReq struct {
 	Amount  int32  `json:"amount"`
 	PubKey  []byte `json:"pub_key"`
 }
+
+type ListAssetReq struct {
+	Pubkey []byte `json:"pub_key"`
+}
+
+type ListAssetResp struct {
+	Amount  int32  `json:"amount"`
+	Name    string `json:"name"`
+	AssetID string `json:"asset_id"`
+}
+
+type ListAssetsResp []*ListAssetResp
