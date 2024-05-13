@@ -13,7 +13,11 @@ type TapAddress struct {
 	Address           *btcutil.AddressTaproot
 	TapScriptRootHash *chainhash.Hash
 	PubKey            asset.SerializedKey
-	TapCommitment     *commitment.TapCommitment
+	tapCommitment     *commitment.TapCommitment
+}
+
+func (tap *TapAddress) GetTapCommitment() *commitment.TapCommitment {
+	return tap.tapCommitment
 }
 
 // CreateTapAddr create taproot address with public key of owner
@@ -55,6 +59,6 @@ func (tap *TapAddr) CreateTapAddr(
 		Address:           address,
 		TapScriptRootHash: &tapScriptRootHash,
 		PubKey:            userPubKey,
-		TapCommitment:     tapCommitment,
+		tapCommitment:     tapCommitment,
 	}, nil
 }

@@ -2,6 +2,7 @@ package taproot
 
 import (
 	"context"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"log"
@@ -92,7 +93,7 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 	log.Println("[Mint Asset] Create mint proof success!")
 
 	data := mint.MintAssetReq{
-		AmountSats:        expectBtcAmount,
+		AmountSats:        DEFAULT_OUTPUT_AMOUNT,
 		TapScriptRootHash: mintTapAddress.TapScriptRootHash,
 		MintProof:         mintProof,
 	}
@@ -105,6 +106,8 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 	}
 
 	log.Println("[Mint Asset] Post mint asset success!", postResp)
+	asset_id := mintAssets[0].ID()
+	log.Println("AssetID: ", hex.EncodeToString(asset_id[:]))
 
 	return nil
 }

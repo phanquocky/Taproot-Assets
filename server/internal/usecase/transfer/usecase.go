@@ -123,7 +123,7 @@ func (u *UseCase) insertDBTransferTx(
 		curAsset := btcOutAssets[0]
 
 		insertAssetOutpointParam := assetoutpoint.AssetOutpoint{
-			GenesisID:    common.ID(genesisAsset.GenesisPointID),
+			GenesisID:    common.ID(genesisAsset.AssetID),
 			ScriptKey:    curAsset.ScriptPubkey[:],
 			Amount:       curAsset.Amount,
 			AnchorUtxoID: utxoID,

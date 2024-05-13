@@ -33,13 +33,15 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		rcvSerializedKey := []asset.SerializedKey{}
-		copy(rcvSerializedKey[0][:], receiverPubKey)
+		rcvByte := [33]byte(receiverPubKey)
+
+		rcvSerializedKey := make([]asset.SerializedKey, 1)
+		rcvSerializedKey[0] = rcvByte
 
 		err = TaprootClient.TransferAsset(
 			rcvSerializedKey,
-			"6a84887816c5109e69a169dd181d3e1ba0fbd088aa52ca270a03630093460fb1",
-			[]int32{1},
+			"c389835fa96c3bf76004944bac586c618d894f7089e839c328800c322721f53f",
+			[]int32{3},
 		)
 		if err != nil {
 			fmt.Println("Error transfer asset", err)

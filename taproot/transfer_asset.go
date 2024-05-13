@@ -60,7 +60,9 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		return err
 	}
 
-	btcOutputInfos, _, err := t.prepareBtcOutputs(ctx, assetUTXOs, transferAssets, returnAssets.assets)
+	log.Println("[Transfer Asset] Create return asset success!", returnAssets.Assets)
+
+	btcOutputInfos, _, err := t.prepareBtcOutputs(ctx, assetUTXOs, transferAssets, returnAssets.Assets)
 	if err != nil {
 		fmt.Println("t.createTransferAddresses(ctx, unspentAssets, transferAssets),  err ", err)
 		return err
@@ -144,20 +146,20 @@ func makeLocatorTransitionParams(
 	btcOutputInfos []*onchain.BtcOutputInfo,
 	exclusionProofs []*proof.TaprootProof,
 ) *proof.TransitionParams {
-	fmt.Println("btcOutputInfos[i].AddrResult", btcOutputInfos[i].AddrResult.TapCommitment)
+	fmt.Println("btcOutputInfos[i].AddrResult", btcOutputInfos[i].AddrResult.GetTapCommitment())
 
 	return &proof.TransitionParams{
 		BaseProofParams: proof.BaseProofParams{
 			Tx:              tx,
 			OutputIndex:     int32(i),
 			InternalKey:     btcOutputInfos[i].AddrResult.PubKey,
-			TapCommitment:   btcOutputInfos[i].AddrResult.TapCommitment,
+			TapCommitment:   btcOutputInfos[i].AddrResult.GetTapCommitment(),
 			ExclusionProofs: exclusionProofs,
 		},
 		NewAsset:             btcOutputInfos[i].OutputAsset[0].Copy(), // TODO:
 		RootOutputIndex:      uint32(outIndex),
 		RootInternalKey:      btcOutputInfos[outIndex].AddrResult.PubKey,
-		RootTaprootAssetTree: btcOutputInfos[outIndex].AddrResult.TapCommitment,
+		RootTaprootAssetTree: btcOutputInfos[outIndex].AddrResult.GetTapCommitment(),
 	}
 }
 
@@ -183,7 +185,7 @@ func makeExclusionProofs(curID int, btcOutputInfos []*onchain.BtcOutputInfo) ([]
 
 		utils.PrintStruct(exclusion.OutputAsset[0])
 
-		_, commitmentProof, err := exclusion.GetAddrResult().TapCommitment.CreateProof(
+		_, commitmentProof, err := exclusion.GetAddrResult().GetTapCommitment().CreateProof(
 			curAsset.TapCommitmentKey(),
 			curAsset.AssetCommitmentKey(),
 		)
@@ -201,13 +203,13 @@ func makeExclusionProofs(curID int, btcOutputInfos []*onchain.BtcOutputInfo) ([]
 	return exclusionProofs, nil
 }
 
-type returnAssets struct {
-	assets []*asset.Asset
+type returnAssetsResp struct {
+	Assets []*asset.Asset
 }
 
 func (t *Taproot) createReturnAsset(assetGenOutpoint *wire.OutPoint,
 	assetName string,
-	assetUTXOs *utxoasset.UnspentAssetResp, transferAsset []*asset.Asset) (*returnAssets, error) {
+	assetUTXOs *utxoasset.UnspentAssetResp, transferAsset []*asset.Asset) (*returnAssetsResp, error) {
 
 	if len(assetUTXOs.UnspentOutpoints) == 0 || len(transferAsset) == 0 {
 		return nil, errors.New("createReturnAsset: assetUTXOs or transferAsset is empty")
@@ -237,8 +239,8 @@ func (t *Taproot) createReturnAsset(assetGenOutpoint *wire.OutPoint,
 	)}
 	returnAsset = append(returnAsset, passiveAssets...)
 
-	return &returnAssets{
-		assets: passiveAssets,
+	return &returnAssetsResp{
+		Assets: returnAsset,
 	}, nil
 }
 
@@ -354,6 +356,10 @@ func createReturnAssetCommitments(ctx context.Context, ca map[[32]byte][]*asset.
 
 	returnAssetCommitments := make([]*commitment.AssetCommitment, 0)
 	for _, assets := range ca {
+		if len(assets) == 0 {
+			continue
+		}
+
 		assetCommitments, err := commitment.NewAssetCommitment(ctx, assets...)
 		if err != nil {
 			log.Println("[createReturnAssetCommitments] commitment.NewAssetCommitment(ctx, assets...), err ", err)
