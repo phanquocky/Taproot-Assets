@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -16,7 +15,7 @@ var mintAssetCmd = &cobra.Command{
 	Short: "A brief description of your command",
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("mintAsset called")
+		log.Println("mintAsset called!")
 
 		names := make([]string, 0)
 		amounts := make([]int32, 0)
@@ -31,16 +30,13 @@ var mintAssetCmd = &cobra.Command{
 			amounts = append(amounts, int32(amount))
 		}
 
-		fmt.Println("Taproot client: ", TaprootClient)
-
 		ctx := context.Background()
 		err := TaprootClient.MintAsset(ctx, names, amounts)
 		if err != nil {
 			log.Fatalln("Error minting asset, err: ", err)
 		}
 
-		fmt.Println("Asset minted successfully")
-
+		log.Println("Asset minted successfully")
 	},
 }
 

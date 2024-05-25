@@ -2,6 +2,7 @@ package taproot
 
 import (
 	"context"
+	"go.uber.org/zap"
 
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/go-resty/resty/v2"
@@ -32,6 +33,7 @@ type Interface interface {
 }
 
 type Taproot struct {
+	logger       *zap.Logger
 	btcClient    onchain.Interface
 	wif          *btcutil.WIF
 	addressMaker address.TapAddrMaker
@@ -40,6 +42,7 @@ type Taproot struct {
 
 func NewTaproot(btcClient onchain.Interface, wif *btcutil.WIF, addressMaker address.TapAddrMaker) Interface {
 	return &Taproot{
+		logger:       zap.NewNop(),
 		btcClient:    btcClient,
 		wif:          wif,
 		addressMaker: addressMaker,

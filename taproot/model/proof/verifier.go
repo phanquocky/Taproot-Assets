@@ -2,6 +2,7 @@ package proof
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/btcsuite/btcd/btcec/v2"
@@ -18,7 +19,7 @@ func (p *Proof) Verify(
 
 	// TODO: validate p.asset (check asset name)
 
-	log.Println("Verify ", p.Asset.ID(), p.Asset.Name, p.Asset.Amount)
+	log.Println("Verify proof ", p.Asset.ID(), p.Asset.Name, p.Asset.Amount)
 
 	assetCommitment, err := p.verifyInclusionProof()
 	if err != nil {
@@ -46,8 +47,6 @@ func (p *Proof) Verify(
 	case !isGenesisAsset && hasGenesisReveal:
 		return nil, ErrNonGenesisAssetWithGenesisReveal
 	case isGenesisAsset && !hasGenesisReveal:
-		log.Println("asdlkajsd;lajsd;lkasjd;lkjas;dlkja;lsk", isGenesisAsset, hasGenesisReveal)
-
 		return nil, ErrGenesisRevealRequired
 	case isGenesisAsset && hasGenesisReveal:
 		if err := p.verifyGenesisReveal(); err != nil {
@@ -139,6 +138,7 @@ func (p *Proof) verifyExclusionProofs() error {
 }
 
 func (p *Proof) verifyInclusionProof() (*commitment.TapCommitment, error) {
+	fmt.Println("Verify inclusion proof!")
 	return verifyTaprootProof(
 		&p.AnchorTx, &p.InclusionProof, &p.Asset, true,
 	)
@@ -160,12 +160,15 @@ func verifyTaprootProof(
 	inclusion bool,
 ) (*commitment.TapCommitment, error) {
 
+	fmt.Println("Verify taproot proof!")
 	expectedTaprootKey, err := ExtractTaprootKey(
 		anchor, proof.OutputIndex,
 	)
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("Expected taproot key: ", expectedTaprootKey)
 
 	var (
 		derivedKey    *btcec.PublicKey
@@ -192,12 +195,13 @@ func verifyTaprootProof(
 			return nil, err
 		}
 	case proof.TapscriptProof != nil:
-		log.Println("Verifying tapscript proof")
 		derivedKey, err = proof.DeriveByTapscriptProof()
 	}
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println("Derived key: ", derivedKey)
 
 	if derivedKey.IsEqual(expectedTaprootKey) {
 		return tapCommitment, nil

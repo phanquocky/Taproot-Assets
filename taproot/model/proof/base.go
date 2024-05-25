@@ -35,8 +35,6 @@ func (b *BaseProofParams) AddExclusionProofs(
 
 		internalKey := txIncludeOutPubKey.OutPubKeys[int32(outIdx)]
 
-		// Okay, we now know this is a normal BIP-0086 key spend and can
-		// add the exclusion proof accordingly.
 		b.ExclusionProofs = append(
 			b.ExclusionProofs, &TaprootProof{
 				OutputIndex: uint32(outIdx),

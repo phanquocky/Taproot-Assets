@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"go.uber.org/zap"
 	"log"
 	"os"
 
@@ -23,7 +24,7 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		return err
 	}
 
-	log.Println("[Mint Asset] Precheck assets success!")
+	t.logger.Info("[Mint Asset] Precheck assets success!")
 
 	var (
 		expectBtcAmount = int32(DEFAULT_OUTPUT_AMOUNT + DEFAULT_FEE)
@@ -44,33 +45,33 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		return err
 	}
 
-	log.Println("[Mint Asset] Choose best utxos success!")
+	t.logger.Debug("[Mint Asset] Choose best utxos success!")
 
 	firstPrevOut := bestUTXOs[0].Outpoint
 	mintAssets := genAssets(assetNames, assetAmounts, firstPrevOut, userPubKey)
 
-	log.Println("[Mint Asset] Generate assets success!", mintAssets)
+	t.logger.Debug("[Mint Asset] Generate assets success!", zap.Reflect("mint-assets", mintAssets))
 
 	assetCommitments, err := genAssetCommitments(ctx, mintAssets)
 	if err != nil {
 		return err
 	}
 
-	log.Println("[Mint Asset] Generate asset commitments success!")
+	t.logger.Debug("[Mint Asset] Generate asset commitments success!")
 
 	tapCommitment, err := commitment.NewTapCommitment(assetCommitments...)
 	if err != nil {
 		return err
 	}
 
-	log.Println("[Mint Asset] Generate tap commitment success!")
+	t.logger.Debug("[Mint Asset] Generate tap commitment success!")
 
 	mintTapAddress, err := t.addressMaker.CreateTapAddr(userPubKey, tapCommitment)
 	if err != nil {
 		return err
 	}
 
-	log.Println("[Mint Asset] Generate tap address success!")
+	t.logger.Info("[Mint Asset] Generate tap address success!")
 
 	btcOutputInfos := []*onchain.BtcOutputInfo{
 		onchain.NewBtcOutputInfo(mintTapAddress, DEFAULT_OUTPUT_AMOUNT, mintAssets...),
@@ -82,15 +83,15 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		return err
 	}
 
-	log.Println("[Mint Asset] Create tx on chain success!")
+	t.logger.Info("[Mint Asset] Create tx on chain success!")
 
-	mintProof, err := createMintProof(
+	mintProof, err := t.createMintProof(
 		txIncludeOutPubKey,
 		DEFAULT_MINTING_OUTPUT_INDEX,
 		tapCommitment,
 	)
 
-	log.Println("[Mint Asset] Create mint proof success!")
+	t.logger.Info("[Mint Asset] Create mint proof success!")
 
 	data := mint.MintAssetReq{
 		AmountSats:        DEFAULT_OUTPUT_AMOUNT,
@@ -105,9 +106,16 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		return err
 	}
 
-	log.Println("[Mint Asset] Post mint asset success!", postResp)
-	asset_id := mintAssets[0].ID()
-	log.Println("AssetID: ", hex.EncodeToString(asset_id[:]))
+	t.logger.Debug("[Mint Asset] Post mint asset success!", zap.Reflect("req", postResp))
+
+	assetIDs := make([]string, 0)
+	for _, a := range mintAssets {
+		//assetIDs = append(assetIDs, hex.EncodeToString(a.ID()[:]))
+		id := a.ID()
+		assetIDs = append(assetIDs, hex.EncodeToString(id[:]))
+	}
+
+	t.logger.Info("asset-id", zap.Reflect("asset-id", assetIDs))
 
 	return nil
 }
@@ -181,11 +189,16 @@ func genAssetCommitments(ctx context.Context, assets []*asset.Asset) ([]*commitm
 	return assetCommitments, nil
 }
 
-func createMintProof(
+func (t *Taproot) createMintProof(
 	txIncludeOutPubKey *onchain.TxIncludeOutPubKey,
 	outputIndex int32,
 	tapCommitment *commitment.TapCommitment,
 ) (proof.AssetProofs, error) {
+
+	if len(txIncludeOutPubKey.Tx.TxIn) == 0 {
+		return nil, errors.New("txIncludeOutPubKey.Tx.TxIn is empty")
+	}
+
 	baseProof := &proof.MintParams{
 		BaseProofParams: proof.BaseProofParams{
 			Tx:            txIncludeOutPubKey.Tx,
@@ -195,6 +208,8 @@ func createMintProof(
 		},
 		GenesisPoint: txIncludeOutPubKey.Tx.TxIn[0].PreviousOutPoint,
 	}
+
+	t.logger.Debug("base proof: ", zap.Reflect("base proof", baseProof))
 
 	err := baseProof.BaseProofParams.AddExclusionProofs(
 		txIncludeOutPubKey,
@@ -207,7 +222,7 @@ func createMintProof(
 			"%w", err)
 	}
 
-	mintProofs, err := proof.NewMintingBlobs(baseProof)
+	mintProofs, err := proof.NewMintingBlobs(t.logger, baseProof)
 	if err != nil {
 		return nil, fmt.Errorf("unable to construct minting "+
 			"proofs: %w", err)
