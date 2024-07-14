@@ -14,11 +14,19 @@ import (
 
 type AssetCommitments map[[32]byte]*AssetCommitment
 
+// func (c AssetCommitments) String() string {
+// 	return fmt.Sprintf("AssetCommitments{Key: %x, Value: %v}", maps.Keys(c), maps.Values(c))
+// }
+
 type TapCommitment struct {
 	TreeRoot         *mssmt.BranchNode
 	tree             mssmt.Tree
 	AssetCommitments AssetCommitments
 }
+
+// func (c TapCommitment) String() string {
+// 	return fmt.Sprintf("TapCommitment{TreeRoot: %s, AssetCommitments: %s}", c.TreeRoot, c.AssetCommitments)
+// }
 
 func NewTapCommitment(newCommitments ...*AssetCommitment) (*TapCommitment,
 	error) {

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 
 	assetoutpoint "github.com/quocky/taproot-asset/server/internal/domain/asset_outpoint"
 	"github.com/quocky/taproot-asset/server/internal/domain/genesis"
@@ -13,7 +14,7 @@ import (
 	"github.com/quocky/taproot-asset/server/pkg/logger"
 	utxoassetsdk "github.com/quocky/taproot-asset/taproot/http_model/utxo_asset"
 	assetsdk "github.com/quocky/taproot-asset/taproot/model/asset"
-	"github.com/quocky/taproot-asset/taproot/model/asset_outpoint"
+	assetoutpointmodel "github.com/quocky/taproot-asset/taproot/model/asset_outpoint"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 	"github.com/quocky/taproot-asset/taproot/utils"
 	"golang.org/x/net/context"
@@ -53,8 +54,11 @@ func (u *UseCase) GetUnspentAssetsById(
 		return nil, err
 	}
 
+	log.Printf("assetIdBytes %x", assetIdBytes)
+
 	err = u.genesisAssetRepo.FindOne(ctx, map[string]any{"asset_id": assetIdBytes}, &genesisAsset)
 	if err != nil {
+		log.Println("find one fail", err)
 		return nil, err
 	}
 

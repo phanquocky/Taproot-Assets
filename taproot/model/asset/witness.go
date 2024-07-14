@@ -1,8 +1,9 @@
 package asset
 
 import (
-	"github.com/btcsuite/btcd/wire"
 	"reflect"
+
+	"github.com/btcsuite/btcd/wire"
 )
 
 type ID [32]byte
@@ -15,11 +16,19 @@ type PrevID struct {
 	ScriptKey SerializedKey
 }
 
+// func (p PrevID) String() string {
+// 	return fmt.Sprintf("PrevID{OutPoint: %s, ID: %x, ScriptKey: %x}", p.OutPoint, p.ID, p.ScriptKey)
+// }
+
 type Witness struct {
 	PrevID *PrevID
 
 	SplitCommitment *SplitCommitment
 }
+
+// func (w Witness) String() string {
+// 	return fmt.Sprintf("Witness{PrevID: %s, SplitCommitment: %s}", w.PrevID, w.SplitCommitment)
+// }
 
 // IsSplitCommitWitness returns true if the witness is a split-commitment
 // witness.

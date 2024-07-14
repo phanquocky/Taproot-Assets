@@ -11,12 +11,14 @@ import (
 )
 
 func (t *Taproot) GetAssetUTXOs(ctx context.Context, assetID string, amount int32) (*utxoasset.UnspentAssetResp, error) {
+	data := utxoasset.UnspentAssetReq{
+		AssetID: assetID,
+		Amount:  amount,
+		PubKey:  t.wif.PrivKey.PubKey().SerializeCompressed(),
+	}
+
 	resp, err := t.httpClient.R().
-		SetContext(ctx).SetBody(map[string]any{
-		"asset_id": assetID,
-		"amount":   amount,
-		"pub_key":  t.wif.PrivKey.PubKey().SerializeCompressed(),
-	}).Post(os.Getenv("SERVER_BASE_URL") + "/unspent-asset-id")
+		SetContext(ctx).SetBody(data).Post(os.Getenv("SERVER_BASE_URL") + "/unspent-asset-id")
 
 	if err != nil {
 		return nil, err

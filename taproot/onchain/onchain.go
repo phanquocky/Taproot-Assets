@@ -6,12 +6,10 @@ import (
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/quocky/taproot-asset/taproot/config"
-	"github.com/quocky/taproot-asset/taproot/utils"
 )
 
 type Interface interface {
-	OpenWallet() error
-	DumpWIF() (*btcutil.WIF, error)
+	DumpWIF(pass string) (*btcutil.WIF, error)
 	ListUTXOs() ([]*UnspentTXOut, error)
 	NewTxMaker(UTXOs []*UnspentTXOut,
 		unspentAssets []*UnspentAssetsByIdResult,
@@ -31,18 +29,13 @@ type Client struct {
 }
 
 func New(networkConfig *config.NetworkConfig) (Interface, error) {
-	cert, err := utils.ReadCertFile("btcwallet", "rpc.cert")
-	if err != nil {
-		return nil, err
-	}
-
 	client, err := rpcclient.New(&rpcclient.ConnConfig{
-		Host:         networkConfig.Host,
-		Params:       networkConfig.Params,
-		Endpoint:     networkConfig.Endpoint,
-		User:         networkConfig.User,
-		Pass:         networkConfig.Pass,
-		Certificates: cert,
+		Host:       networkConfig.Host,
+		Params:     networkConfig.Params,
+		Endpoint:   networkConfig.Endpoint,
+		User:       networkConfig.User,
+		Pass:       networkConfig.Pass,
+		DisableTLS: true,
 	}, nil)
 	if err != nil {
 		return nil, err

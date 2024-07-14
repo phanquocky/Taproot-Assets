@@ -2,8 +2,9 @@ package database
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/quocky/taproot-asset/server/config/core"
+	config "github.com/quocky/taproot-asset/server/config/core"
 	"github.com/quocky/taproot-asset/server/pkg/logger"
 	"go.mongodb.org/mongo-driver/bson/mgocompat"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -13,6 +14,8 @@ import (
 
 func NewMongoDatabase(cfg *config.Config) (*mongo.Database, error) {
 	ctx := context.Background()
+
+	fmt.Println("URI:", cfg.Mongo.ConnURI)
 
 	bsonOpts := &options.BSONOptions{UseJSONStructTags: true}
 

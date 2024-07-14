@@ -60,7 +60,7 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		return err
 	}
 
-	log.Println("[Transfer Asset] Create return asset success!", returnAssets.Assets)
+	// log.Println("[Transfer Asset] Create return asset success!", returnAssets.Assets)
 
 	btcOutputInfos, _, err := t.prepareBtcOutputs(ctx, assetUTXOs, transferAssets, returnAssets.Assets)
 	if err != nil {
@@ -82,8 +82,6 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 	if err != nil {
 		return err
 	}
-
-	fmt.Println("files: ", files)
 
 	data := transfer.TransferReq{
 		GenesisAsset:     &assetUTXOs.GenesisAsset,
@@ -114,7 +112,7 @@ func createFiles(
 	curFiles := make([]*proof.File, len(btcOutputInfos))
 
 	for i := range btcOutputInfos {
-		log.Println("btcOutputInfos[i].GetOutputAsset()[0].Amount", btcOutputInfos[i].GetOutputAsset()[0].Amount)
+		// log.Println("btcOutputInfos[i].GetOutputAsset()[0].Amount", btcOutputInfos[i].GetOutputAsset()[0].Amount)
 
 		exclusionProofs, err := makeExclusionProofs(i, btcOutputInfos)
 		if err != nil {
@@ -146,7 +144,6 @@ func makeLocatorTransitionParams(
 	btcOutputInfos []*onchain.BtcOutputInfo,
 	exclusionProofs []*proof.TaprootProof,
 ) *proof.TransitionParams {
-	fmt.Println("btcOutputInfos[i].AddrResult", btcOutputInfos[i].AddrResult.GetTapCommitment())
 
 	return &proof.TransitionParams{
 		BaseProofParams: proof.BaseProofParams{
@@ -174,7 +171,6 @@ func makeExclusionProofs(curID int, btcOutputInfos []*onchain.BtcOutputInfo) ([]
 	curAsset := btcOutputInfos[curID].GetOutputAsset()[0].Copy()
 	//curAsset.PrevWitnesses[0].SplitCommitment = nil
 
-	fmt.Println("curAssetcurAssetcurAssetcurAssetcurAssetcurAssetcurAsset")
 	utils.PrintStruct(curAsset)
 
 	exclusionProofs := make([]*proof.TaprootProof, 0)
@@ -217,8 +213,9 @@ func (t *Taproot) createReturnAsset(assetGenOutpoint *wire.OutPoint,
 
 	passiveAssets, err := getPassiveAssets(assetUTXOs, transferAsset[0])
 	if err != nil {
-
+		return nil, err
 	}
+
 	totalAmount := int32(0)
 	transferAmount := int32(0)
 	for _, a := range assetUTXOs.UnspentOutpoints {
@@ -306,7 +303,7 @@ func (t *Taproot) prepareBtcOutputs(
 	returnAssetCommitments := createReturnAssetCommitments(ctx, ca)
 	tapReturnCommitment, err := commitment.NewTapCommitment(returnAssetCommitments...)
 
-	fmt.Println("tapReturnCommitment: ", tapReturnCommitment.TreeRoot.NodeHash(), tapReturnCommitment.TreeRoot.NodeSum())
+	// fmt.Println("tapReturnCommitment: ", tapReturnCommitment.TreeRoot.NodeHash(), tapReturnCommitment.TreeRoot.NodeSum())
 	utils.PrintStruct(tapReturnCommitment)
 
 	returnOutputInfo, err := t.addressMaker.CreateTapAddr(returnPubKey, tapReturnCommitment)
@@ -322,11 +319,11 @@ func (t *Taproot) prepareBtcOutputs(
 			continue
 		}
 
-		log.Println("bdefore Copy: splitAsset.Asset.PrevWitnesses[0].SplitCommitment", splitAsset.Asset.PrevWitnesses[0].SplitCommitment)
+		// log.Println("bdefore Copy: splitAsset.Asset.PrevWitnesses[0].SplitCommitment", splitAsset.Asset.PrevWitnesses[0].SplitCommitment)
 		splitAssetCopy := splitAsset.Asset.Copy()
 		splitAssetCopy.PrevWitnesses[0].SplitCommitment = nil
 
-		log.Println("after Copy: splitAsset.Asset.PrevWitnesses[0].SplitCommitment", splitAsset.Asset.PrevWitnesses[0].SplitCommitment)
+		// log.Println("after Copy: splitAsset.Asset.PrevWitnesses[0].SplitCommitment", splitAsset.Asset.PrevWitnesses[0].SplitCommitment)
 
 		transferCommitment, err := commitment.NewAssetCommitment(ctx, splitAssetCopy)
 		if err != nil {
@@ -338,7 +335,7 @@ func (t *Taproot) prepareBtcOutputs(
 			return nil, nil, err
 		}
 
-		fmt.Println("tapTransferCommitment: ", tapTransferCommitment.TreeRoot.NodeHash(), tapTransferCommitment.TreeRoot.NodeSum())
+		// fmt.Println("tapTransferCommitment: ", tapTransferCommitment.TreeRoot.NodeHash(), tapTransferCommitment.TreeRoot.NodeSum())
 		utils.PrintStruct(tapTransferCommitment)
 
 		transferOutputInfo, err := t.addressMaker.CreateTapAddr(splitAssetCopy.ScriptPubkey, tapTransferCommitment)

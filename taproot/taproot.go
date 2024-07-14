@@ -2,8 +2,8 @@ package taproot
 
 import (
 	"context"
-	"go.uber.org/zap"
 
+	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/go-resty/resty/v2"
 	"github.com/quocky/taproot-asset/taproot/address"
@@ -30,10 +30,10 @@ type Interface interface {
 	MintAsset(ctx context.Context, names []string, amounts []int32) error
 	GetAssetUTXOs(ctx context.Context, assetID string, amount int32) (*utxoasset.UnspentAssetResp, error)
 	TransferAsset(receiverPubKey []asset.SerializedKey, assetId string, amount []int32) error
+	GetPubKey() *btcec.PublicKey
 }
 
 type Taproot struct {
-	logger       *zap.Logger
 	btcClient    onchain.Interface
 	wif          *btcutil.WIF
 	addressMaker address.TapAddrMaker
@@ -42,10 +42,13 @@ type Taproot struct {
 
 func NewTaproot(btcClient onchain.Interface, wif *btcutil.WIF, addressMaker address.TapAddrMaker) Interface {
 	return &Taproot{
-		logger:       zap.NewNop(),
 		btcClient:    btcClient,
 		wif:          wif,
 		addressMaker: addressMaker,
 		httpClient:   resty.New(),
 	}
+}
+
+func (t *Taproot) GetPubKey() *btcec.PublicKey {
+	return t.wif.PrivKey.PubKey()
 }

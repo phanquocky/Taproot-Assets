@@ -13,6 +13,10 @@ type Genesis struct {
 	OutputIndex  uint32
 }
 
+// func (g Genesis) String() string {
+// 	return fmt.Sprintf("Genesis{FirstPrevOut: %s, Name: %s, OutputIndex: %d}", g.FirstPrevOut, g.Name, g.OutputIndex)
+// }
+
 type GenesisAsset struct {
 	// AssetID have to use hex.Encoder to convert to []byte
 	AssetID        string `json:"asset_id"`

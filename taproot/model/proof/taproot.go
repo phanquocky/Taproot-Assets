@@ -2,13 +2,13 @@ package proof
 
 import (
 	"errors"
-	"fmt"
+	"log"
+
 	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/btcec/v2/schnorr"
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
-	"log"
 )
 
 var (
@@ -135,14 +135,10 @@ func deriveTaprootKeyFromTapCommitment(
 	tapCommitment *commitment.TapCommitment,
 	internalKey *btcec.PublicKey,
 ) (*btcec.PublicKey, error) {
-	fmt.Println(tapCommitment)
 
 	commitmentLeaf := tapCommitment.TapLeaf()
 	tapscriptRoot := txscript.AssembleTaprootScriptTree(commitmentLeaf).
 		RootNode.TapHash()
-
-	fmt.Println("tapscriptRoot: ", tapscriptRoot)
-	fmt.Println("commitmentLeaf: ", commitmentLeaf)
 
 	return schnorr.ParsePubKey(schnorr.SerializePubKey(
 		txscript.ComputeTaprootOutputKey(internalKey, tapscriptRoot[:]),
@@ -192,9 +188,6 @@ func (p TaprootProof) DeriveByAssetInclusion(
 	if err != nil {
 		return nil, nil, err
 	}
-	fmt.Println("balabala")
-
-	fmt.Println("TapCommitment: ", tapCommitment)
 
 	pubkey, err := p.InternalKey.ToPubKey()
 	if err != nil {
@@ -203,21 +196,12 @@ func (p TaprootProof) DeriveByAssetInclusion(
 		return nil, nil, err
 	}
 
-	fmt.Println("balabala")
-	fmt.Println("pubkey: ", pubkey)
 	pubKey, err := deriveTaprootKeyFromTapCommitment(
 		tapCommitment, pubkey,
 	)
 	if err != nil {
 		return nil, nil, err
 	}
-
-	fmt.Println("pubKey After: ", pubKey)
-	// log.Tracef("Derived Taproot Asset commitment taproot_asset_root=%x, "+
-	// 	"internal_key=%x, taproot_key=%x",
-	// 	fn.ByteSlice(tapCommitment.TapscriptRoot(nil)),
-	// 	p.InternalKey.SerializeCompressed(),
-	// 	schnorr.SerializePubKey(pubKey))
 
 	return pubKey, tapCommitment, nil
 }

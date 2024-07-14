@@ -2,13 +2,12 @@ package onchain
 
 import (
 	"log"
-	"os"
 
 	"github.com/btcsuite/btcd/btcutil"
 )
 
-func (c *Client) OpenWallet() error {
-	err := c.client.WalletPassphrase(os.Getenv("WALLET_PASSPHRASE"), 100)
+func (c *Client) openWallet(pass string) error {
+	err := c.client.WalletPassphrase(pass, 100)
 	if err != nil {
 		return err
 	}
@@ -17,8 +16,8 @@ func (c *Client) OpenWallet() error {
 	return nil
 }
 
-func (c *Client) DumpWIF() (*btcutil.WIF, error) {
-	err := c.OpenWallet()
+func (c *Client) DumpWIF(pass string) (*btcutil.WIF, error) {
+	err := c.openWallet(pass)
 	if err != nil {
 		return nil, err
 	}

@@ -3,7 +3,6 @@ package proof
 import (
 	"context"
 	"fmt"
-	"go.uber.org/zap"
 	"log"
 
 	"github.com/btcsuite/btcd/wire"
@@ -17,18 +16,15 @@ type MintParams struct {
 	GenesisPoint wire.OutPoint
 }
 
-func NewMintingBlobs(logger *zap.Logger, params *MintParams) (AssetProofs, error) {
+func NewMintingBlobs(params *MintParams) (AssetProofs, error) {
 	template := createTemplateProof(&params.BaseProofParams, params.GenesisPoint)
 
-	logger.Debug("template proof: ", zap.Reflect("template", template))
 	proofs, err := committedProofs(
 		template, params.TapCommitment,
 	)
 	if err != nil {
 		return nil, err
 	}
-
-	logger.Debug("committed proofs: ", zap.Reflect("proofs", proofs))
 
 	ctx := context.Background()
 

@@ -7,6 +7,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+
 	"github.com/btcsuite/btcd/txscript"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/mssmt"
@@ -21,6 +22,10 @@ type AssetCommitment struct {
 	tree   mssmt.Tree
 	Assets CommittedAssets
 }
+
+// func (c *AssetCommitment) String() string {
+// 	return fmt.Sprintf("AssetCommitment{TapKey: %x, Root: %s, Assets: %s}", c.TapKey, c.Root, c.Assets)
+// }
 
 func NewAssetCommitment(ctx context.Context, assets ...*asset.Asset) (*AssetCommitment, error) {
 	tree := mssmt.NewCompactedTree(mssmt.NewDefaultStore())

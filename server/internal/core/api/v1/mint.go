@@ -1,13 +1,14 @@
 package v1
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/quocky/taproot-asset/server/internal/core/api"
 	"github.com/quocky/taproot-asset/server/internal/domain/mint"
 	"github.com/quocky/taproot-asset/server/internal/domain/transfer"
-	"github.com/quocky/taproot-asset/server/internal/domain/utxo_asset"
+	utxoasset "github.com/quocky/taproot-asset/server/internal/domain/utxo_asset"
 	mint2 "github.com/quocky/taproot-asset/taproot/http_model/mint"
 	transfermodel "github.com/quocky/taproot-asset/taproot/http_model/transfer"
 	utxoassetmodel "github.com/quocky/taproot-asset/taproot/http_model/utxo_asset"
@@ -60,12 +61,15 @@ func (c *MintController) UnspentAssetsByID(g *gin.Context) {
 		return
 	}
 
+	log.Println("assetid: ", req.AssetID)
+
 	unspentAsset, err := c.utxoUseCase.GetUnspentAssetsById(g,
 		req.AssetID,
 		req.Amount,
 		req.PubKey,
 	)
 	if err != nil {
+		log.Printf("[UnspentAssetsByID] GetUnspentAssetsById fail err: %v", err)
 		g.JSON(http.StatusInternalServerError, nil)
 
 		return

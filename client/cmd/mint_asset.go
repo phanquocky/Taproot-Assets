@@ -12,11 +12,12 @@ import (
 // mintAssetCmd represents the mintAsset command
 var mintAssetCmd = &cobra.Command{
 	Use:   "mint-asset",
-	Short: "A brief description of your command",
-	Long:  ``,
+	Short: "mint-asset command is used to mint new asset. Usage: mint-asset <asset_name>:<amount> <asset_name>:<amount> ...",
+	Long:  `mint-asset command is used to mint new asset. Usage: mint-asset <asset_name>:<amount> <asset_name>:<amount> ...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("mintAsset called!")
-
+		log.Println("******************************** setup runtime ********************************")
+		taprootClient = newTaprootClient()
+		log.Printf("******************************** setup runtime success ********************************\n")
 		names := make([]string, 0)
 		amounts := make([]int32, 0)
 
@@ -25,13 +26,13 @@ var mintAssetCmd = &cobra.Command{
 			names = append(names, tmp[0])
 			amount, err := strconv.ParseInt(tmp[1], 10, 32)
 			if err != nil {
-				log.Fatalln("Error parsing amount")
+				log.Fatalln("mint-asset fail error parsing amount, amount must be integer, err: ", err)
 			}
 			amounts = append(amounts, int32(amount))
 		}
 
 		ctx := context.Background()
-		err := TaprootClient.MintAsset(ctx, names, amounts)
+		err := taprootClient.MintAsset(ctx, names, amounts)
 		if err != nil {
 			log.Fatalln("Error minting asset, err: ", err)
 		}

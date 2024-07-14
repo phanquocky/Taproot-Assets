@@ -13,6 +13,10 @@ type SplitCommitment struct {
 	RootAsset Asset
 }
 
+// func (sc SplitCommitment) String() string {
+// 	return fmt.Sprintf("SplitCommitment{Proof: %s, RootAsset: %s}", sc.Proof, sc.RootAsset)
+// }
+
 // DeepEqual returns true if this split commitment is equal with the given split
 // commitment.
 func (s *SplitCommitment) DeepEqual(o *SplitCommitment) bool {

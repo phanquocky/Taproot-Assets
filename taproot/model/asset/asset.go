@@ -21,6 +21,10 @@ type Asset struct {
 	PrevWitnesses       []Witness
 }
 
+// func (a Asset) String() string {
+// 	return fmt.Sprintf("Asset{Genesis: %s, Amount: %d, ScriptPubkey: %x, SplitCommitmentRoot: %s, PrevWitnesses: %s}", a.Genesis, a.Amount, a.ScriptPubkey, a.SplitCommitmentRoot, a.PrevWitnesses)
+// }
+
 func NewAsset(
 	genesis Genesis, amount int32,
 	scriptPubkey SerializedKey,

@@ -1,24 +1,26 @@
 package cmd
 
 import (
+	"log"
+	"os"
+
 	"github.com/joho/godotenv"
+	"github.com/quocky/taproot-asset/bitcoin_runtime"
 	"github.com/quocky/taproot-asset/taproot"
 	"github.com/quocky/taproot-asset/taproot/address"
 	"github.com/quocky/taproot-asset/taproot/config"
 	"github.com/quocky/taproot-asset/taproot/onchain"
-	"log"
-	"os"
 
 	"github.com/spf13/cobra"
 )
-
-var TaprootClient taproot.Interface
 
 var rootCmd = &cobra.Command{
 	Use:   "",
 	Short: "",
 	Long:  ``,
 }
+
+var taprootClient taproot.Interface
 
 func Execute() {
 	err := rootCmd.Execute()
@@ -27,27 +29,33 @@ func Execute() {
 	}
 }
 
-func init() {
+func newTaprootClient() taproot.Interface {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
 	networkCfg := config.LoadNetworkConfig()
+	log.Println("Network config: ", networkCfg)
 
 	btcClient, err := onchain.New(networkCfg)
 	if err != nil {
 		log.Fatalf("Error create btc client, err: %s \n", err.Error())
 	}
 
-	wif, err := btcClient.DumpWIF()
+	wif, err := btcClient.DumpWIF(bitcoin_runtime.WalletPassphrase)
 	if err != nil {
 		log.Fatalf("Error dump wif, err: %s \n", err.Error())
 	}
+	log.Printf("WIF: %s\n", wif.String())
 
 	addressMaker := address.New(networkCfg.ParamsObject)
 
-	TaprootClient = taproot.NewTaproot(btcClient, wif, addressMaker)
-
+	taprootClient := taproot.NewTaproot(btcClient, wif, addressMaker)
 	log.Println("Create taproot client success!")
+
+	return taprootClient
+}
+
+func init() {
 }

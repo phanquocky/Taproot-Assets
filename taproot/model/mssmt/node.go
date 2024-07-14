@@ -3,7 +3,6 @@ package mssmt
 import (
 	"crypto/sha256"
 	"encoding/binary"
-	"encoding/hex"
 	"encoding/json"
 
 	"github.com/quocky/taproot-asset/taproot/utils"
@@ -27,9 +26,9 @@ var (
 type NodeHash [hashSize]byte
 
 // String returns a NodeHash as a hex-encoded string.
-func (k NodeHash) String() string {
-	return hex.EncodeToString(k[:])
-}
+// func (k NodeHash) String() string {
+// 	return hex.EncodeToString(k[:])
+// }
 
 // Node represents a MS-SMT node. A node can either be a leaf or a branch.
 type Node interface {
@@ -201,6 +200,10 @@ type BranchNode struct {
 	Right Node
 }
 
+// func (bn BranchNode) String() string {
+// 	return fmt.Sprintf("BranchNode{NodeHash: %x, Sum: %d}", bn.nodeHash, bn.sum)
+// }
+
 func (bn *BranchNode) MarshalJSON() ([]byte, error) {
 	cn := NewComputedNode(*bn.nodeHash, *bn.sum)
 
@@ -295,6 +298,10 @@ type ComputedNode struct {
 	hash NodeHash
 	sum  uint64
 }
+
+// func (cn ComputedNode) String() string {
+// 	return fmt.Sprintf("ComputedNode{hash: %s, sum: %d}", cn.hash, cn.sum)
+// }
 
 // NewComputedNode instantiates a new computed node.
 func NewComputedNode(hash NodeHash, sum uint64) *ComputedNode {

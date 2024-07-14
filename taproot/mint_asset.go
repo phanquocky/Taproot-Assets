@@ -5,9 +5,10 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"go.uber.org/zap"
 	"log"
 	"os"
+
+	"go.uber.org/zap"
 
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/wire"
@@ -24,7 +25,7 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		return err
 	}
 
-	t.logger.Info("[Mint Asset] Precheck assets success!")
+	log.Printf("Precheck success, asset names: %v, asset amounts: %v \n", assetNames, assetAmounts)
 
 	var (
 		expectBtcAmount = int32(DEFAULT_OUTPUT_AMOUNT + DEFAULT_FEE)
@@ -42,36 +43,35 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 
 	bestUTXOs, err := chooseBestUTXOs(btcUTXOs, expectBtcAmount)
 	if err != nil {
+		log.Printf("chooseBestUTXOs(btcUTXOs, expectBtcAmount) error: %v \n", err)
 		return err
 	}
-
-	t.logger.Debug("[Mint Asset] Choose best utxos success!")
 
 	firstPrevOut := bestUTXOs[0].Outpoint
 	mintAssets := genAssets(assetNames, assetAmounts, firstPrevOut, userPubKey)
 
-	t.logger.Debug("[Mint Asset] Generate assets success!", zap.Reflect("mint-assets", mintAssets))
+	log.Printf("[Mint Asset] generate mint assets, assets: %v \n", mintAssets)
 
 	assetCommitments, err := genAssetCommitments(ctx, mintAssets)
 	if err != nil {
 		return err
 	}
 
-	t.logger.Debug("[Mint Asset] Generate asset commitments success!")
+	log.Printf("[Mint Asset] Generate asset commitments success!")
 
 	tapCommitment, err := commitment.NewTapCommitment(assetCommitments...)
 	if err != nil {
 		return err
 	}
 
-	t.logger.Debug("[Mint Asset] Generate tap commitment success!")
+	log.Printf("[Mint Asset] Generate tap commitment: %v", tapCommitment)
 
 	mintTapAddress, err := t.addressMaker.CreateTapAddr(userPubKey, tapCommitment)
 	if err != nil {
 		return err
 	}
 
-	t.logger.Info("[Mint Asset] Generate tap address success!")
+	log.Printf("[Mint Asset] Generate tap address success!")
 
 	btcOutputInfos := []*onchain.BtcOutputInfo{
 		onchain.NewBtcOutputInfo(mintTapAddress, DEFAULT_OUTPUT_AMOUNT, mintAssets...),
@@ -83,15 +83,18 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		return err
 	}
 
-	t.logger.Info("[Mint Asset] Create tx on chain success!")
+	log.Printf("[Mint Asset] Create tx on chain success!")
 
 	mintProof, err := t.createMintProof(
 		txIncludeOutPubKey,
 		DEFAULT_MINTING_OUTPUT_INDEX,
 		tapCommitment,
 	)
+	if err != nil {
+		return err
+	}
 
-	t.logger.Info("[Mint Asset] Create mint proof success!")
+	log.Printf("[Mint Asset] Create mint proof success!")
 
 	data := mint.MintAssetReq{
 		AmountSats:        DEFAULT_OUTPUT_AMOUNT,
@@ -106,7 +109,7 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		return err
 	}
 
-	t.logger.Debug("[Mint Asset] Post mint asset success!", zap.Reflect("req", postResp))
+	log.Printf("[Mint Asset] Post mint asset success!", zap.Reflect("req", postResp))
 
 	assetIDs := make([]string, 0)
 	for _, a := range mintAssets {
@@ -115,7 +118,7 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		assetIDs = append(assetIDs, hex.EncodeToString(id[:]))
 	}
 
-	t.logger.Info("asset-id", zap.Reflect("asset-id", assetIDs))
+	log.Printf("asset-id", zap.Reflect("asset-id", assetIDs))
 
 	return nil
 }
@@ -209,8 +212,6 @@ func (t *Taproot) createMintProof(
 		GenesisPoint: txIncludeOutPubKey.Tx.TxIn[0].PreviousOutPoint,
 	}
 
-	t.logger.Debug("base proof: ", zap.Reflect("base proof", baseProof))
-
 	err := baseProof.BaseProofParams.AddExclusionProofs(
 		txIncludeOutPubKey,
 		func(idx int32) bool {
@@ -222,7 +223,7 @@ func (t *Taproot) createMintProof(
 			"%w", err)
 	}
 
-	mintProofs, err := proof.NewMintingBlobs(t.logger, baseProof)
+	mintProofs, err := proof.NewMintingBlobs(baseProof)
 	if err != nil {
 		return nil, fmt.Errorf("unable to construct minting "+
 			"proofs: %w", err)

@@ -17,10 +17,6 @@ func (p *Proof) Verify(
 	prev *AssetSnapshot,
 ) (*AssetSnapshot, error) {
 
-	// TODO: validate p.asset (check asset name)
-
-	log.Println("Verify proof ", p.Asset.ID(), p.Asset.Name, p.Asset.Amount)
-
 	assetCommitment, err := p.verifyInclusionProof()
 	if err != nil {
 		return nil, err
@@ -160,15 +156,13 @@ func verifyTaprootProof(
 	inclusion bool,
 ) (*commitment.TapCommitment, error) {
 
-	fmt.Println("Verify taproot proof!")
+	log.Println("Verify taproot proof!")
 	expectedTaprootKey, err := ExtractTaprootKey(
 		anchor, proof.OutputIndex,
 	)
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("Expected taproot key: ", expectedTaprootKey)
 
 	var (
 		derivedKey    *btcec.PublicKey
@@ -200,8 +194,6 @@ func verifyTaprootProof(
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Println("Derived key: ", derivedKey)
 
 	if derivedKey.IsEqual(expectedTaprootKey) {
 		return tapCommitment, nil

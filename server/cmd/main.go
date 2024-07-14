@@ -2,13 +2,10 @@ package main
 
 import (
 	"errors"
-	"os"
-	"path/filepath"
 
-	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/gin-gonic/gin"
-	"github.com/quocky/taproot-asset/server/config/core"
+	config "github.com/quocky/taproot-asset/server/config/core"
 	"github.com/quocky/taproot-asset/server/internal/core/api"
 	v1 "github.com/quocky/taproot-asset/server/internal/core/api/v1"
 	assetoutpoint "github.com/quocky/taproot-asset/server/internal/repo/asset_outpoint"
@@ -21,6 +18,7 @@ import (
 	utxoU "github.com/quocky/taproot-asset/server/internal/usecase/utxo"
 	"github.com/quocky/taproot-asset/server/pkg/database"
 	"github.com/quocky/taproot-asset/server/pkg/logger"
+	networkCfg "github.com/quocky/taproot-asset/taproot/config"
 )
 
 func main() {
@@ -69,19 +67,15 @@ func NewServer() *gin.Engine {
 }
 
 func NewRPCClient() (*rpcclient.Client, error) {
-	certPath := filepath.Join(btcutil.AppDataDir("btcd", false), "rpc.cert")
-
-	cert, err := os.ReadFile(certPath)
-	if err != nil {
-		return nil, errors.New("cannot read cert file, " + err.Error())
-	}
+	networkCfg := networkCfg.LoadNetworkConfig()
 
 	rpcCfg := &rpcclient.ConnConfig{
-		Host:         os.Getenv("IP"),
-		Endpoint:     "ws",
-		User:         os.Getenv("USER_CONFIG"),
-		Pass:         os.Getenv("PASS_CONFIG"),
-		Certificates: cert,
+		Host:       networkCfg.Host,
+		Endpoint:   networkCfg.Endpoint,
+		User:       networkCfg.User,
+		Pass:       networkCfg.Pass,
+		Params:     networkCfg.Params,
+		DisableTLS: true,
 	}
 
 	rpcClient, err := rpcclient.New(rpcCfg, nil)

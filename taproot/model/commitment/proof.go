@@ -59,14 +59,6 @@ func (u CommitmentProof) MarshalJSON() ([]byte, error) {
 		return nil, err
 	}
 
-	cbyte, _ := json.Marshal(CommitmentProofByte{
-		AssetProof: assetProofBytes.Bytes(),
-		TapProof:   tapProofBytes.Bytes(),
-		TapKey:     u.AssetProof.TapKey,
-	})
-
-	log.Println("byte ", cbyte)
-
 	return json.Marshal(CommitmentProofByte{
 		AssetProof: assetProofBytes.Bytes(),
 		TapProof:   tapProofBytes.Bytes(),
@@ -159,10 +151,7 @@ func (p CommitmentProof) DeriveByAssetInclusion(asset *asset.Asset) (*TapCommitm
 		assetCommitment.TapCommitmentLeaf(),
 	)
 
-	log.Println("tapProofRoot: ", tapProofRoot.NodeSum())
-	log.Println("tapProofRoot: ", tapProofRoot.NodeHash())
-
-	log.Printf("Derived asset inclusion proof for asset_id=%v, "+
+	log.Printf("Derived asset inclusion proof for asset_id=%x, "+
 		"asset_commitment_key=%x, asset_commitment_leaf=%s",
 		asset.ID(), fn.ByteSlice(asset.AssetCommitmentKey()),
 		assetCommitmentLeaf.NodeHash())

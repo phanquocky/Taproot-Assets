@@ -1,14 +1,19 @@
 package config
 
 import (
-	"github.com/btcsuite/btcd/chaincfg"
 	"os"
+
+	"github.com/btcsuite/btcd/chaincfg"
+	"github.com/quocky/taproot-asset/bitcoin_runtime"
 )
 
 func LoadNetworkConfig() *NetworkConfig {
 	params := "testnet3"
 	paramsObject := &chaincfg.TestNet3Params
 	host := "localhost:18332"
+	senderAddress := bitcoin_runtime.MiningAddr
+	user := bitcoin_runtime.MockBtcUser
+	pass := bitcoin_runtime.MockBtcPass
 
 	env := os.Getenv("ENV")
 	if env == "sim" {
@@ -19,11 +24,11 @@ func LoadNetworkConfig() *NetworkConfig {
 
 	return &NetworkConfig{
 		Host:          host,
-		Endpoint:      os.Getenv("ENDPOINT_CONFIG"),
-		User:          os.Getenv("USER_CONFIG"),
-		Pass:          os.Getenv("PASS_CONFIG"),
+		Endpoint:      "ws",
+		User:          user,
+		Pass:          pass,
 		Params:        params,
 		ParamsObject:  paramsObject,
-		SenderAddress: os.Getenv("SENDER_ADDR"),
+		SenderAddress: senderAddress,
 	}
 }
