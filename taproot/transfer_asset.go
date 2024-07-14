@@ -23,6 +23,11 @@ import (
 func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId string, amount []int32) error {
 	ctx := context.Background()
 
+	err := t.verifyReceiverPubKey(receiverPubKey)
+	if err != nil {
+		return err
+	}
+
 	var (
 		expectedAmount = int32(2*DEFAULT_OUTPUT_AMOUNT + DEFAULT_FEE)
 	)
@@ -59,8 +64,6 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 
 		return err
 	}
-
-	// log.Println("[Transfer Asset] Create return asset success!", returnAssets.Assets)
 
 	btcOutputInfos, _, err := t.prepareBtcOutputs(ctx, assetUTXOs, transferAssets, returnAssets.Assets)
 	if err != nil {
@@ -100,6 +103,27 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 	}
 
 	log.Println("[Transfer Asset] Post transfer asset success!", postResp)
+
+	return nil
+}
+
+func (t *Taproot) verifyReceiverPubKey(receiverPubKey []asset.SerializedKey) error {
+	walletPubkey := t.GetPubKey()
+	fmt.Printf("walletPubkey: %x", walletPubkey.SerializeCompressed())
+
+	for _, key := range receiverPubKey {
+
+		pubkey, err := key.ToPubKey()
+		if err != nil {
+			log.Println("key.ToPubKey() got error", err)
+			return err
+		}
+		fmt.Printf("key: %x", pubkey.SerializeCompressed())
+
+		if walletPubkey == pubkey {
+			return fmt.Errorf("verifyReceiverPubKey: receiverPubKey is the same as the sender's pubkey")
+		}
+	}
 
 	return nil
 }
@@ -161,25 +185,14 @@ func makeLocatorTransitionParams(
 }
 
 func makeExclusionProofs(curID int, btcOutputInfos []*onchain.BtcOutputInfo) ([]*proof.TaprootProof, error) {
-	log.Println("makeExclusionProofs: ")
-	utils.PrintStruct(btcOutputInfos[0].OutputAsset[0])
-	utils.PrintStruct(btcOutputInfos[1].OutputAsset[0])
-
-	log.Println("----=-==makeExclusionProofs: ")
-	log.Println(btcOutputInfos[curID].GetOutputAsset()[0].Copy().PrevWitnesses[0].SplitCommitment)
-
 	curAsset := btcOutputInfos[curID].GetOutputAsset()[0].Copy()
-	//curAsset.PrevWitnesses[0].SplitCommitment = nil
-
-	utils.PrintStruct(curAsset)
+	// curAsset.PrevWitnesses[0].SplitCommitment = nil
 
 	exclusionProofs := make([]*proof.TaprootProof, 0)
 	for idx, exclusion := range btcOutputInfos {
 		if idx == curID {
 			continue
 		}
-
-		utils.PrintStruct(exclusion.OutputAsset[0])
 
 		_, commitmentProof, err := exclusion.GetAddrResult().GetTapCommitment().CreateProof(
 			curAsset.TapCommitmentKey(),
@@ -302,9 +315,9 @@ func (t *Taproot) prepareBtcOutputs(
 
 	returnAssetCommitments := createReturnAssetCommitments(ctx, ca)
 	tapReturnCommitment, err := commitment.NewTapCommitment(returnAssetCommitments...)
-
-	// fmt.Println("tapReturnCommitment: ", tapReturnCommitment.TreeRoot.NodeHash(), tapReturnCommitment.TreeRoot.NodeSum())
-	utils.PrintStruct(tapReturnCommitment)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	returnOutputInfo, err := t.addressMaker.CreateTapAddr(returnPubKey, tapReturnCommitment)
 	if err != nil {
@@ -334,9 +347,6 @@ func (t *Taproot) prepareBtcOutputs(
 		if err != nil {
 			return nil, nil, err
 		}
-
-		// fmt.Println("tapTransferCommitment: ", tapTransferCommitment.TreeRoot.NodeHash(), tapTransferCommitment.TreeRoot.NodeSum())
-		utils.PrintStruct(tapTransferCommitment)
 
 		transferOutputInfo, err := t.addressMaker.CreateTapAddr(splitAssetCopy.ScriptPubkey, tapTransferCommitment)
 		if err != nil {

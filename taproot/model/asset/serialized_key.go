@@ -3,6 +3,7 @@ package asset
 import (
 	"encoding/hex"
 	"fmt"
+
 	"github.com/btcsuite/btcd/btcec/v2"
 )
 

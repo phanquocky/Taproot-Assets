@@ -7,7 +7,6 @@ import (
 
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
-	"github.com/quocky/taproot-asset/taproot/utils"
 
 	"github.com/btcsuite/btcd/wire"
 )
@@ -127,12 +126,7 @@ func CreateTransitionProof(prevOut wire.OutPoint,
 	proof := createTemplateProof(&params.BaseProofParams, prevOut)
 
 	proof.Asset = *params.NewAsset.Copy()
-	log.Println("proof.Asset.PrevWitnesses[0].SplitCommitment amount", proof.Asset.Amount)
-	utils.PrintStruct(proof.Asset.PrevWitnesses[0].SplitCommitment)
 	//proof.Asset.PrevWitnesses[0].SplitCommitment = nil
-
-	fmt.Println("proof.Assetproof.Assetproof.Assetproof.Assetproof.Asset")
-	utils.PrintStruct(proof.Asset.PrevWitnesses[0].PrevID)
 
 	_, assetMerkleProof, err := params.TapCommitment.CreateProof(
 		proof.Asset.TapCommitmentKey(),
