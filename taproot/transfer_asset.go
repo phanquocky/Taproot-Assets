@@ -263,7 +263,7 @@ func getPassiveAssets(utxOs *utxoasset.UnspentAssetResp, transferAsset *asset.As
 	for _, u := range utxOs.UnspentOutpoints {
 		for _, a := range u.RelatedAnchorAssets {
 			var curAsset *asset.Asset
-
+			fmt.Println("a: ", a)
 			err := json.Unmarshal([]byte(a), &curAsset)
 			if err != nil {
 				log.Println("json.Unmarshal([]byte(a), &curAsset) got error", err)

@@ -62,10 +62,14 @@ func (u *UseCase) GetUnspentAssetsById(
 		return nil, err
 	}
 
+	logger.Infow("genesis_asset", "genesis_asset", genesisAsset, "GenesisPointID", genesisAsset.GenesisPointID)
+
 	err = u.genesisPointRepo.FindOneByID(ctx, genesisAsset.GenesisPointID, &genesisPoint)
 	if err != nil {
 		return nil, err
 	}
+
+	logger.Infow("genesisPoint", "genesisPoint", genesisPoint)
 
 	allUnspentOutpoints, err := u.assetOutpointRepo.FindManyWithManagedUTXO(
 		ctx,
@@ -100,6 +104,8 @@ func (u *UseCase) GetUnspentAssetsById(
 
 		inputFilesBytes[i] = fileBytes
 	}
+
+	logger.Infow("mmss", "allUnspentOutpoints", unspentOutpoints[0].RelatedAnchorAssets)
 
 	return &utxoassetsdk.UnspentAssetResp{
 		GenesisAsset: assetsdk.GenesisAsset{
@@ -136,8 +142,8 @@ func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.Unspent
 			return nil, 0
 		}
 
-		relatedAnchorAssets := make([][]byte, len(uo.RelatedAssets))
-		relatedAnchorAssetProofs := make([][]byte, len(uo.RelatedAssets))
+		relatedAnchorAssets := make([][]byte, 0, len(uo.RelatedAssets))
+		relatedAnchorAssetProofs := make([][]byte, 0, len(uo.RelatedAssets))
 
 		for _, ra := range uo.RelatedAssets {
 			raBytes, err := json.Marshal(ra)

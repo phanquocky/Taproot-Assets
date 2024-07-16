@@ -106,3 +106,4 @@ client/.env
 server/.env
 
 bitcoin_runtime/simnet/btcd
+server/locator/

@@ -51,7 +51,7 @@ var transferAssetCmd = &cobra.Command{
 
 		err = taprootClient.TransferAsset(
 			rcvSerializedKey,
-			"2cb287ff45e8dc9a1afeb39545683f33a4463fe55b8ac06c7f7e2a3ad2e5633e",
+			"e8849315414bccf043d049ad01ba8833a69b2bc9dcc7913daf794e86eaa1aa35",
 			[]int32{3, 5},
 		)
 		if err != nil {
