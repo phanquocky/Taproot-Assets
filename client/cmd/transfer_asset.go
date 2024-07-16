@@ -26,6 +26,8 @@ var transferAssetCmd = &cobra.Command{
 
 		// 03bcbc720d1fba2172fd413e28e778ec3a6cc640629990f97428f8beb50060faf4
 		receiverPubKeyStr := "02498ecf86fb261f380e469524538b9b536a9eb1daa763001a1ddaec7b71279271"
+		receiverPubkeyStr2 := "03c24431caaf053c9a8002a74f8738cc842edc88511516baa606ef9e354aa22167"
+
 		receiverPubKey, err := hex.DecodeString(receiverPubKeyStr)
 		if err != nil {
 			fmt.Println("Error decode receiver public key", err)
@@ -33,16 +35,24 @@ var transferAssetCmd = &cobra.Command{
 			return
 		}
 
-		rcvByte := [33]byte(receiverPubKey)
+		receoverPubKey2, err := hex.DecodeString(receiverPubkeyStr2)
+		if err != nil {
+			fmt.Println("Error decode receiver public key", err)
 
-		rcvSerializedKey := make([]asset.SerializedKey, 1)
+			return
+		}
+
+		rcvByte := [33]byte(receiverPubKey)
+		rcv2Byte := [33]byte(receoverPubKey2)
+
+		rcvSerializedKey := make([]asset.SerializedKey, 2)
 		rcvSerializedKey[0] = rcvByte
-		// rcvSerializedKey[1] = rcvByte
+		rcvSerializedKey[1] = rcv2Byte
 
 		err = taprootClient.TransferAsset(
 			rcvSerializedKey,
-			"09f0169ce6eaa73accbcf6e54199f928be2e16344816a87be33b62159c320d25",
-			[]int32{3},
+			"2cb287ff45e8dc9a1afeb39545683f33a4463fe55b8ac06c7f7e2a3ad2e5633e",
+			[]int32{3, 5},
 		)
 		if err != nil {
 			fmt.Println("Error transfer asset", err)

@@ -49,6 +49,8 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		return err
 	}
 
+	fmt.Println("assetUTXOs.GenesisAsset.AssetName", assetUTXOs.GenesisAsset.AssetName)
+
 	assetGenOutpoint, err := wire.NewOutPointFromString(assetUTXOs.GenesisPoint.PrevOut)
 	if err != nil {
 		fmt.Println("wire.NewOutPointFromString(assetUTXOs.GenesisPoint.PrevOut) got error", err)
@@ -224,6 +226,7 @@ func (t *Taproot) createReturnAsset(assetGenOutpoint *wire.OutPoint,
 		return nil, errors.New("createReturnAsset: assetUTXOs or transferAsset is empty")
 	}
 
+	fmt.Println("get passwive assets")
 	passiveAssets, err := getPassiveAssets(assetUTXOs, transferAsset[0])
 	if err != nil {
 		return nil, err
@@ -283,7 +286,7 @@ func prepareAssets(assetGenOutpoint *wire.OutPoint,
 
 	transferAsset := make([]*asset.Asset, len(amount))
 
-	for idx, a := range amount {
+	for idx, a := range amount { // TODO: SAI tu72 ngay cho64 nay2
 		transferAsset[idx] = asset.New(*assetGenOutpoint, assetName,
 			DEFAULT_TRANSFER_OUTPUT_INDEX, a, receiverPubKey[idx], nil,
 		)
