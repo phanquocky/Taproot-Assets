@@ -12,8 +12,8 @@ type ListAssetReq struct {
 
 type ListAssetResp struct {
 	Amount  int32  `json:"amount"`
-	Name    string `json:"name"`
-	AssetID string `json:"asset_id"`
+	Name    string `json:"asset_name"`
+	AssetID []byte `json:"asset_id"`
 }
 
 type ListAssetsResp []*ListAssetResp

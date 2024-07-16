@@ -2,6 +2,10 @@ package taproot
 
 import (
 	"context"
+	"encoding/json"
+	"errors"
+	"net/http"
+	"os"
 
 	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/btcsuite/btcd/btcutil"
@@ -30,6 +34,7 @@ type Interface interface {
 	MintAsset(ctx context.Context, names []string, amounts []int32) error
 	GetAssetUTXOs(ctx context.Context, assetID string, amount int32) (*utxoasset.UnspentAssetResp, error)
 	TransferAsset(receiverPubKey []asset.SerializedKey, assetId string, amount []int32) error
+	ListAllAssets(ctx context.Context, pubkey []byte) (utxoasset.ListAssetsResp, error)
 	GetPubKey() *btcec.PublicKey
 }
 
@@ -51,4 +56,28 @@ func NewTaproot(btcClient onchain.Interface, wif *btcutil.WIF, addressMaker addr
 
 func (t *Taproot) GetPubKey() *btcec.PublicKey {
 	return t.wif.PrivKey.PubKey()
+}
+
+func (t *Taproot) ListAllAssets(ctx context.Context, pubkey []byte) (utxoasset.ListAssetsResp, error) {
+	data := utxoasset.UnspentAssetReq{
+		PubKey: pubkey,
+	}
+
+	resp, err := t.httpClient.R().
+		SetContext(ctx).SetBody(data).Post(os.Getenv("SERVER_BASE_URL") + "/asset")
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, errors.New("list all assets failed")
+	}
+
+	var assets utxoasset.ListAssetsResp
+	err = json.Unmarshal(resp.Body(), &assets)
+	if err != nil {
+		return nil, err
+	}
+
+	return assets, nil
 }

@@ -34,6 +34,12 @@ func (r *RepoMongo) FindAvailableAssetsWithAmount(ctx context.Context, pubkey []
 			},
 		}},
 		bson.D{{
+			Key: "$match",
+			Value: bson.M{
+				"result": bson.M{"$ne": bson.A{}},
+			},
+		}},
+		bson.D{{
 			Key: "$addFields",
 			Value: bson.M{
 				"amount": bson.M{

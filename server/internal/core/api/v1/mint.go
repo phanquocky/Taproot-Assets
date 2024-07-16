@@ -119,6 +119,10 @@ func (c *MintController) ListAssetsByPubKey(g *gin.Context) {
 		return
 	}
 
+	for _, a := range assets {
+		log.Println(a.AssetID)
+	}
+
 	g.JSON(http.StatusOK, assets)
 }
 
