@@ -20,10 +20,6 @@ var transferAssetCmd = &cobra.Command{
 		fmt.Println("transferAsset called")
 		taprootClient := newTaprootClient()
 
-		// TODO:
-		// - Get pubkey
-		// - List all available assets (name, amount, assetID) - API
-
 		// 03bcbc720d1fba2172fd413e28e778ec3a6cc640629990f97428f8beb50060faf4
 		receiverPubKeyStr := "02498ecf86fb261f380e469524538b9b536a9eb1daa763001a1ddaec7b71279271"
 		receiverPubkeyStr2 := "03c24431caaf053c9a8002a74f8738cc842edc88511516baa606ef9e354aa22167"

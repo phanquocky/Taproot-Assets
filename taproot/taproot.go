@@ -31,7 +31,7 @@ const (
 )
 
 type Interface interface {
-	MintAsset(ctx context.Context, names []string, amounts []int32) error
+	MintAsset(ctx context.Context, names []string, amounts []int32) ([]string, error)
 	GetAssetUTXOs(ctx context.Context, assetID string, amount int32) (*utxoasset.UnspentAssetResp, error)
 	TransferAsset(receiverPubKey []asset.SerializedKey, assetId string, amount []int32) error
 	ListAllAssets(ctx context.Context, pubkey []byte) (utxoasset.ListAssetsResp, error)

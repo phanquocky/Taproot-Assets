@@ -114,7 +114,7 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 	}
 
 	postResp, err := t.httpClient.R().SetBody(data).Post(os.Getenv("SERVER_BASE_URL") + "/transfer-asset")
-	if err != nil || postResp.StatusCode() != 200 {
+	if err != nil {
 		log.Println("t.httpClient.R().SetBody(data).Post(\"/transfer-asset\") got error", err)
 
 		return err

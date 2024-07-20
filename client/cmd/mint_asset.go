@@ -32,7 +32,7 @@ var mintAssetCmd = &cobra.Command{
 		}
 
 		ctx := context.Background()
-		err := taprootClient.MintAsset(ctx, names, amounts)
+		_, err := taprootClient.MintAsset(ctx, names, amounts)
 		if err != nil {
 			log.Fatalln("Error minting asset, err: ", err)
 		}

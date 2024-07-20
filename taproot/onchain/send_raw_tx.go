@@ -2,9 +2,10 @@ package onchain
 
 import (
 	"bytes"
+	"log"
+
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
-	"log"
 )
 
 // SendRawTx function send transaction to chain
@@ -17,6 +18,8 @@ func (c *Client) SendRawTx(rawTx *wire.MsgTx) (*chainhash.Hash, error) {
 	}
 
 	log.Printf("Raw tx: %x\n", buff.Bytes())
+
+	log.Println("SendRawTx", rawTx.TxHash().String())
 
 	txHash, err := c.client.SendRawTransaction(rawTx, true)
 	if err != nil {

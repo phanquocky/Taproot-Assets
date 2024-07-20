@@ -54,6 +54,7 @@ func (u *UseCase) TransferAsset(
 		return err
 	}
 
+	log.Println("send raw tx 2")
 	_, err := u.rpcClient.SendRawTransaction(anchorTx, true)
 	if err != nil {
 		logger.Errorw("rpcClient.SendRawTransaction fail", "tx_hash", anchorTx.TxHash(), "err", err)

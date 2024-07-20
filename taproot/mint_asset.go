@@ -19,10 +19,10 @@ import (
 	"github.com/quocky/taproot-asset/taproot/onchain"
 )
 
-func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmounts []int32) error {
+func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmounts []int32) ([]string, error) {
 	err := preCheckAssets(assetNames, assetAmounts)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	log.Printf("Precheck success, asset names: %v, asset amounts: %v \n", assetNames, assetAmounts)
@@ -34,17 +34,17 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 
 	btcUTXOs, err := t.btcClient.ListUTXOs()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if len(btcUTXOs) == 0 {
-		return errors.New("utxos is empty")
+		return nil, errors.New("utxos is empty")
 	}
 
 	bestUTXOs, err := chooseBestUTXOs(btcUTXOs, expectBtcAmount)
 	if err != nil {
 		log.Printf("chooseBestUTXOs(btcUTXOs, expectBtcAmount) error: %v \n", err)
-		return err
+		return nil, err
 	}
 
 	firstPrevOut := bestUTXOs[0].Outpoint
@@ -54,21 +54,21 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 
 	assetCommitments, err := genAssetCommitments(ctx, mintAssets)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	log.Printf("[Mint Asset] Generate asset commitments success!")
 
 	tapCommitment, err := commitment.NewTapCommitment(assetCommitments...)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	log.Printf("[Mint Asset] Generate tap commitment: %v", tapCommitment)
 
 	mintTapAddress, err := t.addressMaker.CreateTapAddr(userPubKey, tapCommitment)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	log.Printf("[Mint Asset] Generate tap address success!")
@@ -80,7 +80,7 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 	txIncludeOutPubKey, err := t.createTxOnChain(bestUTXOs, nil,
 		btcOutputInfos, btcutil.Amount(DEFAULT_FEE), true)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	log.Printf("[Mint Asset] Create tx on chain success!")
@@ -91,7 +91,7 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		tapCommitment,
 	)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	log.Printf("[Mint Asset] Create mint proof success!")
@@ -106,7 +106,7 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 	if err != nil {
 		log.Println("c.httpClient.R().SetBody(data).Post(\"/mint-asset\")", err)
 
-		return err
+		return nil, err
 	}
 
 	log.Printf("[Mint Asset] Post mint asset success!", zap.Reflect("req", postResp))
@@ -120,7 +120,7 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 
 	log.Printf("asset-id", zap.Reflect("asset-id", assetIDs))
 
-	return nil
+	return assetIDs, nil
 }
 
 func chooseBestUTXOs(utxos []*onchain.UnspentTXOut, expectAmount int32) ([]*onchain.UnspentTXOut, error) {

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"log"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/rpcclient"
@@ -69,8 +70,9 @@ func (u *UseCase) MintAsset(
 		}
 	}
 
+	log.Println("send raw tx 1")
 	// send raw tx
-	_, err = u.rpcClient.SendRawTransaction(&mintProof[0].AnchorTx, true)
+	_, err = u.rpcClient.SendRawTransaction(&mintProof[0].AnchorTx, false)
 	if err != nil {
 		logger.Errorw("SendRawTransaction fail", err)
 
