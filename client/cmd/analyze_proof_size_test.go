@@ -2,11 +2,13 @@ package cmd
 
 import (
 	"context"
+	"encoding/csv"
 	"encoding/hex"
 	"fmt"
 	"log"
 	"os"
 	"testing"
+	"time"
 
 	config "github.com/quocky/taproot-asset/server/config/core"
 	"github.com/quocky/taproot-asset/server/pkg/database"
@@ -14,6 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// go test -timeout 30m -run ^TestProofSizeSingleAsset$ github.com/quocky/taproot-asset/client/cmd
 func TestProofSizeSingleAsset(t *testing.T) {
 	log.Println("******************************** setup runtime ********************************")
 	taprootClient := newTaprootClient()
@@ -27,20 +30,18 @@ func TestProofSizeSingleAsset(t *testing.T) {
 	}
 
 	rcvByte := [33]byte(receiverPubKey)
-	numberOfTransfer := 1
-	supply := int32(1000000)
+	numberOfTransfer := []int{1, 10, 50, 100, 300, 500, 1000} // custom this line for multiple transfer
+	supply := int32(1000_000_000)
 
-	ctx := context.Background()
-	assetIDs, err := taprootClient.MintAsset(ctx, []string{"TestAsset"}, []int32{supply})
+	file, err := os.Create("analyze.csv")
 	assert.Nil(t, err)
-	assert.Equal(t, 1, len(assetIDs))
 
-	assetID := assetIDs[0]
+	writer := csv.NewWriter(file)
+	defer writer.Flush()
 
-	for i := 0; i < numberOfTransfer; i++ {
-		err := taprootClient.TransferAsset([]asset.SerializedKey{rcvByte}, assetID, []int32{1})
-		assert.Nil(t, err)
-	}
+	headers := []string{"number_of_transfer", "proof_size "}
+	err = writer.Write(headers)
+	assert.Nil(t, err)
 
 	cfg := config.Config{
 		Mongo: config.Mongo{
@@ -54,16 +55,32 @@ func TestProofSizeSingleAsset(t *testing.T) {
 
 	collection := db.Collection("asset_outpoints")
 
-	result := collection.FindOne(ctx, map[string]any{"amount": supply - int32(numberOfTransfer), "spent": true})
-	var assetOutpoint AssetOutpoint
-	result.Decode(&assetOutpoint)
+	for _, num := range numberOfTransfer {
+		ctx := context.Background()
+		assetIDs, err := taprootClient.MintAsset(ctx, []string{"TestAsset" + fmt.Sprint(num)}, []int32{supply})
+		assert.Nil(t, err)
+		assert.Equal(t, 1, len(assetIDs))
+		time.Sleep(100 * time.Millisecond)
 
-	fileName := assetOutpoint.ProofLocator
+		assetID := assetIDs[0]
 
-	data, err := os.ReadFile("../../server/locator/" + string(fileName))
-	assert.Nil(t, err)
+		for i := 0; i < num; i++ {
+			err := taprootClient.TransferAsset([]asset.SerializedKey{rcvByte}, assetID, []int32{1})
+			assert.Nil(t, err)
+			time.Sleep(100 * time.Millisecond)
+		}
 
-	fmt.Println("Proof size:", len(data))
+		result := collection.FindOne(ctx, map[string]any{"amount": supply - int32(num), "spent": false})
+		var assetOutpoint AssetOutpoint
+		result.Decode(&assetOutpoint)
+
+		fileName := assetOutpoint.ProofLocator
+		data, err := os.ReadFile("../../server/locator/" + hex.EncodeToString(fileName))
+		assert.Nil(t, err)
+
+		err = writer.Write([]string{fmt.Sprint(num), fmt.Sprint(len(data))})
+		assert.Nil(t, err)
+	}
 }
 
 type AssetOutpoint struct {

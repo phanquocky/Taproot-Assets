@@ -18,7 +18,7 @@ import (
 
 const (
 	// mock fee for every transaction on bitcoin chain
-	DEFAULT_FEE = 1000
+	DEFAULT_FEE = 10000
 
 	// amount on each output contain asset commitment
 	DEFAULT_OUTPUT_AMOUNT = 50

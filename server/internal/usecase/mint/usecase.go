@@ -72,7 +72,7 @@ func (u *UseCase) MintAsset(
 
 	log.Println("send raw tx 1")
 	// send raw tx
-	_, err = u.rpcClient.SendRawTransaction(&mintProof[0].AnchorTx, false)
+	_, err = u.rpcClient.SendRawTransaction(&mintProof[0].AnchorTx, true)
 	if err != nil {
 		logger.Errorw("SendRawTransaction fail", err)
 
