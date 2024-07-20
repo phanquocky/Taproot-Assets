@@ -13,6 +13,7 @@ import (
 	"github.com/quocky/taproot-asset/taproot/http_model/transfer"
 	utxoasset "github.com/quocky/taproot-asset/taproot/http_model/utxo_asset"
 	"github.com/quocky/taproot-asset/taproot/model/asset"
+	assetoutpointmodel "github.com/quocky/taproot-asset/taproot/model/asset_outpoint"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
 	"github.com/quocky/taproot-asset/taproot/model/mssmt"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
@@ -262,15 +263,22 @@ func getPassiveAssets(utxOs *utxoasset.UnspentAssetResp, transferAsset *asset.As
 	passiveAssets := make([]*asset.Asset, 0)
 	for _, u := range utxOs.UnspentOutpoints {
 		for _, a := range u.RelatedAnchorAssets {
-			var curAsset *asset.Asset
+			var curAsset *assetoutpointmodel.AssetOutpoint
 			fmt.Println("a: ", a)
 			err := json.Unmarshal([]byte(a), &curAsset)
 			if err != nil {
 				log.Println("json.Unmarshal([]byte(a), &curAsset) got error", err)
 				return nil, err
 			}
-			if curAsset.ID() != activeAssetId {
-				passiveAssets = append(passiveAssets, curAsset)
+
+			if asset.ID(curAsset.Genesis.AssetID) != activeAssetId {
+
+				passiveAssets = append(passiveAssets, &asset.Asset{
+					AssetID:             curAsset.Genesis.AssetID,
+					Amount:              curAsset.Amount,
+					ScriptPubkey:        asset.SerializedKey(curAsset.ScriptKey),
+					SplitCommitmentRoot: mssmt.NewComputedNode(mssmt.NodeHash(curAsset.SplitCommitmentRootHash), uint64(curAsset.SplitCommitmentRootValue)),
+				})
 			}
 
 		}

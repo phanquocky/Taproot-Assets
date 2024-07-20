@@ -15,6 +15,7 @@ var (
 
 type Asset struct {
 	Genesis
+	AssetID             []byte
 	Amount              int32
 	ScriptPubkey        SerializedKey
 	SplitCommitmentRoot *mssmt.ComputedNode
