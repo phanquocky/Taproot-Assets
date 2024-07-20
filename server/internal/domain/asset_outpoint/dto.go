@@ -5,7 +5,7 @@ import "github.com/quocky/taproot-asset/server/internal/domain/common"
 type UnspentOutpointFilter struct {
 	IDs          *common.InOperator `json:"_id,omitempty"`
 	GenesisID    *common.ID         `json:"genesis_id,omitempty"`
-	AnchorUtxoID *common.ID         `json:"anchor_utxo_id,omitempty"`
+	AnchorUtxoID any                `json:"anchor_utxo_id,omitempty"`
 	Spent        *bool              `json:"spent,omitempty"`
 	ScriptKey    []byte             `json:"script_key,omitempty"`
 }

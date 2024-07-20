@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/quocky/taproot-asset/server/internal/domain/genesis"
 	"github.com/quocky/taproot-asset/server/internal/domain/genesis_asset"
-	"log"
 	"os"
 
 	"github.com/btcsuite/btcd/rpcclient"
@@ -124,48 +123,58 @@ func (u *UseCase) insertDBTransferTx(
 
 		btcOutAssets := btcOut.GetOutputAsset()
 		// little confused
-		curAsset := btcOutAssets[0]
+		for i := range btcOutAssets {
+			curAsset := btcOutAssets[i]
 
-		var curGenesis genesis_asset.GenesisAsset
-		log.Println("genesisAsset.AssetIDgenesisAsset.AssetIDgenesisAsset.AssetIDgenesisAsset.AssetID", genesisAsset.AssetID)
+			var curGenesis genesis_asset.GenesisAsset
 
-		if err := u.genesisRepo.FindOne(ctx, map[string]any{
-			"asset_id": genesisAsset.AssetID,
-		}, &curGenesis); err != nil {
-			return err
-		}
+			if err := u.genesisRepo.FindOne(ctx, map[string]any{
+				"asset_id": genesisAsset.AssetID,
+			}, &curGenesis); err != nil {
+				return err
+			}
 
-		insertAssetOutpointParam := assetoutpoint.AssetOutpoint{
-			GenesisID:    curGenesis.ID,
-			ScriptKey:    curAsset.ScriptPubkey[:],
-			Amount:       curAsset.Amount,
-			AnchorUtxoID: utxoID,
-			ProofLocator: locatorName[:],
-			Spent:        false,
-		}
+			insertAssetOutpointParam := assetoutpoint.AssetOutpoint{
+				GenesisID:    curGenesis.ID,
+				ScriptKey:    curAsset.ScriptPubkey[:],
+				Amount:       curAsset.Amount,
+				AnchorUtxoID: utxoID,
+				ProofLocator: locatorName[:],
+				Spent:        false,
+			}
 
-		if curAsset.SplitCommitmentRoot != nil {
-			nodeHash := curAsset.SplitCommitmentRoot.NodeHash()
+			if curAsset.SplitCommitmentRoot != nil {
+				logger.Infow("curAsset.SplitCommitmentRoot",
+					"curAsset.SplitCommitmentRoot", curAsset.SplitCommitmentRoot,
+				)
+				nodeHash := curAsset.SplitCommitmentRoot.NodeHash()
 
-			insertAssetOutpointParam.SplitCommitmentRootValue = int32(curAsset.SplitCommitmentRoot.NodeSum())
-			insertAssetOutpointParam.SplitCommitmentRootHash = nodeHash[:]
-		}
+				insertAssetOutpointParam.SplitCommitmentRootValue = int32(curAsset.SplitCommitmentRoot.NodeSum())
+				insertAssetOutpointParam.SplitCommitmentRootHash = nodeHash[:]
+			}
 
-		_, err = u.assetOutpointRepo.InsertOne(ctx, insertAssetOutpointParam)
-		if err != nil {
-			return err
+			_, err = u.assetOutpointRepo.InsertOne(ctx, insertAssetOutpointParam)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
+	relatedAnchorIDs := make([]common.ID, len(unspentOutpoints))
 	unspentIDs := make([]common.ID, len(unspentOutpoints))
+
 	for i, uo := range unspentOutpoints {
 		unspentIDs[i] = common.ID(uo.ID)
+		relatedAnchorIDs[i] = common.ID(uo.AnchorUtxoID)
 	}
 
 	err = u.assetOutpointRepo.UpdateMany(
 		ctx,
-		assetoutpoint.UnspentOutpointFilter{
-			IDs: &common.InOperator{Values: utils.ToSliceAny(unspentIDs)},
+		common.OrOperator{
+			Values: []any{
+				assetoutpoint.UnspentOutpointFilter{IDs: &common.InOperator{Values: utils.ToSliceAny(unspentIDs)}},
+				assetoutpoint.UnspentOutpointFilter{AnchorUtxoID: &common.InOperator{Values: utils.ToSliceAny(relatedAnchorIDs)}},
+			},
 		},
 		assetoutpoint.UnspentOutpointUpdate{
 			Set: &assetoutpoint.UnspentOutpointSetUpdate{
