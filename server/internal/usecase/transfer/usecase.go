@@ -122,7 +122,7 @@ func (u *UseCase) insertDBTransferTx(
 		}
 
 		btcOutAssets := btcOut.GetOutputAsset()
-		// little confused
+
 		for i := range btcOutAssets {
 			curAsset := btcOutAssets[i]
 

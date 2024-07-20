@@ -144,11 +144,12 @@ func (u *UseCase) insertDiffCompTxMint(
 		},
 		func(ctx context.Context) error {
 			result.AssetOutpoint = assetoutpoint.AssetOutpoint{
-				GenesisID:    result.GenesisAsset.ID,
-				ScriptKey:    data.Asset.ScriptPubkey[:],
-				Amount:       data.Asset.Amount,
-				AnchorUtxoID: manageUtxoID,
-				ProofLocator: data.ProofLocator[:],
+				GenesisID:               result.GenesisAsset.ID,
+				ScriptKey:               data.Asset.ScriptPubkey[:],
+				Amount:                  data.Asset.Amount,
+				AnchorUtxoID:            manageUtxoID,
+				ProofLocator:            data.ProofLocator[:],
+				SplitCommitmentRootHash: make([]byte, 32),
 			}
 
 			docID, err := u.assetOutpointRepo.InsertOne(ctx, result.AssetOutpoint)
