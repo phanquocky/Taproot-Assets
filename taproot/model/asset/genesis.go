@@ -19,7 +19,7 @@ type Genesis struct {
 
 type GenesisAsset struct {
 	// AssetID have to use hex.Encoder to convert to []byte
-	AssetID        string `json:"asset_id"`
+	AssetID        []byte `json:"asset_id"`
 	AssetName      string `json:"asset_name"`
 	Supply         int32  `json:"supply"`
 	OutputIndex    int32  `json:"output_index"`

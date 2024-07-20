@@ -109,7 +109,7 @@ func (u *UseCase) GetUnspentAssetsById(
 
 	return &utxoassetsdk.UnspentAssetResp{
 		GenesisAsset: assetsdk.GenesisAsset{
-			AssetID:        genesisAsset.ID.String(),
+			AssetID:        genesisAsset.AssetID,
 			AssetName:      genesisAsset.AssetName,
 			Supply:         genesisAsset.Supply,
 			OutputIndex:    genesisAsset.OutputIndex,
@@ -146,6 +146,8 @@ func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.Unspent
 		relatedAnchorAssetProofs := make([][]byte, 0, len(uo.RelatedAssets))
 
 		for _, ra := range uo.RelatedAssets {
+			logger.Infow("RelatedAssets", "Genesis", ra.Genesis)
+
 			raBytes, err := json.Marshal(ra)
 			if err != nil {
 				logger.Errorw("marshal related genesis_asset fail", "related_asset_id", ra.ID.String(), "err", err.Error())

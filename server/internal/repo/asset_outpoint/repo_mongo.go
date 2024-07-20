@@ -42,6 +42,21 @@ func (r *RepoMongo) FindManyWithManagedUTXO(
 							},
 						},
 					},
+					bson.D{{
+						Key: "$lookup",
+						Value: bson.M{
+							"from":         "genesis_assets",
+							"localField":   "genesis_id",
+							"foreignField": "_id",
+							"as":           "genesis",
+						},
+					}},
+					bson.D{{
+						Key: "$unwind",
+						Value: bson.M{
+							"path": "$genesis",
+						},
+					}},
 				},
 				"as": "related_assets",
 			},
