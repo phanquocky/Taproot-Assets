@@ -3,6 +3,9 @@ package transfer
 import (
 	"bytes"
 	"fmt"
+	"github.com/quocky/taproot-asset/server/internal/domain/genesis"
+	"github.com/quocky/taproot-asset/server/internal/domain/genesis_asset"
+	"log"
 	"os"
 
 	"github.com/btcsuite/btcd/rpcclient"
@@ -25,6 +28,7 @@ type UseCase struct {
 	assetOutpointRepo assetoutpoint.RepoInterface
 	chainTXRepo       chaintx.RepoInterface
 	manageUtxoRepo    manageutxo.RepoInterface
+	genesisRepo       genesis.RepoInterface
 	rpcClient         *rpcclient.Client
 }
 
@@ -122,8 +126,17 @@ func (u *UseCase) insertDBTransferTx(
 		// little confused
 		curAsset := btcOutAssets[0]
 
+		var curGenesis genesis_asset.GenesisAsset
+		log.Println("genesisAsset.AssetIDgenesisAsset.AssetIDgenesisAsset.AssetIDgenesisAsset.AssetID", genesisAsset.AssetID)
+
+		if err := u.genesisRepo.FindOne(ctx, map[string]any{
+			"asset_id": genesisAsset.AssetID,
+		}, &curGenesis); err != nil {
+			return err
+		}
+
 		insertAssetOutpointParam := assetoutpoint.AssetOutpoint{
-			GenesisID:    common.ID(genesisAsset.AssetID),
+			GenesisID:    curGenesis.ID,
 			ScriptKey:    curAsset.ScriptPubkey[:],
 			Amount:       curAsset.Amount,
 			AnchorUtxoID: utxoID,
@@ -168,12 +181,14 @@ func NewUseCase(
 	assetOutpointRepo assetoutpoint.RepoInterface,
 	chainTXRepo chaintx.RepoInterface,
 	manageUtxoRepo manageutxo.RepoInterface,
+	genesisRepo genesis.RepoInterface,
 	rpcClient *rpcclient.Client,
 ) transfer.UseCaseInterface {
 	return &UseCase{
 		assetOutpointRepo: assetOutpointRepo,
 		chainTXRepo:       chainTXRepo,
 		manageUtxoRepo:    manageUtxoRepo,
+		genesisRepo:       genesisRepo,
 		rpcClient:         rpcClient,
 	}
 }

@@ -48,7 +48,7 @@ func main() {
 	// use case
 	mintUseCase := mintU.NewUseCase(genesisAssetRepo, assetOutpointRepo, chainTxRepo, genesisPointRepo, manageUtxoRepo, rpcClient)
 	utxoUseCase := utxoU.NewUseCase(genesisAssetRepo, assetOutpointRepo, genesisPointRepo)
-	transferUseCase := transferU.NewUseCase(assetOutpointRepo, chainTxRepo, manageUtxoRepo, rpcClient)
+	transferUseCase := transferU.NewUseCase(assetOutpointRepo, chainTxRepo, manageUtxoRepo, genesisAssetRepo, rpcClient)
 
 	// controller
 	mintController := v1.NewMintController(mintUseCase, utxoUseCase, transferUseCase)
