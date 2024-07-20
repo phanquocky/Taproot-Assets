@@ -19,6 +19,7 @@ import (
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 	"github.com/quocky/taproot-asset/taproot/onchain"
 	"github.com/quocky/taproot-asset/taproot/utils"
+	"go.uber.org/zap"
 )
 
 func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId string, amount []int32) error {
@@ -50,7 +51,7 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		return err
 	}
 
-	fmt.Println("assetUTXOs.GenesisAsset.AssetName", assetUTXOs.GenesisAsset.AssetName)
+	fmt.Println("assetUTXOs.GenesisAsset.AssetName: ", zap.Reflect("genesis", assetUTXOs.GenesisAsset))
 
 	assetGenOutpoint, err := wire.NewOutPointFromString(assetUTXOs.GenesisPoint.PrevOut)
 	if err != nil {
@@ -59,14 +60,20 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		return err
 	}
 
-	transferAssets := prepareAssets(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, amount, receiverPubKey)
+	// assetUTXOs.GenesisAsset.AssetID =
 
-	returnAssets, err := t.createReturnAsset(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, assetUTXOs, transferAssets)
+	transferAssets := prepareAssets(assetGenOutpoint, &assetUTXOs.GenesisAsset, amount, receiverPubKey)
+
+	// log.Println("transferAssets123: ", transferAssets[0].AssetID)
+	// log.Println("transferAssets123: ", transferAssets[1].AssetID)
+
+	returnAssets, err := t.createReturnAsset(assetGenOutpoint, &assetUTXOs.GenesisAsset, assetUTXOs, transferAssets)
 	if err != nil {
 		fmt.Println("t.createReturnAsset(assetGenOutpoint, assetUTXOs.GenesisAsset.AssetName, assetUTXOs, transferAssets) got error", err)
 
 		return err
 	}
+	// log.Println("returnAssets123: ", returnAssets.Assets[0].AssetID)
 
 	btcOutputInfos, _, err := t.prepareBtcOutputs(ctx, assetUTXOs, transferAssets, returnAssets.Assets)
 	if err != nil {
@@ -89,6 +96,14 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		return err
 	}
 
+	for _, btcOutputInfo := range btcOutputInfos {
+		for _, a := range btcOutputInfo.GetOutputAsset() {
+			if a.AssetID == nil || len(a.AssetID) != 32 {
+				a.AssetID = assetUTXOs.GenesisAsset.AssetID
+			}
+		}
+	}
+
 	data := transfer.TransferReq{
 		GenesisAsset:     &assetUTXOs.GenesisAsset,
 		AnchorTx:         txIncludeOutPubKey.Tx,
@@ -99,7 +114,7 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 	}
 
 	postResp, err := t.httpClient.R().SetBody(data).Post(os.Getenv("SERVER_BASE_URL") + "/transfer-asset")
-	if err != nil {
+	if err != nil || postResp.StatusCode() != 200 {
 		log.Println("t.httpClient.R().SetBody(data).Post(\"/transfer-asset\") got error", err)
 
 		return err
@@ -220,7 +235,7 @@ type returnAssetsResp struct {
 }
 
 func (t *Taproot) createReturnAsset(assetGenOutpoint *wire.OutPoint,
-	assetName string,
+	genesisAsset *asset.GenesisAsset,
 	assetUTXOs *utxoasset.UnspentAssetResp, transferAsset []*asset.Asset) (*returnAssetsResp, error) {
 
 	if len(assetUTXOs.UnspentOutpoints) == 0 || len(transferAsset) == 0 {
@@ -247,10 +262,13 @@ func (t *Taproot) createReturnAsset(assetGenOutpoint *wire.OutPoint,
 		return nil, errors.New("createReturnAsset: totalAmount - transferAmount < 0")
 	}
 
-	returnAsset := []*asset.Asset{asset.New(*assetGenOutpoint, assetName,
+	curAsset := asset.New(*assetGenOutpoint, genesisAsset.AssetName,
 		DEFAULT_RETURN_OUTPUT_INDEX, totalAmount-transferAmount,
 		asset.ToSerialized(t.wif.PrivKey.PubKey()), nil,
-	)}
+	)
+	curAsset.AssetID = genesisAsset.AssetID
+	returnAsset := []*asset.Asset{curAsset}
+
 	returnAsset = append(returnAsset, passiveAssets...)
 
 	return &returnAssetsResp{
@@ -273,6 +291,7 @@ func getPassiveAssets(utxOs *utxoasset.UnspentAssetResp, transferAsset *asset.As
 
 			if asset.ID(curAsset.Genesis.AssetID) != activeAssetId {
 
+				log.Println("curAsset.Genesis.AssetID: ", curAsset.Genesis.AssetID)
 				passiveAssets = append(passiveAssets, &asset.Asset{
 					AssetID:             curAsset.Genesis.AssetID,
 					Amount:              curAsset.Amount,
@@ -288,16 +307,19 @@ func getPassiveAssets(utxOs *utxoasset.UnspentAssetResp, transferAsset *asset.As
 }
 
 func prepareAssets(assetGenOutpoint *wire.OutPoint,
-	assetName string, amount []int32,
+	genesisAsset *asset.GenesisAsset, amount []int32,
 	receiverPubKey []asset.SerializedKey,
 ) []*asset.Asset {
 
 	transferAsset := make([]*asset.Asset, len(amount))
 
 	for idx, a := range amount { // TODO: SAI tu72 ngay cho64 nay2
-		transferAsset[idx] = asset.New(*assetGenOutpoint, assetName,
+		curAssset := asset.New(*assetGenOutpoint, genesisAsset.AssetName,
 			DEFAULT_TRANSFER_OUTPUT_INDEX, a, receiverPubKey[idx], nil,
 		)
+		curAssset.AssetID = genesisAsset.AssetID
+
+		transferAsset[idx] = curAssset
 	}
 
 	return transferAsset

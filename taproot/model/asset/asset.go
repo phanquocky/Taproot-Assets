@@ -15,7 +15,7 @@ var (
 
 type Asset struct {
 	Genesis
-	AssetID             []byte
+	AssetID             []byte `json:"asset_id,omitempty"`
 	Amount              int32
 	ScriptPubkey        SerializedKey
 	SplitCommitmentRoot *mssmt.ComputedNode
@@ -72,6 +72,9 @@ func (a *Asset) TapCommitmentKey() [32]byte {
 
 func (a *Asset) Copy() *Asset {
 	assetCopy := *a
+
+	assetCopy.AssetID = make([]byte, len(a.AssetID))
+	copy(assetCopy.AssetID, a.AssetID)
 
 	if len(a.PrevWitnesses) > 0 {
 		assetCopy.PrevWitnesses = make([]Witness, len(a.PrevWitnesses))

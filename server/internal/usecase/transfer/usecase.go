@@ -3,9 +3,11 @@ package transfer
 import (
 	"bytes"
 	"fmt"
+	"log"
+	"os"
+
 	"github.com/quocky/taproot-asset/server/internal/domain/genesis"
 	"github.com/quocky/taproot-asset/server/internal/domain/genesis_asset"
-	"os"
 
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/btcsuite/btcd/wire"
@@ -81,6 +83,8 @@ func (u *UseCase) insertDBTransferTx(
 	unspentOutpoints []*assetoutpointmodel.UnspentOutpoint,
 	files []*proof.File,
 ) error {
+	logger.Infow("btcOutputInfos", "btcOutputInfos", btcOutputInfos)
+
 	var (
 		txBytes bytes.Buffer
 		txID    = anchorTx.TxHash()
@@ -128,8 +132,9 @@ func (u *UseCase) insertDBTransferTx(
 
 			var curGenesis genesis_asset.GenesisAsset
 
+			log.Println("curAsset.AssetID: ", curAsset.AssetID)
 			if err := u.genesisRepo.FindOne(ctx, map[string]any{
-				"asset_id": genesisAsset.AssetID,
+				"asset_id": curAsset.AssetID,
 			}, &curGenesis); err != nil {
 				return err
 			}
