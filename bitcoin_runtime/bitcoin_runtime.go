@@ -52,7 +52,7 @@ func (b *BitcoinRuntime) startBtcwallet() error {
 	// setup wallet running in simnet mode
 	// btcwallet --simnet --noclienttls --noservertls -A wallet --btcdusername=admin --btcdpassword=admin123 -u admin -P admin123
 	// btcwallet --create --simnet --noclienttls --noservertls -A wallet --btcdusername=admin --btcdpassword=admin123 -u admin -P admin123
-	b.btcWalletCmd = exec.Command("btcwallet", "--simnet", "--noclienttls", "--noservertls", "-A", "wallet", "--btcdusername", MockBtcUser, "--btcdpassword", MockBtcPass, "-u", MockBtcUser, "-P", MockBtcPass, "&")
+	b.btcWalletCmd = exec.Command("btcwallet", "--simnet", "--noclienttls", "--noservertls", "-A", "wallet", "--logdir", "wallet", "--btcdusername", MockBtcUser, "--btcdpassword", MockBtcPass, "-u", MockBtcUser, "-P", MockBtcPass, "&")
 	b.btcWalletCmd.SysProcAttr = &syscall.SysProcAttr{
 		Setpgid: true,
 	}

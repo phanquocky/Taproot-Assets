@@ -1,0 +1,325 @@
+2024-07-20 15:04:19.274 [WRN] BTCW: open wallet/btcwallet.conf: no such file or directory
+2024-07-20 15:04:19.275 [INF] BTCW: Version 0.15.1-alpha
+2024-07-20 15:04:19.275 [INF] BTCW: Server TLS is disabled.  Only legacy RPC may be used
+2024-07-20 15:04:19.275 [INF] RPCS: Listening on [::1]:18554
+2024-07-20 15:04:19.275 [INF] RPCS: Listening on 127.0.0.1:18554
+2024-07-20 15:04:19.275 [INF] BTCW: Chain server RPC TLS is disabled
+2024-07-20 15:04:19.275 [INF] BTCW: Attempting RPC client connection to localhost:18556
+2024-07-20 15:04:19.277 [INF] CHNS: Established connection to RPC server localhost:18556
+2024-07-20 15:04:20.067 [INF] WLLT: Opened wallet
+2024-07-20 15:04:20.067 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-07-20 15:04:20.092 [INF] WLLT: Seed birthday surpassed, starting recovery of wallet from height=208 hash=0e2d1aede0175623d6a9689bb3309640ac28e7df51bd921339b9cd094fc88432 with recovery-window=250
+2024-07-20 15:04:20.117 [INF] WLLT: Scanning 100 blocks for recoverable addresses
+2024-07-20 15:04:20.371 [INF] CHNS: Fetching block height=208 hash=0e2d1aede0175623d6a9689bb3309640ac28e7df51bd921339b9cd094fc88432
+2024-07-20 15:04:20.371 [INF] WLLT: Recovered 1 external addrs at height=208 hash=0e2d1aede0175623d6a9689bb3309640ac28e7df51bd921339b9cd094fc88432
+2024-07-20 15:04:20.371 [INF] WLLT: Found 1 spends from watched outpoints at height=208 hash=0e2d1aede0175623d6a9689bb3309640ac28e7df51bd921339b9cd094fc88432
+2024-07-20 15:04:20.378 [INF] CHNS: Fetching block height=209 hash=1ef31ce01e620330e797813179cc1622510971a2cd65b190468d33d917681896
+2024-07-20 15:04:20.379 [INF] WLLT: Recovered 1 external addrs at height=209 hash=1ef31ce01e620330e797813179cc1622510971a2cd65b190468d33d917681896
+2024-07-20 15:04:20.379 [INF] WLLT: Found 1 spends from watched outpoints at height=209 hash=1ef31ce01e620330e797813179cc1622510971a2cd65b190468d33d917681896
+2024-07-20 15:04:20.385 [INF] CHNS: Fetching block height=210 hash=34e5f591ce39f3d1e0891eb3fa660ce36e6be164ba3ce1008f4734b1dbb6c339
+2024-07-20 15:04:20.385 [INF] WLLT: Recovered 1 external addrs at height=210 hash=34e5f591ce39f3d1e0891eb3fa660ce36e6be164ba3ce1008f4734b1dbb6c339
+2024-07-20 15:04:20.385 [INF] WLLT: Found 1 spends from watched outpoints at height=210 hash=34e5f591ce39f3d1e0891eb3fa660ce36e6be164ba3ce1008f4734b1dbb6c339
+2024-07-20 15:04:20.391 [INF] CHNS: Fetching block height=211 hash=4c06a02d4ec65c6f8de5f48acf69fee22e47631a56ab60fb34e190792c59b004
+2024-07-20 15:04:20.391 [INF] WLLT: Recovered 1 external addrs at height=211 hash=4c06a02d4ec65c6f8de5f48acf69fee22e47631a56ab60fb34e190792c59b004
+2024-07-20 15:04:20.391 [INF] WLLT: Found 1 spends from watched outpoints at height=211 hash=4c06a02d4ec65c6f8de5f48acf69fee22e47631a56ab60fb34e190792c59b004
+2024-07-20 15:04:20.398 [INF] CHNS: Fetching block height=212 hash=022f07715b56207003ede92469b70f4b9da1d49d36bac342dd56264c721fcfcc
+2024-07-20 15:04:20.398 [INF] WLLT: Recovered 1 external addrs at height=212 hash=022f07715b56207003ede92469b70f4b9da1d49d36bac342dd56264c721fcfcc
+2024-07-20 15:04:20.398 [INF] WLLT: Found 1 spends from watched outpoints at height=212 hash=022f07715b56207003ede92469b70f4b9da1d49d36bac342dd56264c721fcfcc
+2024-07-20 15:04:20.405 [INF] CHNS: Fetching block height=213 hash=5df93ee258898201bb7f4e9c9654520cb574c40bd00c79d8e36c54a6cf5d8709
+2024-07-20 15:04:20.405 [INF] WLLT: Recovered 1 external addrs at height=213 hash=5df93ee258898201bb7f4e9c9654520cb574c40bd00c79d8e36c54a6cf5d8709
+2024-07-20 15:04:20.405 [INF] WLLT: Found 1 spends from watched outpoints at height=213 hash=5df93ee258898201bb7f4e9c9654520cb574c40bd00c79d8e36c54a6cf5d8709
+2024-07-20 15:04:20.411 [INF] CHNS: Fetching block height=214 hash=6c8cff565786a668ab386335f5e204c13589b86ec75440980cb1841988da1cf2
+2024-07-20 15:04:20.411 [INF] WLLT: Recovered 1 external addrs at height=214 hash=6c8cff565786a668ab386335f5e204c13589b86ec75440980cb1841988da1cf2
+2024-07-20 15:04:20.411 [INF] WLLT: Found 1 spends from watched outpoints at height=214 hash=6c8cff565786a668ab386335f5e204c13589b86ec75440980cb1841988da1cf2
+2024-07-20 15:04:20.417 [INF] CHNS: Fetching block height=215 hash=5522fb9566ebcbcd42a32b2d83fe82a37327c5de2411fcb0e451c4910a9105e6
+2024-07-20 15:04:20.418 [INF] WLLT: Recovered 1 external addrs at height=215 hash=5522fb9566ebcbcd42a32b2d83fe82a37327c5de2411fcb0e451c4910a9105e6
+2024-07-20 15:04:20.418 [INF] WLLT: Found 1 spends from watched outpoints at height=215 hash=5522fb9566ebcbcd42a32b2d83fe82a37327c5de2411fcb0e451c4910a9105e6
+2024-07-20 15:04:20.424 [INF] CHNS: Fetching block height=216 hash=171ae192b2f3fccc5286d994cc29f26ee7bac14dd22c132cbfdb0683e9d15263
+2024-07-20 15:04:20.424 [INF] WLLT: Recovered 1 external addrs at height=216 hash=171ae192b2f3fccc5286d994cc29f26ee7bac14dd22c132cbfdb0683e9d15263
+2024-07-20 15:04:20.424 [INF] WLLT: Found 1 spends from watched outpoints at height=216 hash=171ae192b2f3fccc5286d994cc29f26ee7bac14dd22c132cbfdb0683e9d15263
+2024-07-20 15:04:20.430 [INF] CHNS: Fetching block height=217 hash=0144d165f5ce93d3bab22f1dc4c53290c5b3f5fc6168f802fe9cb010c0730442
+2024-07-20 15:04:20.430 [INF] WLLT: Recovered 1 external addrs at height=217 hash=0144d165f5ce93d3bab22f1dc4c53290c5b3f5fc6168f802fe9cb010c0730442
+2024-07-20 15:04:20.431 [INF] WLLT: Found 1 spends from watched outpoints at height=217 hash=0144d165f5ce93d3bab22f1dc4c53290c5b3f5fc6168f802fe9cb010c0730442
+2024-07-20 15:04:20.437 [INF] CHNS: Fetching block height=218 hash=1508404f65b96938d23cf12c90c2a176b67217af7883dd3630a7d651bd4016e8
+2024-07-20 15:04:20.437 [INF] WLLT: Recovered 1 external addrs at height=218 hash=1508404f65b96938d23cf12c90c2a176b67217af7883dd3630a7d651bd4016e8
+2024-07-20 15:04:20.437 [INF] WLLT: Found 1 spends from watched outpoints at height=218 hash=1508404f65b96938d23cf12c90c2a176b67217af7883dd3630a7d651bd4016e8
+2024-07-20 15:04:20.443 [INF] CHNS: Fetching block height=219 hash=75c116b9a00d0e2be1ca63073dae699a7841b55f5e0c4bdddb4252fc9637143a
+2024-07-20 15:04:20.443 [INF] WLLT: Recovered 1 external addrs at height=219 hash=75c116b9a00d0e2be1ca63073dae699a7841b55f5e0c4bdddb4252fc9637143a
+2024-07-20 15:04:20.443 [INF] WLLT: Found 1 spends from watched outpoints at height=219 hash=75c116b9a00d0e2be1ca63073dae699a7841b55f5e0c4bdddb4252fc9637143a
+2024-07-20 15:04:20.450 [INF] CHNS: Fetching block height=220 hash=787cb0248b328de9f5eda9c37be7c2183ca0b91afe2dadca0cbfa67f9c3b989f
+2024-07-20 15:04:20.450 [INF] WLLT: Recovered 1 external addrs at height=220 hash=787cb0248b328de9f5eda9c37be7c2183ca0b91afe2dadca0cbfa67f9c3b989f
+2024-07-20 15:04:20.450 [INF] WLLT: Found 1 spends from watched outpoints at height=220 hash=787cb0248b328de9f5eda9c37be7c2183ca0b91afe2dadca0cbfa67f9c3b989f
+2024-07-20 15:04:20.456 [INF] CHNS: Fetching block height=221 hash=485c3dc5481e78c6a515ee23368c8ab7652b44655ab2f30759c13262db0d09ea
+2024-07-20 15:04:20.456 [INF] WLLT: Recovered 1 external addrs at height=221 hash=485c3dc5481e78c6a515ee23368c8ab7652b44655ab2f30759c13262db0d09ea
+2024-07-20 15:04:20.456 [INF] WLLT: Found 1 spends from watched outpoints at height=221 hash=485c3dc5481e78c6a515ee23368c8ab7652b44655ab2f30759c13262db0d09ea
+2024-07-20 15:04:20.462 [INF] CHNS: Fetching block height=222 hash=71f75ded7f36fe76dee99f170ab24d458f103548eac2f6918780d6bbbf54ddb4
+2024-07-20 15:04:20.463 [INF] WLLT: Recovered 1 external addrs at height=222 hash=71f75ded7f36fe76dee99f170ab24d458f103548eac2f6918780d6bbbf54ddb4
+2024-07-20 15:04:20.463 [INF] WLLT: Found 1 spends from watched outpoints at height=222 hash=71f75ded7f36fe76dee99f170ab24d458f103548eac2f6918780d6bbbf54ddb4
+2024-07-20 15:04:20.469 [INF] CHNS: Fetching block height=223 hash=3130bb69e9e15a70f5b14a73961ef7f2255c06a81c5a0c86580b62fdaa39330a
+2024-07-20 15:04:20.469 [INF] WLLT: Recovered 1 external addrs at height=223 hash=3130bb69e9e15a70f5b14a73961ef7f2255c06a81c5a0c86580b62fdaa39330a
+2024-07-20 15:04:20.469 [INF] WLLT: Found 1 spends from watched outpoints at height=223 hash=3130bb69e9e15a70f5b14a73961ef7f2255c06a81c5a0c86580b62fdaa39330a
+2024-07-20 15:04:20.475 [INF] CHNS: Fetching block height=224 hash=58447a3cf225297b74c6ff5f342dab6ef484689e67b12c2c92072c9ab43f30df
+2024-07-20 15:04:20.475 [INF] WLLT: Recovered 1 external addrs at height=224 hash=58447a3cf225297b74c6ff5f342dab6ef484689e67b12c2c92072c9ab43f30df
+2024-07-20 15:04:20.475 [INF] WLLT: Found 1 spends from watched outpoints at height=224 hash=58447a3cf225297b74c6ff5f342dab6ef484689e67b12c2c92072c9ab43f30df
+2024-07-20 15:04:20.482 [INF] CHNS: Fetching block height=225 hash=040e0a447a0cb6bf227e483b72d2c5ffbc14ee0a2db4def49c11cbb1631b30b1
+2024-07-20 15:04:20.482 [INF] WLLT: Recovered 1 external addrs at height=225 hash=040e0a447a0cb6bf227e483b72d2c5ffbc14ee0a2db4def49c11cbb1631b30b1
+2024-07-20 15:04:20.482 [INF] WLLT: Found 1 spends from watched outpoints at height=225 hash=040e0a447a0cb6bf227e483b72d2c5ffbc14ee0a2db4def49c11cbb1631b30b1
+2024-07-20 15:04:20.489 [INF] CHNS: Fetching block height=226 hash=66581660eb47798b65a786be36bc3ecebda48d165342eebbc0e708aba9828f27
+2024-07-20 15:04:20.489 [INF] WLLT: Recovered 1 external addrs at height=226 hash=66581660eb47798b65a786be36bc3ecebda48d165342eebbc0e708aba9828f27
+2024-07-20 15:04:20.489 [INF] WLLT: Found 1 spends from watched outpoints at height=226 hash=66581660eb47798b65a786be36bc3ecebda48d165342eebbc0e708aba9828f27
+2024-07-20 15:04:20.495 [INF] CHNS: Fetching block height=227 hash=4a1894f6d568f4f856e82bd539cf5e8e0cc043d33760b24efe8e88ce628318f7
+2024-07-20 15:04:20.495 [INF] WLLT: Recovered 1 external addrs at height=227 hash=4a1894f6d568f4f856e82bd539cf5e8e0cc043d33760b24efe8e88ce628318f7
+2024-07-20 15:04:20.496 [INF] WLLT: Found 1 spends from watched outpoints at height=227 hash=4a1894f6d568f4f856e82bd539cf5e8e0cc043d33760b24efe8e88ce628318f7
+2024-07-20 15:04:20.502 [INF] CHNS: Fetching block height=228 hash=49307b2f84b32034c7b3809564132ec947d6fb42b748424e13dda408b79e765c
+2024-07-20 15:04:20.503 [INF] WLLT: Recovered 1 external addrs at height=228 hash=49307b2f84b32034c7b3809564132ec947d6fb42b748424e13dda408b79e765c
+2024-07-20 15:04:20.503 [INF] WLLT: Found 1 spends from watched outpoints at height=228 hash=49307b2f84b32034c7b3809564132ec947d6fb42b748424e13dda408b79e765c
+2024-07-20 15:04:20.509 [INF] CHNS: Fetching block height=229 hash=0b3f45f233925b07de7a5ddd288bd86896caae6a59ec2e2be9897f9eb3f3811d
+2024-07-20 15:04:20.509 [INF] WLLT: Recovered 1 external addrs at height=229 hash=0b3f45f233925b07de7a5ddd288bd86896caae6a59ec2e2be9897f9eb3f3811d
+2024-07-20 15:04:20.509 [INF] WLLT: Found 1 spends from watched outpoints at height=229 hash=0b3f45f233925b07de7a5ddd288bd86896caae6a59ec2e2be9897f9eb3f3811d
+2024-07-20 15:04:20.515 [INF] CHNS: Fetching block height=230 hash=6b7457ec237fd3cff64139d51343a3a6a22fd7520fe409b6cf2ec37320686be0
+2024-07-20 15:04:20.515 [INF] WLLT: Recovered 1 external addrs at height=230 hash=6b7457ec237fd3cff64139d51343a3a6a22fd7520fe409b6cf2ec37320686be0
+2024-07-20 15:04:20.515 [INF] WLLT: Found 1 spends from watched outpoints at height=230 hash=6b7457ec237fd3cff64139d51343a3a6a22fd7520fe409b6cf2ec37320686be0
+2024-07-20 15:04:20.522 [INF] CHNS: Fetching block height=231 hash=6cb91e0ede69ec2e3e495ed67b9f7b99bf72490a9de4844cc6d26e25a20ab292
+2024-07-20 15:04:20.522 [INF] WLLT: Recovered 1 external addrs at height=231 hash=6cb91e0ede69ec2e3e495ed67b9f7b99bf72490a9de4844cc6d26e25a20ab292
+2024-07-20 15:04:20.522 [INF] WLLT: Found 1 spends from watched outpoints at height=231 hash=6cb91e0ede69ec2e3e495ed67b9f7b99bf72490a9de4844cc6d26e25a20ab292
+2024-07-20 15:04:20.528 [INF] CHNS: Fetching block height=232 hash=595a1083fb88545ee5b15a09fbebcb43c159b743e084c0796051e1327e87c9de
+2024-07-20 15:04:20.528 [INF] WLLT: Recovered 1 external addrs at height=232 hash=595a1083fb88545ee5b15a09fbebcb43c159b743e084c0796051e1327e87c9de
+2024-07-20 15:04:20.528 [INF] WLLT: Found 1 spends from watched outpoints at height=232 hash=595a1083fb88545ee5b15a09fbebcb43c159b743e084c0796051e1327e87c9de
+2024-07-20 15:04:20.534 [INF] CHNS: Fetching block height=233 hash=5e5b2681008a0e476a4958d2bf0be577aed18634598da2e894c299c2466496c4
+2024-07-20 15:04:20.534 [INF] WLLT: Recovered 1 external addrs at height=233 hash=5e5b2681008a0e476a4958d2bf0be577aed18634598da2e894c299c2466496c4
+2024-07-20 15:04:20.534 [INF] WLLT: Found 1 spends from watched outpoints at height=233 hash=5e5b2681008a0e476a4958d2bf0be577aed18634598da2e894c299c2466496c4
+2024-07-20 15:04:20.541 [INF] CHNS: Fetching block height=234 hash=4cbf0e0163bf10c1c077dde03ef343f00c1c5b83d24812a97446e05a909cc653
+2024-07-20 15:04:20.541 [INF] WLLT: Recovered 1 external addrs at height=234 hash=4cbf0e0163bf10c1c077dde03ef343f00c1c5b83d24812a97446e05a909cc653
+2024-07-20 15:04:20.541 [INF] WLLT: Found 1 spends from watched outpoints at height=234 hash=4cbf0e0163bf10c1c077dde03ef343f00c1c5b83d24812a97446e05a909cc653
+2024-07-20 15:04:20.547 [INF] CHNS: Fetching block height=235 hash=58834599da5af33b2734c16c0ba113e314c87d90199cce14c37699519322f430
+2024-07-20 15:04:20.547 [INF] WLLT: Recovered 1 external addrs at height=235 hash=58834599da5af33b2734c16c0ba113e314c87d90199cce14c37699519322f430
+2024-07-20 15:04:20.547 [INF] WLLT: Found 1 spends from watched outpoints at height=235 hash=58834599da5af33b2734c16c0ba113e314c87d90199cce14c37699519322f430
+2024-07-20 15:04:20.554 [INF] CHNS: Fetching block height=236 hash=33baafc65bff1a4a878edf1106b53a44857780c686d2f5175b280e6ea857add2
+2024-07-20 15:04:20.554 [INF] WLLT: Recovered 1 external addrs at height=236 hash=33baafc65bff1a4a878edf1106b53a44857780c686d2f5175b280e6ea857add2
+2024-07-20 15:04:20.554 [INF] WLLT: Found 1 spends from watched outpoints at height=236 hash=33baafc65bff1a4a878edf1106b53a44857780c686d2f5175b280e6ea857add2
+2024-07-20 15:04:20.560 [INF] CHNS: Fetching block height=237 hash=68ff538d0aa87aa815745653f05840336bebd84b711594cb680210c995f7639d
+2024-07-20 15:04:20.560 [INF] WLLT: Recovered 1 external addrs at height=237 hash=68ff538d0aa87aa815745653f05840336bebd84b711594cb680210c995f7639d
+2024-07-20 15:04:20.560 [INF] WLLT: Found 1 spends from watched outpoints at height=237 hash=68ff538d0aa87aa815745653f05840336bebd84b711594cb680210c995f7639d
+2024-07-20 15:04:20.566 [INF] CHNS: Fetching block height=238 hash=5767161f8c1ef18116079e4b95887e1523fb8c42981415ee5daa1209bedce8c0
+2024-07-20 15:04:20.567 [INF] WLLT: Recovered 1 external addrs at height=238 hash=5767161f8c1ef18116079e4b95887e1523fb8c42981415ee5daa1209bedce8c0
+2024-07-20 15:04:20.567 [INF] WLLT: Found 1 spends from watched outpoints at height=238 hash=5767161f8c1ef18116079e4b95887e1523fb8c42981415ee5daa1209bedce8c0
+2024-07-20 15:04:20.573 [INF] CHNS: Fetching block height=239 hash=3429ef689b038f1f9f7b3dbe668373d2ccdca8bb05e23782d86a41c1129f94ea
+2024-07-20 15:04:20.573 [INF] WLLT: Recovered 1 external addrs at height=239 hash=3429ef689b038f1f9f7b3dbe668373d2ccdca8bb05e23782d86a41c1129f94ea
+2024-07-20 15:04:20.573 [INF] WLLT: Found 1 spends from watched outpoints at height=239 hash=3429ef689b038f1f9f7b3dbe668373d2ccdca8bb05e23782d86a41c1129f94ea
+2024-07-20 15:04:20.579 [INF] CHNS: Fetching block height=240 hash=26ed70b17202c3b16ffacc77ab3be1390f4b6d2f8115d4aa634f3f5bebdd3eca
+2024-07-20 15:04:20.579 [INF] WLLT: Recovered 1 external addrs at height=240 hash=26ed70b17202c3b16ffacc77ab3be1390f4b6d2f8115d4aa634f3f5bebdd3eca
+2024-07-20 15:04:20.580 [INF] WLLT: Found 1 spends from watched outpoints at height=240 hash=26ed70b17202c3b16ffacc77ab3be1390f4b6d2f8115d4aa634f3f5bebdd3eca
+2024-07-20 15:04:20.585 [INF] CHNS: Fetching block height=241 hash=2779e6db46904159b8f5a0f776621a91a2b4711f7b0ff1eb13050dcaf8da6f08
+2024-07-20 15:04:20.586 [INF] WLLT: Recovered 1 external addrs at height=241 hash=2779e6db46904159b8f5a0f776621a91a2b4711f7b0ff1eb13050dcaf8da6f08
+2024-07-20 15:04:20.586 [INF] WLLT: Found 1 spends from watched outpoints at height=241 hash=2779e6db46904159b8f5a0f776621a91a2b4711f7b0ff1eb13050dcaf8da6f08
+2024-07-20 15:04:20.592 [INF] CHNS: Fetching block height=242 hash=7f95579d111e64bd63f85f0ace2f19af980c31c06eec17692e0095072c5c557c
+2024-07-20 15:04:20.592 [INF] WLLT: Recovered 1 external addrs at height=242 hash=7f95579d111e64bd63f85f0ace2f19af980c31c06eec17692e0095072c5c557c
+2024-07-20 15:04:20.592 [INF] WLLT: Found 1 spends from watched outpoints at height=242 hash=7f95579d111e64bd63f85f0ace2f19af980c31c06eec17692e0095072c5c557c
+2024-07-20 15:04:20.599 [INF] CHNS: Fetching block height=243 hash=0b4fa2666c60642ed47a81f6310477bfe6a4530c485fc7addbb836086f9c11ec
+2024-07-20 15:04:20.599 [INF] WLLT: Recovered 1 external addrs at height=243 hash=0b4fa2666c60642ed47a81f6310477bfe6a4530c485fc7addbb836086f9c11ec
+2024-07-20 15:04:20.599 [INF] WLLT: Found 1 spends from watched outpoints at height=243 hash=0b4fa2666c60642ed47a81f6310477bfe6a4530c485fc7addbb836086f9c11ec
+2024-07-20 15:04:20.605 [INF] CHNS: Fetching block height=244 hash=2717ddd5b03a528f287fed3f3d0e5fa7512feb99ffb47fbf25a34b59bfa530a2
+2024-07-20 15:04:20.605 [INF] WLLT: Recovered 1 external addrs at height=244 hash=2717ddd5b03a528f287fed3f3d0e5fa7512feb99ffb47fbf25a34b59bfa530a2
+2024-07-20 15:04:20.606 [INF] WLLT: Found 1 spends from watched outpoints at height=244 hash=2717ddd5b03a528f287fed3f3d0e5fa7512feb99ffb47fbf25a34b59bfa530a2
+2024-07-20 15:04:20.612 [INF] CHNS: Fetching block height=245 hash=32a17bf41ea8d763f18b886617b7c70f3d6324b1fc1cc45620487a518e47a214
+2024-07-20 15:04:20.612 [INF] WLLT: Recovered 1 external addrs at height=245 hash=32a17bf41ea8d763f18b886617b7c70f3d6324b1fc1cc45620487a518e47a214
+2024-07-20 15:04:20.612 [INF] WLLT: Found 1 spends from watched outpoints at height=245 hash=32a17bf41ea8d763f18b886617b7c70f3d6324b1fc1cc45620487a518e47a214
+2024-07-20 15:04:20.618 [INF] CHNS: Fetching block height=246 hash=130264fb39bef8f6d29b0b4a14a95a3c19c11b38f956a6af89a16ddc062b8000
+2024-07-20 15:04:20.619 [INF] WLLT: Recovered 1 external addrs at height=246 hash=130264fb39bef8f6d29b0b4a14a95a3c19c11b38f956a6af89a16ddc062b8000
+2024-07-20 15:04:20.619 [INF] WLLT: Found 1 spends from watched outpoints at height=246 hash=130264fb39bef8f6d29b0b4a14a95a3c19c11b38f956a6af89a16ddc062b8000
+2024-07-20 15:04:20.625 [INF] CHNS: Fetching block height=247 hash=2be2d4c179156a9fa205f83d689ea881d5c0958ab87f83338783f9817a0e9e02
+2024-07-20 15:04:20.625 [INF] WLLT: Recovered 1 external addrs at height=247 hash=2be2d4c179156a9fa205f83d689ea881d5c0958ab87f83338783f9817a0e9e02
+2024-07-20 15:04:20.625 [INF] WLLT: Found 1 spends from watched outpoints at height=247 hash=2be2d4c179156a9fa205f83d689ea881d5c0958ab87f83338783f9817a0e9e02
+2024-07-20 15:04:20.631 [INF] CHNS: Fetching block height=248 hash=5c70b349992eb9f09ffccbab53c21df3bf17c9d1c4fa7562c18cc30eb8d457c8
+2024-07-20 15:04:20.631 [INF] WLLT: Recovered 1 external addrs at height=248 hash=5c70b349992eb9f09ffccbab53c21df3bf17c9d1c4fa7562c18cc30eb8d457c8
+2024-07-20 15:04:20.631 [INF] WLLT: Found 1 spends from watched outpoints at height=248 hash=5c70b349992eb9f09ffccbab53c21df3bf17c9d1c4fa7562c18cc30eb8d457c8
+2024-07-20 15:04:20.637 [INF] CHNS: Fetching block height=249 hash=26f9d04cd87ea7ce1084da2fc2591f28c3c3993f0e3fb81523a5ddb15fc69930
+2024-07-20 15:04:20.637 [INF] WLLT: Recovered 1 external addrs at height=249 hash=26f9d04cd87ea7ce1084da2fc2591f28c3c3993f0e3fb81523a5ddb15fc69930
+2024-07-20 15:04:20.637 [INF] WLLT: Found 1 spends from watched outpoints at height=249 hash=26f9d04cd87ea7ce1084da2fc2591f28c3c3993f0e3fb81523a5ddb15fc69930
+2024-07-20 15:04:20.644 [INF] CHNS: Fetching block height=250 hash=133c46aa23446570de38df3482ed1cdea0ce522bbfa7be5c70848150db732f94
+2024-07-20 15:04:20.644 [INF] WLLT: Recovered 1 external addrs at height=250 hash=133c46aa23446570de38df3482ed1cdea0ce522bbfa7be5c70848150db732f94
+2024-07-20 15:04:20.644 [INF] WLLT: Found 1 spends from watched outpoints at height=250 hash=133c46aa23446570de38df3482ed1cdea0ce522bbfa7be5c70848150db732f94
+2024-07-20 15:04:20.650 [INF] CHNS: Fetching block height=251 hash=590c72926b834531de575fee5e135f0f1753d15c10394a5463cd3c815e31afe7
+2024-07-20 15:04:20.650 [INF] WLLT: Recovered 1 external addrs at height=251 hash=590c72926b834531de575fee5e135f0f1753d15c10394a5463cd3c815e31afe7
+2024-07-20 15:04:20.650 [INF] WLLT: Found 1 spends from watched outpoints at height=251 hash=590c72926b834531de575fee5e135f0f1753d15c10394a5463cd3c815e31afe7
+2024-07-20 15:04:20.657 [INF] CHNS: Fetching block height=252 hash=3b67adc114cfc9acfac95a5013e84a5f4ae06036a021fa4efda918e0cff7cf99
+2024-07-20 15:04:20.657 [INF] WLLT: Recovered 1 external addrs at height=252 hash=3b67adc114cfc9acfac95a5013e84a5f4ae06036a021fa4efda918e0cff7cf99
+2024-07-20 15:04:20.657 [INF] WLLT: Found 1 spends from watched outpoints at height=252 hash=3b67adc114cfc9acfac95a5013e84a5f4ae06036a021fa4efda918e0cff7cf99
+2024-07-20 15:04:20.663 [INF] CHNS: Fetching block height=253 hash=05b8c6cd4e29c8dc6b348a8fa088f1edd74dd11f4458543eb6eb26377d212fb7
+2024-07-20 15:04:20.664 [INF] WLLT: Recovered 1 external addrs at height=253 hash=05b8c6cd4e29c8dc6b348a8fa088f1edd74dd11f4458543eb6eb26377d212fb7
+2024-07-20 15:04:20.664 [INF] WLLT: Found 1 spends from watched outpoints at height=253 hash=05b8c6cd4e29c8dc6b348a8fa088f1edd74dd11f4458543eb6eb26377d212fb7
+2024-07-20 15:04:20.669 [INF] CHNS: Fetching block height=254 hash=675fd3916e66a95d09aadb3e194059b078db162c89797bc8cddf0c122e47c9b7
+2024-07-20 15:04:20.670 [INF] WLLT: Recovered 1 external addrs at height=254 hash=675fd3916e66a95d09aadb3e194059b078db162c89797bc8cddf0c122e47c9b7
+2024-07-20 15:04:20.670 [INF] WLLT: Found 1 spends from watched outpoints at height=254 hash=675fd3916e66a95d09aadb3e194059b078db162c89797bc8cddf0c122e47c9b7
+2024-07-20 15:04:20.676 [INF] CHNS: Fetching block height=255 hash=125652a4f31381c1f77185c1d907d7af19e96ff18a3a60082cbcdc7696533a61
+2024-07-20 15:04:20.676 [INF] WLLT: Recovered 1 external addrs at height=255 hash=125652a4f31381c1f77185c1d907d7af19e96ff18a3a60082cbcdc7696533a61
+2024-07-20 15:04:20.676 [INF] WLLT: Found 1 spends from watched outpoints at height=255 hash=125652a4f31381c1f77185c1d907d7af19e96ff18a3a60082cbcdc7696533a61
+2024-07-20 15:04:20.682 [INF] CHNS: Fetching block height=256 hash=5df2ab9a57233427884f3513341b4ed014be9b3d42563db3b38e5530139d64c2
+2024-07-20 15:04:20.682 [INF] WLLT: Recovered 1 external addrs at height=256 hash=5df2ab9a57233427884f3513341b4ed014be9b3d42563db3b38e5530139d64c2
+2024-07-20 15:04:20.682 [INF] WLLT: Found 1 spends from watched outpoints at height=256 hash=5df2ab9a57233427884f3513341b4ed014be9b3d42563db3b38e5530139d64c2
+2024-07-20 15:04:20.689 [INF] CHNS: Fetching block height=257 hash=45340ed50fda7bc608e40a1323d216d48c1b17dc29c1dc7093f4f3330716e7af
+2024-07-20 15:04:20.689 [INF] WLLT: Recovered 1 external addrs at height=257 hash=45340ed50fda7bc608e40a1323d216d48c1b17dc29c1dc7093f4f3330716e7af
+2024-07-20 15:04:20.689 [INF] WLLT: Found 1 spends from watched outpoints at height=257 hash=45340ed50fda7bc608e40a1323d216d48c1b17dc29c1dc7093f4f3330716e7af
+2024-07-20 15:04:20.695 [INF] CHNS: Fetching block height=258 hash=712eee305d4394a3367c9cec5f798b807914e7d1f7a33db63b23d39c69dd6ee5
+2024-07-20 15:04:20.695 [INF] WLLT: Recovered 1 external addrs at height=258 hash=712eee305d4394a3367c9cec5f798b807914e7d1f7a33db63b23d39c69dd6ee5
+2024-07-20 15:04:20.695 [INF] WLLT: Found 1 spends from watched outpoints at height=258 hash=712eee305d4394a3367c9cec5f798b807914e7d1f7a33db63b23d39c69dd6ee5
+2024-07-20 15:04:20.702 [INF] CHNS: Fetching block height=259 hash=26ad675fca9d9732fdf489c478441ec8126a16404ab4be598372ab4972a0711b
+2024-07-20 15:04:20.702 [INF] WLLT: Recovered 1 external addrs at height=259 hash=26ad675fca9d9732fdf489c478441ec8126a16404ab4be598372ab4972a0711b
+2024-07-20 15:04:20.722 [INF] WLLT: Found 1 spends from watched outpoints at height=259 hash=26ad675fca9d9732fdf489c478441ec8126a16404ab4be598372ab4972a0711b
+2024-07-20 15:04:20.736 [INF] CHNS: Fetching block height=260 hash=629104ae9ce041fe5296aa367ffe5192ce1c9b6ac052c74d7e84c20be8f22295
+2024-07-20 15:04:20.736 [INF] WLLT: Recovered 1 external addrs at height=260 hash=629104ae9ce041fe5296aa367ffe5192ce1c9b6ac052c74d7e84c20be8f22295
+2024-07-20 15:04:20.736 [INF] WLLT: Found 1 spends from watched outpoints at height=260 hash=629104ae9ce041fe5296aa367ffe5192ce1c9b6ac052c74d7e84c20be8f22295
+2024-07-20 15:04:20.746 [INF] CHNS: Fetching block height=261 hash=2844bebf76d0c1ae707a10ee30967ad4d4b6d95738067fb18e9a4bf74b3d2335
+2024-07-20 15:04:20.746 [INF] WLLT: Recovered 1 external addrs at height=261 hash=2844bebf76d0c1ae707a10ee30967ad4d4b6d95738067fb18e9a4bf74b3d2335
+2024-07-20 15:04:20.746 [INF] WLLT: Found 1 spends from watched outpoints at height=261 hash=2844bebf76d0c1ae707a10ee30967ad4d4b6d95738067fb18e9a4bf74b3d2335
+2024-07-20 15:04:20.753 [INF] CHNS: Fetching block height=262 hash=53481e53c4c4d0ef888822728493b4f40e5037c3697400b0d5a392c6b506d25e
+2024-07-20 15:04:20.754 [INF] WLLT: Recovered 1 external addrs at height=262 hash=53481e53c4c4d0ef888822728493b4f40e5037c3697400b0d5a392c6b506d25e
+2024-07-20 15:04:20.754 [INF] WLLT: Found 1 spends from watched outpoints at height=262 hash=53481e53c4c4d0ef888822728493b4f40e5037c3697400b0d5a392c6b506d25e
+2024-07-20 15:04:20.761 [INF] CHNS: Fetching block height=263 hash=4a1d6ee77ff66de9839c39f47ab88de25fbd05c38bb924c9c2525a234cc54678
+2024-07-20 15:04:20.761 [INF] WLLT: Recovered 1 external addrs at height=263 hash=4a1d6ee77ff66de9839c39f47ab88de25fbd05c38bb924c9c2525a234cc54678
+2024-07-20 15:04:20.761 [INF] WLLT: Found 1 spends from watched outpoints at height=263 hash=4a1d6ee77ff66de9839c39f47ab88de25fbd05c38bb924c9c2525a234cc54678
+2024-07-20 15:04:20.768 [INF] CHNS: Fetching block height=264 hash=6e3b01d87d083608a96076d90f1a6b0974982f5df1691ecb6a9679c7d3917ba1
+2024-07-20 15:04:20.768 [INF] WLLT: Recovered 1 external addrs at height=264 hash=6e3b01d87d083608a96076d90f1a6b0974982f5df1691ecb6a9679c7d3917ba1
+2024-07-20 15:04:20.768 [INF] WLLT: Found 1 spends from watched outpoints at height=264 hash=6e3b01d87d083608a96076d90f1a6b0974982f5df1691ecb6a9679c7d3917ba1
+2024-07-20 15:04:20.774 [INF] CHNS: Fetching block height=265 hash=14dd4db35d3659c90b4941b8e415d076de56279d91660cfcc966278378b047eb
+2024-07-20 15:04:20.774 [INF] WLLT: Recovered 1 external addrs at height=265 hash=14dd4db35d3659c90b4941b8e415d076de56279d91660cfcc966278378b047eb
+2024-07-20 15:04:20.774 [INF] WLLT: Found 1 spends from watched outpoints at height=265 hash=14dd4db35d3659c90b4941b8e415d076de56279d91660cfcc966278378b047eb
+2024-07-20 15:04:20.781 [INF] CHNS: Fetching block height=266 hash=199ad0d1b411f04baef7bf87c5c3e3bf76d716bda838df1024214da97b4393dd
+2024-07-20 15:04:20.781 [INF] WLLT: Recovered 1 external addrs at height=266 hash=199ad0d1b411f04baef7bf87c5c3e3bf76d716bda838df1024214da97b4393dd
+2024-07-20 15:04:20.781 [INF] WLLT: Found 1 spends from watched outpoints at height=266 hash=199ad0d1b411f04baef7bf87c5c3e3bf76d716bda838df1024214da97b4393dd
+2024-07-20 15:04:20.787 [INF] CHNS: Fetching block height=267 hash=3eae1b5b27dbf3b093cc149bfbafeea81576f810e8068e45ce785aee7c183cb0
+2024-07-20 15:04:20.787 [INF] WLLT: Recovered 1 external addrs at height=267 hash=3eae1b5b27dbf3b093cc149bfbafeea81576f810e8068e45ce785aee7c183cb0
+2024-07-20 15:04:20.787 [INF] WLLT: Found 1 spends from watched outpoints at height=267 hash=3eae1b5b27dbf3b093cc149bfbafeea81576f810e8068e45ce785aee7c183cb0
+2024-07-20 15:04:20.794 [INF] CHNS: Fetching block height=268 hash=257a85c0b6c31cfb2d92c1fb8898d1044bda92932b21150994d5e81634b469bd
+2024-07-20 15:04:20.794 [INF] WLLT: Recovered 1 external addrs at height=268 hash=257a85c0b6c31cfb2d92c1fb8898d1044bda92932b21150994d5e81634b469bd
+2024-07-20 15:04:20.794 [INF] WLLT: Found 1 spends from watched outpoints at height=268 hash=257a85c0b6c31cfb2d92c1fb8898d1044bda92932b21150994d5e81634b469bd
+2024-07-20 15:04:20.800 [INF] CHNS: Fetching block height=269 hash=6118bea871e7b0bf6792b6333abf89e97b8e59853b94a59042f63e4c35e318d6
+2024-07-20 15:04:20.801 [INF] WLLT: Recovered 1 external addrs at height=269 hash=6118bea871e7b0bf6792b6333abf89e97b8e59853b94a59042f63e4c35e318d6
+2024-07-20 15:04:20.801 [INF] WLLT: Found 1 spends from watched outpoints at height=269 hash=6118bea871e7b0bf6792b6333abf89e97b8e59853b94a59042f63e4c35e318d6
+2024-07-20 15:04:20.807 [INF] CHNS: Fetching block height=270 hash=71bb73f9564f9a29132d2480363da46b43815ac20e0df251c0869aac69d15c7f
+2024-07-20 15:04:20.807 [INF] WLLT: Recovered 1 external addrs at height=270 hash=71bb73f9564f9a29132d2480363da46b43815ac20e0df251c0869aac69d15c7f
+2024-07-20 15:04:20.807 [INF] WLLT: Found 1 spends from watched outpoints at height=270 hash=71bb73f9564f9a29132d2480363da46b43815ac20e0df251c0869aac69d15c7f
+2024-07-20 15:04:20.813 [INF] CHNS: Fetching block height=271 hash=7921787587ac2ebe9a5c23069f9f378b77c64fa8a4997dcd10393f8f66ce8838
+2024-07-20 15:04:20.813 [INF] WLLT: Recovered 1 external addrs at height=271 hash=7921787587ac2ebe9a5c23069f9f378b77c64fa8a4997dcd10393f8f66ce8838
+2024-07-20 15:04:20.813 [INF] WLLT: Found 1 spends from watched outpoints at height=271 hash=7921787587ac2ebe9a5c23069f9f378b77c64fa8a4997dcd10393f8f66ce8838
+2024-07-20 15:04:20.820 [INF] CHNS: Fetching block height=272 hash=3b6ca226ce57cbbda08dac721c3fc35e5bcb1c567e87ccc99897f713f716796a
+2024-07-20 15:04:20.820 [INF] WLLT: Recovered 1 external addrs at height=272 hash=3b6ca226ce57cbbda08dac721c3fc35e5bcb1c567e87ccc99897f713f716796a
+2024-07-20 15:04:20.820 [INF] WLLT: Found 1 spends from watched outpoints at height=272 hash=3b6ca226ce57cbbda08dac721c3fc35e5bcb1c567e87ccc99897f713f716796a
+2024-07-20 15:04:20.826 [INF] CHNS: Fetching block height=273 hash=71acddaee6cbe22f065fba5688e493f8cb2c5e09d40b4db12ca18baecd8c09ff
+2024-07-20 15:04:20.827 [INF] WLLT: Recovered 1 external addrs at height=273 hash=71acddaee6cbe22f065fba5688e493f8cb2c5e09d40b4db12ca18baecd8c09ff
+2024-07-20 15:04:20.827 [INF] WLLT: Found 1 spends from watched outpoints at height=273 hash=71acddaee6cbe22f065fba5688e493f8cb2c5e09d40b4db12ca18baecd8c09ff
+2024-07-20 15:04:20.833 [INF] CHNS: Fetching block height=274 hash=2e4594a3349fec8cc82595a02405eeec12d145fffc37a2f66419addf51baf47b
+2024-07-20 15:04:20.833 [INF] WLLT: Recovered 1 external addrs at height=274 hash=2e4594a3349fec8cc82595a02405eeec12d145fffc37a2f66419addf51baf47b
+2024-07-20 15:04:20.833 [INF] WLLT: Found 1 spends from watched outpoints at height=274 hash=2e4594a3349fec8cc82595a02405eeec12d145fffc37a2f66419addf51baf47b
+2024-07-20 15:04:20.839 [INF] CHNS: Fetching block height=275 hash=7caf3c980a3b41f4a14b37d4b401d015d336db51da5f29e37fddea077d14dad7
+2024-07-20 15:04:20.840 [INF] WLLT: Recovered 1 external addrs at height=275 hash=7caf3c980a3b41f4a14b37d4b401d015d336db51da5f29e37fddea077d14dad7
+2024-07-20 15:04:20.840 [INF] WLLT: Found 1 spends from watched outpoints at height=275 hash=7caf3c980a3b41f4a14b37d4b401d015d336db51da5f29e37fddea077d14dad7
+2024-07-20 15:04:20.846 [INF] CHNS: Fetching block height=276 hash=4ebe890cdcd07571b7289bb3d74d7aed7e01f7452a1191b09c17af053aa0ca2a
+2024-07-20 15:04:20.846 [INF] WLLT: Recovered 1 external addrs at height=276 hash=4ebe890cdcd07571b7289bb3d74d7aed7e01f7452a1191b09c17af053aa0ca2a
+2024-07-20 15:04:20.846 [INF] WLLT: Found 1 spends from watched outpoints at height=276 hash=4ebe890cdcd07571b7289bb3d74d7aed7e01f7452a1191b09c17af053aa0ca2a
+2024-07-20 15:04:20.852 [INF] CHNS: Fetching block height=277 hash=60a6ba52146753da596545768226b2c9d1c15966e05d5abe74dd7c8d639140f2
+2024-07-20 15:04:20.852 [INF] WLLT: Recovered 1 external addrs at height=277 hash=60a6ba52146753da596545768226b2c9d1c15966e05d5abe74dd7c8d639140f2
+2024-07-20 15:04:20.852 [INF] WLLT: Found 1 spends from watched outpoints at height=277 hash=60a6ba52146753da596545768226b2c9d1c15966e05d5abe74dd7c8d639140f2
+2024-07-20 15:04:20.859 [INF] CHNS: Fetching block height=278 hash=0e08124cb359989269c2d6e39f47a60a815b54fd10df6a8edb48faab74e2a0a8
+2024-07-20 15:04:20.859 [INF] WLLT: Recovered 1 external addrs at height=278 hash=0e08124cb359989269c2d6e39f47a60a815b54fd10df6a8edb48faab74e2a0a8
+2024-07-20 15:04:20.859 [INF] WLLT: Found 1 spends from watched outpoints at height=278 hash=0e08124cb359989269c2d6e39f47a60a815b54fd10df6a8edb48faab74e2a0a8
+2024-07-20 15:04:20.865 [INF] CHNS: Fetching block height=279 hash=5a67304a30f9342da128e1838bd2dcaa35e0392dee94fa21b116a0cd90f82860
+2024-07-20 15:04:20.865 [INF] WLLT: Recovered 1 external addrs at height=279 hash=5a67304a30f9342da128e1838bd2dcaa35e0392dee94fa21b116a0cd90f82860
+2024-07-20 15:04:20.865 [INF] WLLT: Found 1 spends from watched outpoints at height=279 hash=5a67304a30f9342da128e1838bd2dcaa35e0392dee94fa21b116a0cd90f82860
+2024-07-20 15:04:20.872 [INF] CHNS: Fetching block height=280 hash=7f9296a45b184ae46f9bbd1449797fc27bacfc944a0e0086903a1b9ef0935bd2
+2024-07-20 15:04:20.872 [INF] WLLT: Recovered 1 external addrs at height=280 hash=7f9296a45b184ae46f9bbd1449797fc27bacfc944a0e0086903a1b9ef0935bd2
+2024-07-20 15:04:20.872 [INF] WLLT: Found 1 spends from watched outpoints at height=280 hash=7f9296a45b184ae46f9bbd1449797fc27bacfc944a0e0086903a1b9ef0935bd2
+2024-07-20 15:04:20.878 [INF] CHNS: Fetching block height=281 hash=29a02036080b5aa7dcb7de3a8fa3fde5587c9b3b6e5cb5d0a3383b16c9206dba
+2024-07-20 15:04:20.878 [INF] WLLT: Recovered 1 external addrs at height=281 hash=29a02036080b5aa7dcb7de3a8fa3fde5587c9b3b6e5cb5d0a3383b16c9206dba
+2024-07-20 15:04:20.878 [INF] WLLT: Found 1 spends from watched outpoints at height=281 hash=29a02036080b5aa7dcb7de3a8fa3fde5587c9b3b6e5cb5d0a3383b16c9206dba
+2024-07-20 15:04:20.884 [INF] CHNS: Fetching block height=282 hash=0721e117b74cec8e4ba0349a49fa0331974f4376fdb5c87de8df5711f9a39c7b
+2024-07-20 15:04:20.884 [INF] WLLT: Recovered 1 external addrs at height=282 hash=0721e117b74cec8e4ba0349a49fa0331974f4376fdb5c87de8df5711f9a39c7b
+2024-07-20 15:04:20.884 [INF] WLLT: Found 1 spends from watched outpoints at height=282 hash=0721e117b74cec8e4ba0349a49fa0331974f4376fdb5c87de8df5711f9a39c7b
+2024-07-20 15:04:20.890 [INF] CHNS: Fetching block height=283 hash=0a019cab0912279bddeeb3b17aa4bb4b2925d72e661ebe4dfc94a458c8bfee59
+2024-07-20 15:04:20.890 [INF] WLLT: Recovered 1 external addrs at height=283 hash=0a019cab0912279bddeeb3b17aa4bb4b2925d72e661ebe4dfc94a458c8bfee59
+2024-07-20 15:04:20.890 [INF] WLLT: Found 1 spends from watched outpoints at height=283 hash=0a019cab0912279bddeeb3b17aa4bb4b2925d72e661ebe4dfc94a458c8bfee59
+2024-07-20 15:04:20.897 [INF] CHNS: Fetching block height=284 hash=1891f429c664481ec12fba73e9743c3d2b98b301935cf309ae6a606bd0e3cfb4
+2024-07-20 15:04:20.898 [INF] WLLT: Recovered 1 external addrs at height=284 hash=1891f429c664481ec12fba73e9743c3d2b98b301935cf309ae6a606bd0e3cfb4
+2024-07-20 15:04:20.898 [INF] WLLT: Found 1 spends from watched outpoints at height=284 hash=1891f429c664481ec12fba73e9743c3d2b98b301935cf309ae6a606bd0e3cfb4
+2024-07-20 15:04:20.904 [INF] CHNS: Fetching block height=285 hash=2fa2918da3112de2378b950b46475f324e07a313d05663b6ac4447bff2b5fdac
+2024-07-20 15:04:20.904 [INF] WLLT: Recovered 1 external addrs at height=285 hash=2fa2918da3112de2378b950b46475f324e07a313d05663b6ac4447bff2b5fdac
+2024-07-20 15:04:20.904 [INF] WLLT: Found 1 spends from watched outpoints at height=285 hash=2fa2918da3112de2378b950b46475f324e07a313d05663b6ac4447bff2b5fdac
+2024-07-20 15:04:20.910 [INF] CHNS: Fetching block height=286 hash=4f0c308ecf0a1f4e4029a98a8bfba4806179e84d2536e71ac4bd489b578b14f9
+2024-07-20 15:04:20.910 [INF] WLLT: Recovered 1 external addrs at height=286 hash=4f0c308ecf0a1f4e4029a98a8bfba4806179e84d2536e71ac4bd489b578b14f9
+2024-07-20 15:04:20.910 [INF] WLLT: Found 1 spends from watched outpoints at height=286 hash=4f0c308ecf0a1f4e4029a98a8bfba4806179e84d2536e71ac4bd489b578b14f9
+2024-07-20 15:04:20.917 [INF] CHNS: Fetching block height=287 hash=3dede5d9b7b65f3bf1980c7cd53caf9d9ccf26f2cea7059a2d51ad99923a8c3b
+2024-07-20 15:04:20.917 [INF] WLLT: Recovered 1 external addrs at height=287 hash=3dede5d9b7b65f3bf1980c7cd53caf9d9ccf26f2cea7059a2d51ad99923a8c3b
+2024-07-20 15:04:20.917 [INF] WLLT: Found 1 spends from watched outpoints at height=287 hash=3dede5d9b7b65f3bf1980c7cd53caf9d9ccf26f2cea7059a2d51ad99923a8c3b
+2024-07-20 15:04:20.923 [INF] CHNS: Fetching block height=288 hash=3225aca7911fab5380e395df870ad9a922734399f6cde1f589dd6c1f5946614c
+2024-07-20 15:04:20.924 [INF] WLLT: Recovered 1 external addrs at height=288 hash=3225aca7911fab5380e395df870ad9a922734399f6cde1f589dd6c1f5946614c
+2024-07-20 15:04:20.924 [INF] WLLT: Found 1 spends from watched outpoints at height=288 hash=3225aca7911fab5380e395df870ad9a922734399f6cde1f589dd6c1f5946614c
+2024-07-20 15:04:20.930 [INF] CHNS: Fetching block height=289 hash=012d234bf83aab7dafd2d66bd45a0d63c36f3417c863f71713b287c714fe535f
+2024-07-20 15:04:20.930 [INF] WLLT: Recovered 1 external addrs at height=289 hash=012d234bf83aab7dafd2d66bd45a0d63c36f3417c863f71713b287c714fe535f
+2024-07-20 15:04:20.930 [INF] WLLT: Found 1 spends from watched outpoints at height=289 hash=012d234bf83aab7dafd2d66bd45a0d63c36f3417c863f71713b287c714fe535f
+2024-07-20 15:04:20.936 [INF] CHNS: Fetching block height=290 hash=33e9527b30d27a657bb66145e30fa3aa4b0b7ba156c2fddda4daa31c2b059917
+2024-07-20 15:04:20.936 [INF] WLLT: Recovered 1 external addrs at height=290 hash=33e9527b30d27a657bb66145e30fa3aa4b0b7ba156c2fddda4daa31c2b059917
+2024-07-20 15:04:20.936 [INF] WLLT: Found 1 spends from watched outpoints at height=290 hash=33e9527b30d27a657bb66145e30fa3aa4b0b7ba156c2fddda4daa31c2b059917
+2024-07-20 15:04:20.943 [INF] CHNS: Fetching block height=291 hash=73c9b417560d6c8e19e31d072837b82bfdb4b29be121b7a04eec0191fefd14f1
+2024-07-20 15:04:20.943 [INF] WLLT: Recovered 1 external addrs at height=291 hash=73c9b417560d6c8e19e31d072837b82bfdb4b29be121b7a04eec0191fefd14f1
+2024-07-20 15:04:20.943 [INF] WLLT: Found 1 spends from watched outpoints at height=291 hash=73c9b417560d6c8e19e31d072837b82bfdb4b29be121b7a04eec0191fefd14f1
+2024-07-20 15:04:20.949 [INF] CHNS: Fetching block height=292 hash=4a082d46fa5b23444359029ca5f5cb6357f610fce289558106fe5aac25c66a10
+2024-07-20 15:04:20.949 [INF] WLLT: Recovered 1 external addrs at height=292 hash=4a082d46fa5b23444359029ca5f5cb6357f610fce289558106fe5aac25c66a10
+2024-07-20 15:04:20.949 [INF] WLLT: Found 1 spends from watched outpoints at height=292 hash=4a082d46fa5b23444359029ca5f5cb6357f610fce289558106fe5aac25c66a10
+2024-07-20 15:04:20.955 [INF] CHNS: Fetching block height=293 hash=000413a7cb24a2b9302f4532085b337c276f04f7b82f95316c40d5b083140f28
+2024-07-20 15:04:20.956 [INF] WLLT: Recovered 1 external addrs at height=293 hash=000413a7cb24a2b9302f4532085b337c276f04f7b82f95316c40d5b083140f28
+2024-07-20 15:04:20.956 [INF] WLLT: Found 1 spends from watched outpoints at height=293 hash=000413a7cb24a2b9302f4532085b337c276f04f7b82f95316c40d5b083140f28
+2024-07-20 15:04:20.962 [INF] CHNS: Fetching block height=294 hash=53c79b97b23d058605d544ce8d322f0fad513f768655aaba36fddf808324dbd8
+2024-07-20 15:04:20.962 [INF] WLLT: Recovered 1 external addrs at height=294 hash=53c79b97b23d058605d544ce8d322f0fad513f768655aaba36fddf808324dbd8
+2024-07-20 15:04:20.962 [INF] WLLT: Found 1 spends from watched outpoints at height=294 hash=53c79b97b23d058605d544ce8d322f0fad513f768655aaba36fddf808324dbd8
+2024-07-20 15:04:20.968 [INF] CHNS: Fetching block height=295 hash=633f372952a2dd107fa7272b086563382afffb4bbc1a3dfdb77bd6084d9c3fb8
+2024-07-20 15:04:20.969 [INF] WLLT: Recovered 1 external addrs at height=295 hash=633f372952a2dd107fa7272b086563382afffb4bbc1a3dfdb77bd6084d9c3fb8
+2024-07-20 15:04:20.969 [INF] WLLT: Found 1 spends from watched outpoints at height=295 hash=633f372952a2dd107fa7272b086563382afffb4bbc1a3dfdb77bd6084d9c3fb8
+2024-07-20 15:04:20.975 [INF] CHNS: Fetching block height=296 hash=69b205dfea8e9743d18853a4dc949f48acf29e8070edda53644db35215a7fa55
+2024-07-20 15:04:20.975 [INF] WLLT: Recovered 1 external addrs at height=296 hash=69b205dfea8e9743d18853a4dc949f48acf29e8070edda53644db35215a7fa55
+2024-07-20 15:04:20.975 [INF] WLLT: Found 1 spends from watched outpoints at height=296 hash=69b205dfea8e9743d18853a4dc949f48acf29e8070edda53644db35215a7fa55
+2024-07-20 15:04:20.982 [INF] CHNS: Fetching block height=297 hash=5ae226060747e8deaef87f6e5ba7c66f15bbe31fb0792f1122faa14e9fd12036
+2024-07-20 15:04:20.982 [INF] WLLT: Recovered 1 external addrs at height=297 hash=5ae226060747e8deaef87f6e5ba7c66f15bbe31fb0792f1122faa14e9fd12036
+2024-07-20 15:04:20.982 [INF] WLLT: Found 1 spends from watched outpoints at height=297 hash=5ae226060747e8deaef87f6e5ba7c66f15bbe31fb0792f1122faa14e9fd12036
+2024-07-20 15:04:20.988 [INF] CHNS: Fetching block height=298 hash=0452f8af31c9f5fbba00983aa655aeaca9c9fd916daf5a98b519feda83882a63
+2024-07-20 15:04:20.989 [INF] WLLT: Recovered 1 external addrs at height=298 hash=0452f8af31c9f5fbba00983aa655aeaca9c9fd916daf5a98b519feda83882a63
+2024-07-20 15:04:20.989 [INF] WLLT: Found 1 spends from watched outpoints at height=298 hash=0452f8af31c9f5fbba00983aa655aeaca9c9fd916daf5a98b519feda83882a63
+2024-07-20 15:04:20.995 [INF] CHNS: Fetching block height=299 hash=46cc13b0f3e815e5c40e2d56352279a9ad0466fa7d425aac347dc9b96baa4667
+2024-07-20 15:04:20.995 [INF] WLLT: Recovered 1 external addrs at height=299 hash=46cc13b0f3e815e5c40e2d56352279a9ad0466fa7d425aac347dc9b96baa4667
+2024-07-20 15:04:20.995 [INF] WLLT: Found 1 spends from watched outpoints at height=299 hash=46cc13b0f3e815e5c40e2d56352279a9ad0466fa7d425aac347dc9b96baa4667
+2024-07-20 15:04:21.002 [INF] CHNS: Fetching block height=300 hash=691e43991887a9cd769c27436482296854f57a3364f10a66f2c10ccf56fdfd0b
+2024-07-20 15:04:21.002 [INF] WLLT: Recovered 1 external addrs at height=300 hash=691e43991887a9cd769c27436482296854f57a3364f10a66f2c10ccf56fdfd0b
+2024-07-20 15:04:21.002 [INF] WLLT: Found 1 spends from watched outpoints at height=300 hash=691e43991887a9cd769c27436482296854f57a3364f10a66f2c10ccf56fdfd0b
+2024-07-20 15:04:21.008 [INF] CHNS: Fetching block height=301 hash=79f40d00cb83106f66a5d7cf871f52bb2e33c3cb14d69bcc624f4168e2a6f866
+2024-07-20 15:04:21.008 [INF] WLLT: Recovered 1 external addrs at height=301 hash=79f40d00cb83106f66a5d7cf871f52bb2e33c3cb14d69bcc624f4168e2a6f866
+2024-07-20 15:04:21.008 [INF] WLLT: Found 1 spends from watched outpoints at height=301 hash=79f40d00cb83106f66a5d7cf871f52bb2e33c3cb14d69bcc624f4168e2a6f866
+2024-07-20 15:04:21.015 [INF] CHNS: Fetching block height=302 hash=78a7ce2e3203b03b33071e0112da64121d92e297f2894a589351130dc5123013
+2024-07-20 15:04:21.016 [INF] WLLT: Recovered 1 external addrs at height=302 hash=78a7ce2e3203b03b33071e0112da64121d92e297f2894a589351130dc5123013
+2024-07-20 15:04:21.016 [INF] WLLT: Found 1 spends from watched outpoints at height=302 hash=78a7ce2e3203b03b33071e0112da64121d92e297f2894a589351130dc5123013
+2024-07-20 15:04:21.022 [INF] CHNS: Fetching block height=303 hash=3e2de880a844d4f315cb74b0844dcf02649ffcc334c10129b4333895b4712d16
+2024-07-20 15:04:21.022 [INF] WLLT: Recovered 1 external addrs at height=303 hash=3e2de880a844d4f315cb74b0844dcf02649ffcc334c10129b4333895b4712d16
+2024-07-20 15:04:21.022 [INF] WLLT: Found 1 spends from watched outpoints at height=303 hash=3e2de880a844d4f315cb74b0844dcf02649ffcc334c10129b4333895b4712d16
+2024-07-20 15:04:21.028 [INF] CHNS: Fetching block height=304 hash=4bf1cb08b736a20946500677ec58a44ef577270d23b8b307f6f2164b4915f23b
+2024-07-20 15:04:21.028 [INF] WLLT: Recovered 1 external addrs at height=304 hash=4bf1cb08b736a20946500677ec58a44ef577270d23b8b307f6f2164b4915f23b
+2024-07-20 15:04:21.028 [INF] WLLT: Found 1 spends from watched outpoints at height=304 hash=4bf1cb08b736a20946500677ec58a44ef577270d23b8b307f6f2164b4915f23b
+2024-07-20 15:04:21.034 [INF] CHNS: Fetching block height=305 hash=2364a35bddc1b98dfd1915cd7814d5f14255440e7b7ea622ca493c6646e3526b
+2024-07-20 15:04:21.035 [INF] WLLT: Recovered 1 external addrs at height=305 hash=2364a35bddc1b98dfd1915cd7814d5f14255440e7b7ea622ca493c6646e3526b
+2024-07-20 15:04:21.035 [INF] WLLT: Found 1 spends from watched outpoints at height=305 hash=2364a35bddc1b98dfd1915cd7814d5f14255440e7b7ea622ca493c6646e3526b
+2024-07-20 15:04:21.042 [INF] CHNS: Fetching block height=306 hash=550fae60136cf2c0c61e96b960f902e8bf04006f86071754ccfe30d54cc21351
+2024-07-20 15:04:21.042 [INF] WLLT: Recovered 1 external addrs at height=306 hash=550fae60136cf2c0c61e96b960f902e8bf04006f86071754ccfe30d54cc21351
+2024-07-20 15:04:21.042 [INF] WLLT: Found 1 spends from watched outpoints at height=306 hash=550fae60136cf2c0c61e96b960f902e8bf04006f86071754ccfe30d54cc21351
+2024-07-20 15:04:21.048 [INF] CHNS: Fetching block height=307 hash=0ceddf7d37e58abc7550230fcdeb1d02c45b5685483a69b7221d6c2e9ff5a203
+2024-07-20 15:04:21.048 [INF] WLLT: Recovered 1 external addrs at height=307 hash=0ceddf7d37e58abc7550230fcdeb1d02c45b5685483a69b7221d6c2e9ff5a203
+2024-07-20 15:04:21.048 [INF] WLLT: Found 1 spends from watched outpoints at height=307 hash=0ceddf7d37e58abc7550230fcdeb1d02c45b5685483a69b7221d6c2e9ff5a203
+2024-07-20 15:04:21.109 [INF] WLLT: Recovered addresses from blocks 208-307
+2024-07-20 15:04:21.167 [INF] WLLT: Started rescan from block 0ceddf7d37e58abc7550230fcdeb1d02c45b5685483a69b7221d6c2e9ff5a203 (height 307) for 1 address
+2024-07-20 15:04:21.206 [INF] WLLT: Catching up block hashes to height 307, this might take a while
+2024-07-20 15:04:21.245 [INF] WLLT: Done catching up block hashes
+2024-07-20 15:04:21.245 [INF] WLLT: Finished rescan for 1 address (synced to block 0ceddf7d37e58abc7550230fcdeb1d02c45b5685483a69b7221d6c2e9ff5a203, height 307)
+2024-07-20 15:04:38.920 [INF] RPCS: New websocket client [::1]:53150
+2024-07-20 15:04:49.042 [INF] RPCS: New websocket client [::1]:53155
+2024-07-20 15:04:49.963 [INF] WLLT: The wallet has been temporarily unlocked
+2024-07-20 15:04:50.708 [INF] TMGR: Inserting unconfirmed transaction 312ece589ea3283448d0a597286c226547c707f19742b5261defa721857b05c6
+2024-07-20 15:04:50.709 [ERR] WLLT: Notifying unmined tx notification (312ece589ea3283448d0a597286c226547c707f19742b5261defa721857b05c6) while creating notification for blocks
+2024-07-20 15:04:50.712 [WRN] RPCS: Websocket receive failed from client [::1]:53155: websocket: close 1006 unexpected EOF
+2024-07-20 15:04:50.712 [INF] RPCS: Disconnected websocket client [::1]:53155
+2024-07-20 15:04:50.807 [INF] TMGR: Marking unconfirmed transaction 312ece589ea3283448d0a597286c226547c707f19742b5261defa721857b05c6 mined in block 308
