@@ -2,6 +2,7 @@ package taproot
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -23,11 +24,10 @@ func TestAbc(t *testing.T) {
 	tree.Insert(nil, key, &leafNode)
 	_, err := json.Marshal(tree)
 	if err != nil {
-		fmt.println("Marshal error: ", err)
+		fmt.Println("Marshal error: ", err)
 		t.Error(err)
 	}
 
-	//fmt.println("abcbyte: ", string(b))
 	t.Log("Test abc")
 }
 

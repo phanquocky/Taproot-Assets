@@ -50,6 +50,11 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		return err
 	}
 
+	assetUTXOsOnchain, err := t.getAssetUTXOsOnchain(ctx, assetUTXOs)
+	if err != nil {
+		return err
+	}
+
 	assetGenOutpoint, err := wire.NewOutPointFromString(assetUTXOs.GenesisPoint.PrevOut)
 	if err != nil {
 		fmt.Println("wire.NewOutPointFromString(assetUTXOs.GenesisPoint.PrevOut) got error", err)
@@ -72,7 +77,7 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		return err
 	}
 
-	txIncludeOutPubKey, err := t.createTxOnChain(bestUTXOs, nil,
+	txIncludeOutPubKey, err := t.createTxOnChain(bestUTXOs, assetUTXOsOnchain,
 		btcOutputInfos, btcutil.Amount(DEFAULT_FEE), true)
 	if err != nil {
 		return err
@@ -95,6 +100,10 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		}
 	}
 
+	// fmt.Printf("anchortx: %s\n", txIncludeOutPubKey.Tx.TxHash().String())
+
+	// fmt.Printf("anchortx bytes: %x\n", txIncludeOutPubKey.Tx.SerializeSize())
+
 	data := transfer.TransferReq{
 		GenesisAsset:     &assetUTXOs.GenesisAsset,
 		AnchorTx:         txIncludeOutPubKey.Tx,
@@ -112,6 +121,27 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 	}
 
 	return nil
+}
+
+func (t *Taproot) getAssetUTXOsOnchain(
+	ctx context.Context,
+	assetUTXOs *utxoasset.UnspentAssetResp,
+) (*GetUnspentAssetsByIdResult, error) {
+	assetUTXOsOnchain := make([]*OutPoint, 0)
+
+	for _, u := range assetUTXOs.UnspentOutpoints {
+		assetUTXOsOnchain = append(assetUTXOsOnchain, &OutPoint{
+			Outpoint:         u.Outpoint,
+			AmtSats:          int64(u.AmtSats),
+			ScriptOutput:     u.ScriptOutput,
+			InternalKey:      u.InternalKey,
+			TaprootAssetRoot: u.TaprootAssetRoot,
+		})
+	}
+
+	return &GetUnspentAssetsByIdResult{
+		UnspentOutpoints: assetUTXOsOnchain,
+	}, nil
 }
 
 func (t *Taproot) verifyReceiverPubKey(receiverPubKey []asset.SerializedKey) error {

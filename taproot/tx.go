@@ -1,11 +1,24 @@
 package taproot
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/btcsuite/btcd/btcutil"
+	"github.com/btcsuite/btcd/wire"
 	"github.com/quocky/taproot-asset/taproot/onchain"
 )
 
+type OutPoint struct {
+	Outpoint         string
+	AmtSats          int64
+	ScriptOutput     []byte
+	InternalKey      []byte
+	TaprootAssetRoot []byte
+}
+
 type GetUnspentAssetsByIdResult struct {
+	UnspentOutpoints []*OutPoint
 }
 
 func (t *Taproot) createTxOnChain(
@@ -19,6 +32,8 @@ func (t *Taproot) createTxOnChain(
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Printf("unspentAssetsOnChains: %v\n", unspentAssetsOnChains)
 
 	senderBtcAddr, err := t.btcClient.GetSenderAddress()
 	if err != nil {
@@ -64,30 +79,28 @@ func (t *Taproot) createTxOnChain(
 func makeUnspentAssetsByIdResult(
 	unspentAssets *GetUnspentAssetsByIdResult,
 ) ([]*onchain.UnspentAssetsByIdResult, error) {
-	//if unspentAssets == nil {
-	//	return nil, nil
-	//}
-	//
-	//unspentAssetsOnchains := make([]*onchain.UnspentAssetsByIdResult, len(unspentAssets.UnspentOutpoints))
-	//for id, unspentOutpoint := range unspentAssets.UnspentOutpoints {
-	//
-	//	outpoint, err := wire.NewOutPointFromString(unspentOutpoint.Outpoint)
-	//	if err != nil {
-	//		log.Println("[makeUnspentAssetsByIdResult] wire.NewOutPointFromString, err", err)
-	//
-	//		return nil, err
-	//	}
-	//
-	//	unspentAssetsOnchains[id] = &onchain.UnspentAssetsByIdResult{
-	//		Outpoint:         outpoint,
-	//		AmtSats:          int64(unspentOutpoint.AmtSats),
-	//		ScriptOutput:     unspentOutpoint.ScriptOutput,
-	//		InternalKey:      unspentOutpoint.InternalKey,
-	//		TapCommitment: unspentOutpoint.TapCommitment,
-	//	}
-	//}
-	//
-	//return unspentAssetsOnchains, nil
+	if unspentAssets == nil {
+		return nil, nil
+	}
 
-	return nil, nil
+	unspentAssetsOnchains := make([]*onchain.UnspentAssetsByIdResult, len(unspentAssets.UnspentOutpoints))
+	for id, unspentOutpoint := range unspentAssets.UnspentOutpoints {
+
+		outpoint, err := wire.NewOutPointFromString(unspentOutpoint.Outpoint)
+		if err != nil {
+			log.Println("[makeUnspentAssetsByIdResult] wire.NewOutPointFromString, err", err)
+
+			return nil, err
+		}
+
+		unspentAssetsOnchains[id] = &onchain.UnspentAssetsByIdResult{
+			Outpoint:         outpoint,
+			AmtSats:          int64(unspentOutpoint.AmtSats),
+			ScriptOutput:     unspentOutpoint.ScriptOutput,
+			InternalKey:      unspentOutpoint.InternalKey,
+			TaprootAssetRoot: unspentOutpoint.TaprootAssetRoot,
+		}
+	}
+
+	return unspentAssetsOnchains, nil
 }

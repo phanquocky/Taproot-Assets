@@ -14,7 +14,7 @@ const (
 	MockBtcPass      = "admin123"
 	MiningAddress    = ""
 	MineTime         = 1 * time.Minute
-	MiningAddr       = "SgWABqYDjsugfAbPZmTniuTHxnZjHzxe5Z"
+	MiningAddr       = "SSCs9JaNW6AFtsgdwS6xwHnd8yhZaPdXYH"
 	WalletPassphrase = "admin"
 )
 
