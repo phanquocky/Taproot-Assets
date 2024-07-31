@@ -54,8 +54,6 @@ func (u *UseCase) GetUnspentAssetsById(
 		return nil, err
 	}
 
-	log.Printf("assetIdBytes %x", assetIdBytes)
-
 	err = u.genesisAssetRepo.FindOne(ctx, map[string]any{"asset_id": assetIdBytes}, &genesisAsset)
 	if err != nil {
 		log.Println("find one fail", err)

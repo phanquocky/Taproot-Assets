@@ -76,7 +76,7 @@ func (b *BitcoinRuntime) startBTCD() error {
 	// setup bitcoin node running in simnet mode
 	rpcUser := fmt.Sprintf("--rpcuser=%s", MockBtcUser)
 	rpcPass := fmt.Sprintf("--rpcpass=%s", MockBtcPass)
-	// btcd --simnet --txindex --notls --datadir simnet/btcd --logdir simnet/btcd/logs --miningaddr SNGkVPmWWjVL2ZeQX1adCA64tz5ceuidce --rpcuser=admin --rpcpass=admin123
+	// btcd --simnet --txindex --notls --datadir simnet/btcd --logdir simnet/btcd/logs --miningaddr SgWABqYDjsugfAbPZmTniuTHxnZjHzxe5Z --rpcuser=admin --rpcpass=admin123
 	b.btcdCmd = exec.Command("btcd", "--simnet", "--txindex", "--notls", "--datadir", "simnet/btcd", "--logdir", "simnet/btcd/logs", "--miningaddr", MiningAddr, rpcUser, rpcPass, "&")
 	// set child process group id to the same as parent process id, so that KILL signal can kill both parent and child processes
 	b.btcdCmd.SysProcAttr = &syscall.SysProcAttr{

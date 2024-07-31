@@ -8,8 +8,6 @@ import (
 	"log"
 	"os"
 
-	"go.uber.org/zap"
-
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/quocky/taproot-asset/taproot/http_model/mint"
@@ -17,6 +15,7 @@ import (
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 	"github.com/quocky/taproot-asset/taproot/onchain"
+	"go.uber.org/zap"
 )
 
 func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmounts []int32) ([]string, error) {
@@ -50,28 +49,20 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 	firstPrevOut := bestUTXOs[0].Outpoint
 	mintAssets := genAssets(assetNames, assetAmounts, firstPrevOut, userPubKey)
 
-	log.Printf("[Mint Asset] generate mint assets, assets: %v \n", mintAssets)
-
 	assetCommitments, err := genAssetCommitments(ctx, mintAssets)
 	if err != nil {
 		return nil, err
 	}
-
-	log.Printf("[Mint Asset] Generate asset commitments success!")
 
 	tapCommitment, err := commitment.NewTapCommitment(assetCommitments...)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Printf("[Mint Asset] Generate tap commitment: %v", tapCommitment)
-
 	mintTapAddress, err := t.addressMaker.CreateTapAddr(userPubKey, tapCommitment)
 	if err != nil {
 		return nil, err
 	}
-
-	log.Printf("[Mint Asset] Generate tap address success!")
 
 	btcOutputInfos := []*onchain.BtcOutputInfo{
 		onchain.NewBtcOutputInfo(mintTapAddress, DEFAULT_OUTPUT_AMOUNT, mintAssets...),
@@ -83,8 +74,6 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		return nil, err
 	}
 
-	log.Printf("[Mint Asset] Create tx on chain success!")
-
 	mintProof, err := t.createMintProof(
 		txIncludeOutPubKey,
 		DEFAULT_MINTING_OUTPUT_INDEX,
@@ -94,26 +83,21 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		return nil, err
 	}
 
-	log.Printf("[Mint Asset] Create mint proof success!")
-
 	data := mint.MintAssetReq{
 		AmountSats:        DEFAULT_OUTPUT_AMOUNT,
 		TapScriptRootHash: mintTapAddress.TapScriptRootHash,
 		MintProof:         mintProof,
 	}
 
-	postResp, err := t.httpClient.R().SetBody(data).Post(os.Getenv("SERVER_BASE_URL") + "/mint-asset")
+	_, err = t.httpClient.R().SetBody(data).Post(os.Getenv("SERVER_BASE_URL") + "/mint-asset")
 	if err != nil {
 		log.Println("c.httpClient.R().SetBody(data).Post(\"/mint-asset\")", err)
 
 		return nil, err
 	}
 
-	log.Printf("[Mint Asset] Post mint asset success!", zap.Reflect("req", postResp))
-
 	assetIDs := make([]string, 0)
 	for _, a := range mintAssets {
-		//assetIDs = append(assetIDs, hex.EncodeToString(a.ID()[:]))
 		id := a.ID()
 		assetIDs = append(assetIDs, hex.EncodeToString(id[:]))
 	}
@@ -167,8 +151,6 @@ func genAssets(assetNames []string, assetAmounts []int32, prevOut *wire.OutPoint
 
 	for idx, assetName := range assetNames {
 		assetAmount := assetAmounts[idx]
-
-		log.Printf("[Mint Asset] mintint asset! assetName : %v, assetAmount : %v ! \n", assetName, assetAmount)
 
 		genesis := asset.NewGenesis(*prevOut, assetName, DEFAULT_MINTING_OUTPUT_INDEX)
 		assets[idx] = asset.NewAsset(genesis, assetAmount, userPubKey, nil)

@@ -10,8 +10,6 @@ import (
 // SignRawTx function sign input btc
 func (c *Client) SignRawTx(rawTx *wire.MsgTx) (*wire.MsgTx, error) {
 
-	log.Println("SignRawTx", rawTx.TxHash().String())
-
 	finalTx, isSign, err := c.client.SignRawTransaction(rawTx)
 	if err != nil {
 		log.Printf("cannot sign raw transaction (isSign = %v, err = %v) \n", isSign, err)

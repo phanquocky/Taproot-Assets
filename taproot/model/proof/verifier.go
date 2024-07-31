@@ -2,7 +2,6 @@ package proof
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/btcsuite/btcd/btcec/v2"
@@ -134,7 +133,6 @@ func (p *Proof) verifyExclusionProofs() error {
 }
 
 func (p *Proof) verifyInclusionProof() (*commitment.TapCommitment, error) {
-	fmt.Println("Verify inclusion proof!")
 	return verifyTaprootProof(
 		&p.AnchorTx, &p.InclusionProof, &p.Asset, true,
 	)
@@ -155,8 +153,6 @@ func verifyTaprootProof(
 	asset *asset.Asset,
 	inclusion bool,
 ) (*commitment.TapCommitment, error) {
-
-	log.Println("Verify taproot proof!")
 	expectedTaprootKey, err := ExtractTaprootKey(
 		anchor, proof.OutputIndex,
 	)

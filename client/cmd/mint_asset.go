@@ -15,9 +15,7 @@ var mintAssetCmd = &cobra.Command{
 	Short: "mint-asset command is used to mint new asset. Usage: mint-asset <asset_name>:<amount> <asset_name>:<amount> ...",
 	Long:  `mint-asset command is used to mint new asset. Usage: mint-asset <asset_name>:<amount> <asset_name>:<amount> ...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		log.Println("******************************** setup runtime ********************************")
 		taprootClient = newTaprootClient()
-		log.Printf("******************************** setup runtime success ********************************\n")
 		names := make([]string, 0)
 		amounts := make([]int32, 0)
 

@@ -36,7 +36,6 @@ func newTaprootClient() taproot.Interface {
 	}
 
 	networkCfg := config.LoadNetworkConfig()
-	log.Println("Network config: ", networkCfg)
 
 	btcClient, err := onchain.New(networkCfg)
 	if err != nil {
@@ -47,7 +46,6 @@ func newTaprootClient() taproot.Interface {
 	if err != nil {
 		log.Fatalf("Error dump wif, err: %s \n", err.Error())
 	}
-	log.Printf("WIF: %s\n", wif.String())
 
 	addressMaker := address.New(networkCfg.ParamsObject)
 

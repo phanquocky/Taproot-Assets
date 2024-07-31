@@ -1,2 +1,2 @@
 build:
-	go build -o main main.go
+	go build -o client-side main.go

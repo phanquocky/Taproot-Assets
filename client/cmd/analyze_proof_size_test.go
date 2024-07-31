@@ -5,7 +5,6 @@ import (
 	"encoding/csv"
 	"encoding/hex"
 	"fmt"
-	"log"
 	"os"
 	"testing"
 	"time"
@@ -18,9 +17,9 @@ import (
 
 // go test -timeout 30m -run ^TestProofSizeSingleAsset$ github.com/quocky/taproot-asset/client/cmd
 func TestProofSizeSingleAsset(t *testing.T) {
-	log.Println("******************************** setup runtime ********************************")
+	// log.Println("******************************** setup runtime ********************************")
 	taprootClient := newTaprootClient()
-	log.Printf("******************************** setup runtime success ********************************\n")
+	// log.Printf("******************************** setup runtime success ********************************\n")
 
 	receiverPubKeyStr := "02498ecf86fb261f380e469524538b9b536a9eb1daa763001a1ddaec7b71279271"
 	receiverPubKey, err := hex.DecodeString(receiverPubKeyStr)
@@ -30,7 +29,7 @@ func TestProofSizeSingleAsset(t *testing.T) {
 	}
 
 	rcvByte := [33]byte(receiverPubKey)
-	numberOfTransfer := []int{1, 10, 50, 100, 300, 500, 1000} // custom this line for multiple transfer
+	numberOfTransfer := []int{1000} // custom this line for multiple transfer
 	supply := int32(1000_000_000)
 
 	file, err := os.Create("analyze.csv")

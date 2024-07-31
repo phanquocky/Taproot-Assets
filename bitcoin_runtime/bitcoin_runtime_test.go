@@ -11,8 +11,8 @@ func TestBitcoinRuntime(t *testing.T) {
 
 	t.Run("Should start bitcoin runtime", func(t *testing.T) {
 		err := br.SetUpRuntime()
-		assert.Nil(t, err)
 
+		assert.Nil(t, err)
 	})
 
 	// t.Run("Should stop bitcoin runtime", func(t *testing.T) {

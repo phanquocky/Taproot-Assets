@@ -19,7 +19,6 @@ import (
 	"github.com/quocky/taproot-asset/taproot/model/proof"
 	"github.com/quocky/taproot-asset/taproot/onchain"
 	"github.com/quocky/taproot-asset/taproot/utils"
-	"go.uber.org/zap"
 )
 
 func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId string, amount []int32) error {
@@ -51,8 +50,6 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		return err
 	}
 
-	fmt.Println("assetUTXOs.GenesisAsset.AssetName: ", zap.Reflect("genesis", assetUTXOs.GenesisAsset))
-
 	assetGenOutpoint, err := wire.NewOutPointFromString(assetUTXOs.GenesisPoint.PrevOut)
 	if err != nil {
 		fmt.Println("wire.NewOutPointFromString(assetUTXOs.GenesisPoint.PrevOut) got error", err)
@@ -60,12 +57,7 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		return err
 	}
 
-	// assetUTXOs.GenesisAsset.AssetID =
-
 	transferAssets := prepareAssets(assetGenOutpoint, &assetUTXOs.GenesisAsset, amount, receiverPubKey)
-
-	// log.Println("transferAssets123: ", transferAssets[0].AssetID)
-	// log.Println("transferAssets123: ", transferAssets[1].AssetID)
 
 	returnAssets, err := t.createReturnAsset(assetGenOutpoint, &assetUTXOs.GenesisAsset, assetUTXOs, transferAssets)
 	if err != nil {
@@ -73,7 +65,6 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 
 		return err
 	}
-	// log.Println("returnAssets123: ", returnAssets.Assets[0].AssetID)
 
 	btcOutputInfos, _, err := t.prepareBtcOutputs(ctx, assetUTXOs, transferAssets, returnAssets.Assets)
 	if err != nil {
@@ -113,21 +104,18 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		Files:            files,
 	}
 
-	postResp, err := t.httpClient.R().SetBody(data).Post(os.Getenv("SERVER_BASE_URL") + "/transfer-asset")
+	_, err = t.httpClient.R().SetBody(data).Post(os.Getenv("SERVER_BASE_URL") + "/transfer-asset")
 	if err != nil {
 		log.Println("t.httpClient.R().SetBody(data).Post(\"/transfer-asset\") got error", err)
 
 		return err
 	}
 
-	log.Println("[Transfer Asset] Post transfer asset success!", postResp)
-
 	return nil
 }
 
 func (t *Taproot) verifyReceiverPubKey(receiverPubKey []asset.SerializedKey) error {
 	walletPubkey := t.GetPubKey()
-	fmt.Printf("walletPubkey: %x", walletPubkey.SerializeCompressed())
 
 	for _, key := range receiverPubKey {
 
@@ -136,7 +124,6 @@ func (t *Taproot) verifyReceiverPubKey(receiverPubKey []asset.SerializedKey) err
 			log.Println("key.ToPubKey() got error", err)
 			return err
 		}
-		fmt.Printf("key: %x", pubkey.SerializeCompressed())
 
 		if walletPubkey == pubkey {
 			return fmt.Errorf("verifyReceiverPubKey: receiverPubKey is the same as the sender's pubkey")
@@ -154,7 +141,6 @@ func createFiles(
 	curFiles := make([]*proof.File, len(btcOutputInfos))
 
 	for i := range btcOutputInfos {
-		// log.Println("btcOutputInfos[i].GetOutputAsset()[0].Amount", btcOutputInfos[i].GetOutputAsset()[0].Amount)
 
 		exclusionProofs, err := makeExclusionProofs(i, btcOutputInfos)
 		if err != nil {
@@ -242,7 +228,6 @@ func (t *Taproot) createReturnAsset(assetGenOutpoint *wire.OutPoint,
 		return nil, errors.New("createReturnAsset: assetUTXOs or transferAsset is empty")
 	}
 
-	fmt.Println("get passwive assets")
 	passiveAssets, err := getPassiveAssets(assetUTXOs, transferAsset[0])
 	if err != nil {
 		return nil, err
@@ -282,7 +267,6 @@ func getPassiveAssets(utxOs *utxoasset.UnspentAssetResp, transferAsset *asset.As
 	for _, u := range utxOs.UnspentOutpoints {
 		for _, a := range u.RelatedAnchorAssets {
 			var curAsset *assetoutpointmodel.AssetOutpoint
-			fmt.Println("a: ", a)
 			err := json.Unmarshal([]byte(a), &curAsset)
 			if err != nil {
 				log.Println("json.Unmarshal([]byte(a), &curAsset) got error", err)
@@ -291,7 +275,7 @@ func getPassiveAssets(utxOs *utxoasset.UnspentAssetResp, transferAsset *asset.As
 
 			if asset.ID(curAsset.Genesis.AssetID) != activeAssetId {
 
-				log.Println("curAsset.Genesis.AssetID: ", curAsset.Genesis.AssetID)
+				//log.Println("curAsset.Genesis.AssetID: ", curAsset.Genesis.AssetID)
 				passiveAssets = append(passiveAssets, &asset.Asset{
 					AssetID:             curAsset.Genesis.AssetID,
 					Amount:              curAsset.Amount,
@@ -365,11 +349,8 @@ func (t *Taproot) prepareBtcOutputs(
 			continue
 		}
 
-		// log.Println("bdefore Copy: splitAsset.Asset.PrevWitnesses[0].SplitCommitment", splitAsset.Asset.PrevWitnesses[0].SplitCommitment)
 		splitAssetCopy := splitAsset.Asset.Copy()
 		splitAssetCopy.PrevWitnesses[0].SplitCommitment = nil
-
-		// log.Println("after Copy: splitAsset.Asset.PrevWitnesses[0].SplitCommitment", splitAsset.Asset.PrevWitnesses[0].SplitCommitment)
 
 		transferCommitment, err := commitment.NewAssetCommitment(ctx, splitAssetCopy)
 		if err != nil {

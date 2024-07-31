@@ -3,7 +3,6 @@ package transfer
 import (
 	"bytes"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/quocky/taproot-asset/server/internal/domain/genesis"
@@ -54,7 +53,6 @@ func (u *UseCase) TransferAsset(
 		return err
 	}
 
-	log.Println("send raw tx 2")
 	_, err := u.rpcClient.SendRawTransaction(anchorTx, true)
 	if err != nil {
 		logger.Errorw("rpcClient.SendRawTransaction fail", "tx_hash", anchorTx.TxHash(), "err", err)
@@ -133,7 +131,6 @@ func (u *UseCase) insertDBTransferTx(
 
 			var curGenesis genesis_asset.GenesisAsset
 
-			log.Println("curAsset.AssetID: ", curAsset.AssetID)
 			if err := u.genesisRepo.FindOne(ctx, map[string]any{
 				"asset_id": curAsset.AssetID,
 			}, &curGenesis); err != nil {

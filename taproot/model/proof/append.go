@@ -3,7 +3,6 @@ package proof
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/commitment"
@@ -98,8 +97,6 @@ func AppendTransition(
 
 		newProof.AdditionalInputs = additionalFiles
 	}
-
-	log.Println("=========================")
 
 	if _, err := newProof.Verify(ctx, nil); err != nil {
 		return nil, nil, fmt.Errorf("error verifying proof new proof: %w", err)

@@ -2,7 +2,6 @@ package taproot
 
 import (
 	"encoding/json"
-	"fmt"
 	"testing"
 
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
@@ -22,14 +21,13 @@ func TestAbc(t *testing.T) {
 	}
 	tree := mssmt.NewCompactedTree(mssmt.NewDefaultStore())
 	tree.Insert(nil, key, &leafNode)
-	fmt.Println("abcdef ")
-	b, err := json.Marshal(tree)
+	_, err := json.Marshal(tree)
 	if err != nil {
-		fmt.Println("Marshal error: ", err)
+		fmt.println("Marshal error: ", err)
 		t.Error(err)
 	}
 
-	fmt.Println("abcbyte: ", string(b))
+	//fmt.println("abcbyte: ", string(b))
 	t.Log("Test abc")
 }
 
@@ -48,7 +46,7 @@ func TestMarshalAssetCommitment(t *testing.T) {
 
 	asset := asset2.NewAsset(mintAssets, 30, a, nil)
 
-	fmt.Println("asset: ", asset)
+	//fmt.println("asset: ", asset)
 
 	ac, err := commitment.NewAssetCommitment(context.Background(), asset)
 	require.NoError(t, err)
@@ -64,10 +62,10 @@ func TestMarshalAssetCommitment(t *testing.T) {
 		TreeRoot:         tapcommitment.TreeRoot,
 		AssetCommitments: assetCommitments,
 	}
-	fmt.Println("tapcommitment: ", tapTest)
+	//fmt.println("tapcommitment: ", tapTest)
 
-	b, err := json.Marshal(tapTest)
+	_, err = json.Marshal(tapTest)
 	require.NoError(t, err)
 
-	fmt.Println("tapcommitment: ", string(b))
+	//fmt.println("tapcommitment: ", string(b))
 }

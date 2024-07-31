@@ -61,8 +61,6 @@ func (c *MintController) UnspentAssetsByID(g *gin.Context) {
 		return
 	}
 
-	log.Println("assetid: ", req.AssetID)
-
 	unspentAsset, err := c.utxoUseCase.GetUnspentAssetsById(g,
 		req.AssetID,
 		req.Amount,

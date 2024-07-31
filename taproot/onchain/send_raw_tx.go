@@ -17,10 +17,6 @@ func (c *Client) SendRawTx(rawTx *wire.MsgTx) (*chainhash.Hash, error) {
 		return nil, err
 	}
 
-	log.Printf("Raw tx: %x\n", buff.Bytes())
-
-	log.Println("SendRawTx", rawTx.TxHash().String())
-
 	txHash, err := c.client.SendRawTransaction(rawTx, true)
 	if err != nil {
 		log.Println("cannot Send raw transaction! ", err)

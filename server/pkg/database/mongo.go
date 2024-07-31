@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	config "github.com/quocky/taproot-asset/server/config/core"
+	"github.com/quocky/taproot-asset/server/pkg/logger"
 	"go.mongodb.org/mongo-driver/bson/mgocompat"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -33,7 +34,7 @@ func NewMongoDatabase(cfg *config.Config) (*mongo.Database, error) {
 		return nil, err
 	}
 
-	// logger.Infow("Connect to MongoDB successfully")
+	logger.Infow("Connect to MongoDB successfully")
 
 	db := client.Database(cfg.Mongo.DBName)
 

@@ -5,9 +5,10 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"errors"
+	"log"
+
 	"github.com/quocky/taproot-asset/taproot/model/asset"
 	"github.com/quocky/taproot-asset/taproot/model/mssmt"
-	"log"
 
 	"github.com/btcsuite/btcd/wire"
 )
