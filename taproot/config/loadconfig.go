@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/btcsuite/btcd/chaincfg"
@@ -10,7 +11,7 @@ import (
 func LoadNetworkConfig() *NetworkConfig {
 	params := "testnet3"
 	paramsObject := &chaincfg.TestNet3Params
-	host := "localhost:8001"
+	host := fmt.Sprintf("localhost:%s", os.Getenv("WPORT"))
 	senderAddress := bitcoin_runtime.MiningAddr
 	user := bitcoin_runtime.MockBtcUser
 	pass := bitcoin_runtime.MockBtcPass
@@ -19,7 +20,6 @@ func LoadNetworkConfig() *NetworkConfig {
 	if env == "sim" {
 		params = "simnet"
 		paramsObject = &chaincfg.SimNetParams
-		host = "localhost:8001"
 	}
 
 	return &NetworkConfig{

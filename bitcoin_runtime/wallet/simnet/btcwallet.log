@@ -81,3 +81,75 @@
 2024-08-05 20:49:50.221 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
 2024-08-05 20:49:55.224 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
 2024-08-05 20:49:55.230 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 21:03:10.417 [WRN] BTCW: open wallet/btcwallet.conf: no such file or directory
+2024-08-05 21:03:10.417 [INF] BTCW: Version 0.15.1-alpha
+2024-08-05 21:03:10.417 [INF] BTCW: Server TLS is disabled.  Only legacy RPC may be used
+2024-08-05 21:03:10.417 [INF] RPCS: Listening on 127.0.0.1:8001
+2024-08-05 21:03:10.417 [INF] BTCW: Chain server RPC TLS is disabled
+2024-08-05 21:03:10.417 [INF] BTCW: Attempting RPC client connection to 127.0.0.1:8000
+2024-08-05 21:03:10.420 [INF] CHNS: Established connection to RPC server 127.0.0.1:8000
+2024-08-05 21:03:10.861 [INF] WLLT: Opened wallet
+2024-08-05 21:03:10.861 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 21:03:10.875 [INF] WLLT: Seed birthday surpassed, starting recovery of wallet from height=402 hash=75f58dc1b34e01876a887bf01fba8474678dc08e4fe2966229b67ca1fa9a6355 with recovery-window=250
+2024-08-05 21:03:10.967 [INF] WLLT: Scanning 1000 blocks for recoverable addresses
+2024-08-05 21:03:11.222 [INF] CHNS: Fetching block height=533 hash=0f186fc211ab9c4c1398d8934d05caedc1bd1217e66c7711c9eb7bdfa773b109
+2024-08-05 21:03:11.255 [INF] CHNS: Fetching block height=785 hash=76f40e309ab196918c3fef65fee78d7fc943acce2e81dabca9010d1081e7a5f8
+2024-08-05 21:03:11.346 [INF] WLLT: Recovered addresses from blocks 402-1401
+2024-08-05 21:03:11.354 [INF] WLLT: Started rescan from block 3d0f375d4eadedad55da862991e608a6788c0139476edae2b9987677fcd8d7ec (height 1401) for 1 address
+2024-08-05 21:03:11.356 [INF] WLLT: Catching up block hashes to height 1401, this might take a while
+2024-08-05 21:03:11.362 [INF] WLLT: Done catching up block hashes
+2024-08-05 21:03:11.362 [INF] WLLT: Finished rescan for 1 address (synced to block 3d0f375d4eadedad55da862991e608a6788c0139476edae2b9987677fcd8d7ec, height 1401)
+2024-08-05 21:03:11.364 [INF] WLLT: 4a52066314771a8a92b502cde31e50e16540312c91ffec5572d7903c11a16eeb: broadcast failed because of: missing inputs
+2024-08-05 21:03:11.369 [INF] WLLT: Removed invalid transaction: 4a52066314771a8a92b502cde31e50e16540312c91ffec5572d7903c11a16eeb
+2024-08-05 21:03:11.369 [INF] WLLT: 4e0a86bcc7556e9f7e3424567a7bed5a018385d2a5587163b86ed8869ca69bd5: broadcast failed because of: missing inputs
+2024-08-05 21:03:11.375 [INF] WLLT: Removed invalid transaction: 4e0a86bcc7556e9f7e3424567a7bed5a018385d2a5587163b86ed8869ca69bd5
+2024-08-05 21:03:11.375 [INF] WLLT: e58cec5510f51cd1c1db42670c1524ea4e1baddf788407ca69c5fd198808ed9d: broadcast failed because of: missing inputs
+2024-08-05 21:03:11.381 [INF] WLLT: Removed invalid transaction: e58cec5510f51cd1c1db42670c1524ea4e1baddf788407ca69c5fd198808ed9d
+2024-08-05 21:03:11.381 [INF] WLLT: 9ee16606e069af71d4c434c89bd7fd4f05a05923e10f2c6718fb9299fa68bef5: broadcast failed because of: missing inputs
+2024-08-05 21:03:11.387 [INF] WLLT: Removed invalid transaction: 9ee16606e069af71d4c434c89bd7fd4f05a05923e10f2c6718fb9299fa68bef5
+2024-08-05 21:03:11.387 [INF] WLLT: a938b03e575aeaaa11545690f09717b3c459a180452b50a16dacfa48c670798d: broadcast failed because of: missing inputs
+2024-08-05 21:03:11.393 [INF] WLLT: Removed invalid transaction: a938b03e575aeaaa11545690f09717b3c459a180452b50a16dacfa48c670798d
+2024-08-05 21:03:11.393 [INF] WLLT: a7487f1016edbdc9eb82998636924ee15b8c9c30552be6ad46d6752e40fce06f: broadcast failed because of: missing inputs
+2024-08-05 21:03:11.399 [INF] WLLT: Removed invalid transaction: a7487f1016edbdc9eb82998636924ee15b8c9c30552be6ad46d6752e40fce06f
+2024-08-05 21:03:48.446 [INF] RPCS: New websocket client 127.0.0.1:58969
+2024-08-05 21:03:49.033 [INF] WLLT: The wallet has been temporarily unlocked
+2024-08-05 21:03:50.653 [INF] TMGR: Inserting unconfirmed transaction 0598d620a7f4a80f6f78b4159d9f7337fcbd93526ce027eaa1fc05f1fbf6d58a
+2024-08-05 21:03:50.656 [WRN] RPCS: Websocket receive failed from client 127.0.0.1:58969: websocket: close 1006 unexpected EOF
+2024-08-05 21:03:50.657 [INF] RPCS: Disconnected websocket client 127.0.0.1:58969
+2024-08-05 21:03:50.672 [INF] TMGR: Marking unconfirmed transaction 0598d620a7f4a80f6f78b4159d9f7337fcbd93526ce027eaa1fc05f1fbf6d58a mined in block 1502
+2024-08-05 21:04:02.775 [INF] RPCS: New websocket client 127.0.0.1:58987
+2024-08-05 21:04:02.777 [INF] WLLT: The wallet has been temporarily unlocked
+2024-08-05 21:04:02.874 [WRN] RPCS: Websocket receive failed from client 127.0.0.1:58987: websocket: close 1006 unexpected EOF
+2024-08-05 21:04:02.874 [INF] RPCS: Disconnected websocket client 127.0.0.1:58987
+2024-08-05 21:05:42.821 [INF] WLLT: The wallet has been locked
+2024-08-05 21:05:48.580 [INF] RPCS: New websocket client 127.0.0.1:59040
+2024-08-05 21:05:49.063 [INF] WLLT: The wallet has been temporarily unlocked
+2024-08-05 21:05:50.996 [INF] TMGR: Inserting unconfirmed transaction f0dbd45d2e03848b7f59b0764510934c34f1a2a7057cac205fe25d954ce9ac29
+2024-08-05 21:05:50.999 [WRN] RPCS: Websocket receive failed from client 127.0.0.1:59040: websocket: close 1006 unexpected EOF
+2024-08-05 21:05:50.999 [INF] RPCS: Disconnected websocket client 127.0.0.1:59040
+2024-08-05 21:06:02.256 [INF] RPCS: New websocket client 127.0.0.1:59050
+2024-08-05 21:06:02.256 [INF] WLLT: The wallet has been temporarily unlocked
+2024-08-05 21:06:02.559 [WRN] RPCS: Websocket receive failed from client 127.0.0.1:59050: websocket: close 1006 unexpected EOF
+2024-08-05 21:06:02.559 [INF] RPCS: Disconnected websocket client 127.0.0.1:59050
+2024-08-05 21:07:42.258 [INF] WLLT: The wallet has been locked
+2024-08-05 21:38:34.095 [INF] BTCW: Received signal (terminated).  Shutting down...
+2024-08-05 21:38:34.099 [WRN] BTCW: Stopping legacy RPC server...
+2024-08-05 21:38:34.100 [INF] BTCW: Legacy RPC server shutdown
+2024-08-05 21:38:34.100 [INF] BTCW: Shutdown complete2024-08-05 21:39:13.067 [WRN] BTCW: open wallet/btcwallet.conf: no such file or directory
+2024-08-05 21:39:13.068 [INF] BTCW: Version 0.15.1-alpha
+2024-08-05 21:39:13.068 [INF] BTCW: Server TLS is disabled.  Only legacy RPC may be used
+2024-08-05 21:39:13.070 [INF] BTCW: Chain server RPC TLS is disabled
+2024-08-05 21:39:13.069 [INF] RPCS: Listening on 127.0.0.1:8001
+2024-08-05 21:39:13.070 [INF] BTCW: Attempting RPC client connection to 127.0.0.1:8000
+2024-08-05 21:39:13.074 [INF] CHNS: Established connection to RPC server 127.0.0.1:8000
+2024-08-05 21:39:13.531 [INF] WLLT: Opened wallet
+2024-08-05 21:39:13.532 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 21:39:13.557 [INF] WLLT: Started rescan from block 636cc477222eec192ff2331df21f7160ece5d31a2d16ed9e7908847de70f47bb (height 1502) for 1 address
+2024-08-05 21:39:13.577 [INF] WLLT: Catching up block hashes to height 1502, this might take a while
+2024-08-05 21:39:13.583 [INF] WLLT: Done catching up block hashes
+2024-08-05 21:39:13.583 [INF] WLLT: Finished rescan for 1 address (synced to block 636cc477222eec192ff2331df21f7160ece5d31a2d16ed9e7908847de70f47bb, height 1502)
+2024-08-05 21:39:15.006 [INF] TMGR: Marking unconfirmed transaction f0dbd45d2e03848b7f59b0764510934c34f1a2a7057cac205fe25d954ce9ac29 mined in block 1503
+2024-08-05 21:39:20.375 [INF] BTCW: Received signal (terminated).  Shutting down...
+2024-08-05 21:39:20.375 [WRN] BTCW: Stopping legacy RPC server...
+2024-08-05 21:39:20.376 [INF] BTCW: Legacy RPC server shutdown
+2024-08-05 21:39:20.376 [INF] BTCW: Shutdown complete
