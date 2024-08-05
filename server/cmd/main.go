@@ -68,6 +68,7 @@ func NewServer() *gin.Engine {
 
 func NewRPCClient() (*rpcclient.Client, error) {
 	networkCfg := networkCfg.LoadNetworkConfig()
+	networkCfg.Host = "localhost:8000" // TODO: move to config
 
 	rpcCfg := &rpcclient.ConnConfig{
 		Host:       networkCfg.Host,

@@ -10,7 +10,7 @@ import (
 func LoadNetworkConfig() *NetworkConfig {
 	params := "testnet3"
 	paramsObject := &chaincfg.TestNet3Params
-	host := "localhost:18332"
+	host := "localhost:8001"
 	senderAddress := bitcoin_runtime.MiningAddr
 	user := bitcoin_runtime.MockBtcUser
 	pass := bitcoin_runtime.MockBtcPass
@@ -19,7 +19,7 @@ func LoadNetworkConfig() *NetworkConfig {
 	if env == "sim" {
 		params = "simnet"
 		paramsObject = &chaincfg.SimNetParams
-		host = "localhost:18554"
+		host = "localhost:8001"
 	}
 
 	return &NetworkConfig{
