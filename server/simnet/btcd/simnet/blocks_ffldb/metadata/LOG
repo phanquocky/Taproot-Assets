@@ -22,3 +22,12 @@
 22:55:58.213658 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
 22:55:58.226805 db@janitor F·4 G·0
 22:55:58.226821 db@open done T·13.685083ms
+=============== Aug 5, 2024 (+07) ===============
+23:21:16.074611 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+23:21:16.081592 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+23:21:16.081673 db@open opening
+23:21:16.081884 journal@recovery F·1
+23:21:16.082139 journal@recovery recovering @5
+23:21:16.083383 version@stat F·[2] S·1KiB[1KiB] Sc·[0.50]
+23:21:16.179383 db@janitor F·4 G·0
+23:21:16.179462 db@open done T·97.764624ms

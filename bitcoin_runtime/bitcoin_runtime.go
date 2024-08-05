@@ -28,7 +28,7 @@ func New() *BitcoinRuntime {
 }
 
 func (b *BitcoinRuntime) SetUpRuntime() error {
-	if err := b.startBTCD(); err != nil {
+	if err := b.StartBTCD(); err != nil {
 		return err
 	}
 
@@ -72,7 +72,7 @@ func (b *BitcoinRuntime) startBtcwallet() error {
 	return nil
 }
 
-func (b *BitcoinRuntime) startBTCD() error {
+func (b *BitcoinRuntime) StartBTCD() error {
 	// setup bitcoin node running in simnet mode
 	rpcUser := fmt.Sprintf("--rpcuser=%s", MockBtcUser)
 	rpcPass := fmt.Sprintf("--rpcpass=%s", MockBtcPass)
@@ -110,7 +110,7 @@ func (b *BitcoinRuntime) startBTCD() error {
 	return nil
 }
 
-func (b *BitcoinRuntime) stopBtcwallet() {
+func (b *BitcoinRuntime) StopBtcwallet() {
 	if b.btcWalletCmd != nil {
 		err := b.btcWalletCmd.Process.Kill()
 		if err != nil {
@@ -119,7 +119,7 @@ func (b *BitcoinRuntime) stopBtcwallet() {
 	}
 }
 
-func (b *BitcoinRuntime) stopBtcd() {
+func (b *BitcoinRuntime) StopBtcd() {
 	if b.btcdCmd != nil {
 		err := b.btcdCmd.Process.Kill()
 		if err != nil {

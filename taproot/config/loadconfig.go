@@ -12,7 +12,7 @@ func LoadNetworkConfig() *NetworkConfig {
 	params := "testnet3"
 	paramsObject := &chaincfg.TestNet3Params
 	host := fmt.Sprintf("localhost:%s", os.Getenv("WPORT"))
-	senderAddress := bitcoin_runtime.MiningAddr
+	senderAddress := os.Getenv("WADDR")
 	user := bitcoin_runtime.MockBtcUser
 	pass := bitcoin_runtime.MockBtcPass
 

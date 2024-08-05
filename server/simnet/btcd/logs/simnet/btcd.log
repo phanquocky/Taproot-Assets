@@ -52,3 +52,22 @@
 2024-08-05 22:58:33.533 [INF] RPCS: Beginning rescan for 0 addresses
 2024-08-05 22:58:33.533 [INF] RPCS: Skipping rescan as client has no addrs/utxos
 2024-08-05 22:58:33.533 [INF] RPCS: Finished rescan
+2024-08-05 23:21:16.068 [INF] BTCD: Version 0.24.2-beta
+2024-08-05 23:21:16.069 [INF] BTCD: Loading block database from 'simnet/btcd/simnet/blocks_ffldb'
+2024-08-05 23:21:16.189 [INF] BTCD: Block database loaded
+2024-08-05 23:21:16.195 [INF] INDX: Transaction index is enabled
+2024-08-05 23:21:16.195 [INF] INDX: Committed filter index is enabled
+2024-08-05 23:21:16.195 [INF] CHAN: Pre-alloacting for 251 MiB
+2024-08-05 23:21:16.198 [INF] CHAN: Loading block index...
+2024-08-05 23:21:16.205 [INF] CHAN: Chain state (height 0, hash 683e86bd5c6d110d91b94b97137ba6bfe02dbbdb8e3dff722a669b5d69d77af6, totaltx 1, work 2)
+2024-08-05 23:21:16.205 [INF] RPCS: RPC server listening on 127.0.0.1:8000
+2024-08-05 23:21:16.213 [INF] AMGR: Loaded 0 addresses from file 'simnet/btcd/simnet/peers.json'
+2024-08-05 23:21:16.213 [INF] CMGR: Server listening on 0.0.0.0:18555
+2024-08-05 23:21:16.214 [INF] CMGR: Server listening on [::]:18555
+2024-08-05 23:21:20.408 [INF] RPCS: New websocket client 127.0.0.1:52597
+2024-08-05 23:21:24.342 [ERR] RPCS: Websocket receive error from 127.0.0.1:52597: websocket: close 1006 unexpected EOF
+2024-08-05 23:21:24.343 [INF] RPCS: Disconnected websocket client 127.0.0.1:52597
+2024-08-05 23:21:29.336 [INF] RPCS: New websocket client 127.0.0.1:52601
+2024-08-05 23:21:30.350 [INF] RPCS: Beginning rescan for 0 addresses
+2024-08-05 23:21:30.350 [INF] RPCS: Skipping rescan as client has no addrs/utxos
+2024-08-05 23:21:30.350 [INF] RPCS: Finished rescan
