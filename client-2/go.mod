@@ -1,4 +1,4 @@
-module github.com/quocky/taproot-asset/client
+module github.com/quocky/taproot-asset/client-2
 
 go 1.21.6
 

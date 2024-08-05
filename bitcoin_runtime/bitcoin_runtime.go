@@ -14,7 +14,7 @@ const (
 	MockBtcPass      = "admin123"
 	MiningAddress    = ""
 	MineTime         = 1 * time.Minute
-	MiningAddr       = "SSCs9JaNW6AFtsgdwS6xwHnd8yhZaPdXYH"
+	MiningAddr       = "SjWdgLgjJWwMysCdEPXvTZ93KysgQMkpjx"
 	WalletPassphrase = "admin"
 )
 
@@ -95,17 +95,17 @@ func (b *BitcoinRuntime) StartBTCD() error {
 	// wait for wallet to start
 	time.Sleep(3 * time.Second)
 
-	go func() {
-		time.Sleep(5 * time.Second)
-		for {
-			// btcctl --simnet --notls -C "" --wallet --rpcserver 127.0.0.1:8001 --rpcuser=admin --rpcpass=admin123 generate 100
-			err := exec.Command("btcctl", "--simnet", "--notls", "-C", "", "--wallet", "--rpcserver", "127.0.0.1:8001", rpcUser, rpcPass, "generate", "100").Run()
-			if err != nil {
-				panic(err)
-			}
-			time.Sleep(MineTime)
-		}
-	}()
+	// go func() {
+	// 	time.Sleep(5 * time.Second)
+	// 	for {
+	// 		// btcctl --simnet --notls -C "" --wallet --rpcserver 127.0.0.1:8001 --rpcuser=admin --rpcpass=admin123 generate 100
+	// 		err := exec.Command("btcctl", "--simnet", "--notls", "-C", "", "--wallet", "--rpcserver", "127.0.0.1:8001", rpcUser, rpcPass, "generate", "100").Run()
+	// 		if err != nil {
+	// 			panic(err)
+	// 		}
+	// 		time.Sleep(MineTime)
+	// 	}
+	// }()
 
 	return nil
 }

@@ -1,4 +1,4 @@
-build:
+create_wallet:
 	export WPORT=$(wport)
 	./create_wallet.sh $(username) $(wport)
 
@@ -9,4 +9,6 @@ create_addr:
 	echo "ADDRESS: $$ADDRESS"; \
 	echo "\nWPORT=$(wport)\n" >> .env; \
 	echo "WADDR=$$ADDRESS" >> .env; \
-	go build -o $(username) main.go
+
+build:
+	go build -o client_side main.go

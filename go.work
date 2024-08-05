@@ -1,8 +1,10 @@
 go 1.22.0
 
 use (
+	./bitcoin_runtime
 	./client
+	./client-1
+	./client-2
 	./server
 	./taproot
-	./bitcoin_runtime
 )

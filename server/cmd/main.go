@@ -2,6 +2,8 @@ package main
 
 import (
 	"errors"
+	"fmt"
+
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/gin-gonic/gin"
 	"github.com/quocky/taproot-asset/bitcoin_runtime"
@@ -27,6 +29,7 @@ func main() {
 		panic(err)
 	}
 	defer func() {
+		fmt.Println("stop btcd")
 		br.StopBtcd()
 	}()
 
@@ -90,6 +93,11 @@ func NewRPCClient() (*rpcclient.Client, error) {
 	rpcClient, err := rpcclient.New(rpcCfg, nil)
 	if err != nil {
 		return nil, errors.New("create RPC client fail, " + err.Error())
+	}
+
+	_, err = rpcClient.Generate(300)
+	if err != nil {
+		panic(err)
 	}
 
 	return rpcClient, nil
