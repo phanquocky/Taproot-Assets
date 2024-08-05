@@ -2,9 +2,9 @@ package main
 
 import (
 	"errors"
-
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/gin-gonic/gin"
+	"github.com/quocky/taproot-asset/bitcoin_runtime"
 	config "github.com/quocky/taproot-asset/server/config/core"
 	"github.com/quocky/taproot-asset/server/internal/core/api"
 	v1 "github.com/quocky/taproot-asset/server/internal/core/api/v1"
@@ -22,6 +22,14 @@ import (
 )
 
 func main() {
+	br := bitcoin_runtime.New()
+	if err := br.StartBTCD(); err != nil {
+		panic(err)
+	}
+	defer func() {
+		br.StopBtcd()
+	}()
+
 	logger.Init()
 
 	cfg := config.NewConfig()

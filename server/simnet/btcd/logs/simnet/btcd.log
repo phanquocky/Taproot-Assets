@@ -1,0 +1,54 @@
+2024-08-05 22:55:06.966 [INF] BTCD: Version 0.23.3-beta
+2024-08-05 22:55:06.966 [INF] BTCD: Loading block database from 'simnet/btcd/simnet/blocks_ffldb'
+2024-08-05 22:55:07.002 [INF] BTCD: Block database loaded
+2024-08-05 22:55:07.005 [INF] INDX: Transaction index is enabled
+2024-08-05 22:55:07.005 [INF] INDX: Committed filter index is enabled
+2024-08-05 22:55:07.007 [INF] INDX: Catching up indexes from height -1 to 0
+2024-08-05 22:55:07.007 [INF] INDX: Indexes caught up to height 0
+2024-08-05 22:55:07.007 [INF] CHAN: Chain state (height 0, hash 683e86bd5c6d110d91b94b97137ba6bfe02dbbdb8e3dff722a669b5d69d77af6, totaltx 1, work 2)
+2024-08-05 22:55:07.007 [INF] RPCS: RPC server listening on 127.0.0.1:8000
+2024-08-05 22:55:07.008 [INF] AMGR: Loaded 0 addresses from file 'simnet/btcd/simnet/peers.json'
+2024-08-05 22:55:07.008 [INF] CMGR: Server listening on [::]:18555
+2024-08-05 22:55:07.008 [INF] CMGR: Server listening on 0.0.0.0:18555
+2024-08-05 22:55:10.852 [INF] RPCS: New websocket client 127.0.0.1:62302
+2024-08-05 22:55:14.981 [ERR] RPCS: Websocket receive error from 127.0.0.1:62302: websocket: close 1006 unexpected EOF
+2024-08-05 22:55:14.981 [INF] RPCS: Disconnected websocket client 127.0.0.1:62302
+2024-08-05 22:55:52.529 [INF] BTCD: Received signal (terminated).  Shutting down...
+2024-08-05 22:55:52.529 [INF] BTCD: Gracefully shutting down the server...
+2024-08-05 22:55:52.529 [WRN] SRVR: Server shutting down
+2024-08-05 22:55:52.529 [WRN] RPCS: RPC server shutting down
+2024-08-05 22:55:52.530 [INF] RPCS: RPC server shutdown complete
+2024-08-05 22:55:52.530 [INF] SYNC: Sync manager shutting down
+2024-08-05 22:55:52.531 [INF] AMGR: Address manager shutting down
+2024-08-05 22:55:52.537 [INF] SRVR: Server shutdown complete
+2024-08-05 22:55:52.537 [INF] BTCD: Gracefully shutting down the database...
+2024-08-05 22:55:52.562 [INF] BTCD: Shutdown complete
+2024-08-05 22:55:58.212 [INF] BTCD: Version 0.23.3-beta
+2024-08-05 22:55:58.212 [INF] BTCD: Loading block database from 'simnet/btcd/simnet/blocks_ffldb'
+2024-08-05 22:55:58.227 [INF] BTCD: Block database loaded
+2024-08-05 22:55:58.228 [INF] INDX: Transaction index is enabled
+2024-08-05 22:55:58.228 [INF] INDX: Committed filter index is enabled
+2024-08-05 22:55:58.228 [INF] CHAN: Loading block index...
+2024-08-05 22:55:58.229 [INF] CHAN: Chain state (height 0, hash 683e86bd5c6d110d91b94b97137ba6bfe02dbbdb8e3dff722a669b5d69d77af6, totaltx 1, work 2)
+2024-08-05 22:55:58.229 [INF] RPCS: RPC server listening on 127.0.0.1:8000
+2024-08-05 22:55:58.229 [INF] AMGR: Loaded 0 addresses from file 'simnet/btcd/simnet/peers.json'
+2024-08-05 22:55:58.229 [INF] CMGR: Server listening on 0.0.0.0:18555
+2024-08-05 22:55:58.229 [INF] CMGR: Server listening on [::]:18555
+2024-08-05 22:56:01.784 [INF] RPCS: New websocket client 127.0.0.1:62319
+2024-08-05 22:56:21.245 [INF] RPCS: New websocket client 127.0.0.1:62324
+2024-08-05 22:56:57.072 [ERR] RPCS: Websocket receive error from 127.0.0.1:62324: websocket: close 1006 unexpected EOF
+2024-08-05 22:56:57.072 [INF] RPCS: Disconnected websocket client 127.0.0.1:62324
+2024-08-05 22:56:58.506 [INF] RPCS: New websocket client 127.0.0.1:62332
+2024-08-05 22:56:58.960 [INF] RPCS: Beginning rescan for 0 addresses
+2024-08-05 22:56:58.961 [INF] RPCS: Skipping rescan as client has no addrs/utxos
+2024-08-05 22:56:58.962 [INF] RPCS: Finished rescan
+2024-08-05 22:57:28.523 [INF] RPCS: New websocket client 127.0.0.1:62341
+2024-08-05 22:57:28.976 [INF] RPCS: Beginning rescan for 0 addresses
+2024-08-05 22:57:28.976 [INF] RPCS: Skipping rescan as client has no addrs/utxos
+2024-08-05 22:57:28.976 [INF] RPCS: Finished rescan
+2024-08-05 22:57:33.103 [ERR] RPCS: Websocket receive error from 127.0.0.1:62341: websocket: close 1006 unexpected EOF
+2024-08-05 22:57:33.103 [INF] RPCS: Disconnected websocket client 127.0.0.1:62341
+2024-08-05 22:58:33.080 [INF] RPCS: New websocket client 127.0.0.1:62348
+2024-08-05 22:58:33.533 [INF] RPCS: Beginning rescan for 0 addresses
+2024-08-05 22:58:33.533 [INF] RPCS: Skipping rescan as client has no addrs/utxos
+2024-08-05 22:58:33.533 [INF] RPCS: Finished rescan
