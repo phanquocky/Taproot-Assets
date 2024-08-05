@@ -52,7 +52,7 @@ func (b *BitcoinRuntime) startBtcwallet() error {
 	// setup wallet running in simnet mode
 	// btcwallet --simnet --noclienttls --noservertls -A wallet --btcdusername=admin --btcdpassword=admin123 -u admin -P admin123
 	// btcwallet --create --simnet --noclienttls --noservertls -A wallet --btcdusername=admin --btcdpassword=admin123 -u admin -P admin123
-	b.btcWalletCmd = exec.Command("btcwallet", "--simnet", "--noclienttls", "--noservertls", "-A", "wallet", "--logdir", "wallet", "--btcdusername", MockBtcUser, "--btcdpassword", MockBtcPass, "-u", MockBtcUser, "-P", MockBtcPass, "&")
+	b.btcWalletCmd = exec.Command("btcwallet", "--simnet", "--noclienttls", "--noservertls", "-A", "wallet", "--logdir", "wallet", "--btcdusername", MockBtcUser, "--btcdpassword", MockBtcPass, "-u", MockBtcUser, "-P", MockBtcPass, "--rpcconnect", "127.0.0.1:8000", "--rpclisten", "127.0.0.1:8001", "&")
 	b.btcWalletCmd.SysProcAttr = &syscall.SysProcAttr{
 		Setpgid: true,
 	}
@@ -76,8 +76,8 @@ func (b *BitcoinRuntime) startBTCD() error {
 	// setup bitcoin node running in simnet mode
 	rpcUser := fmt.Sprintf("--rpcuser=%s", MockBtcUser)
 	rpcPass := fmt.Sprintf("--rpcpass=%s", MockBtcPass)
-	// btcd --simnet --txindex --notls --datadir simnet/btcd --logdir simnet/btcd/logs --miningaddr SgWABqYDjsugfAbPZmTniuTHxnZjHzxe5Z --rpcuser=admin --rpcpass=admin123
-	b.btcdCmd = exec.Command("btcd", "--simnet", "--txindex", "--notls", "--datadir", "simnet/btcd", "--logdir", "simnet/btcd/logs", "--miningaddr", MiningAddr, rpcUser, rpcPass, "&")
+	// btcd --simnet --txindex --notls --datadir simnet/btcd --logdir simnet/btcd/logs --miningaddr SgWABqYDjsugfAbPZmTniuTHxnZjHzxe5Z --rpcuser=admin --rpcpass=admin123 --rpclisten 127.0.0.1:8000
+	b.btcdCmd = exec.Command("btcd", "--simnet", "--txindex", "--notls", "--datadir", "simnet/btcd", "--logdir", "simnet/btcd/logs", "--miningaddr", MiningAddr, rpcUser, rpcPass, "--rpclisten", "127.0.0.1:8000", "&")
 	// set child process group id to the same as parent process id, so that KILL signal can kill both parent and child processes
 	b.btcdCmd.SysProcAttr = &syscall.SysProcAttr{
 		Setpgid: true,
@@ -96,8 +96,10 @@ func (b *BitcoinRuntime) startBTCD() error {
 	time.Sleep(3 * time.Second)
 
 	go func() {
+		time.Sleep(5 * time.Second)
 		for {
-			err := exec.Command("btcctl", "--simnet", "--notls", rpcUser, rpcPass, "generate", "100").Run()
+			// btcctl --simnet --notls -C "" --wallet --rpcserver 127.0.0.1:8001 --rpcuser=admin --rpcpass=admin123 generate 100
+			err := exec.Command("btcctl", "--simnet", "--notls", "-C", "", "--wallet", "--rpcserver", "127.0.0.1:8001", rpcUser, rpcPass, "generate", "100").Run()
 			if err != nil {
 				panic(err)
 			}

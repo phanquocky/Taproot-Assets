@@ -1,0 +1,83 @@
+2024-08-05 20:44:18.568 [WRN] BTCW: open wallet/btcwallet.conf: no such file or directory
+2024-08-05 20:44:18.568 [INF] BTCW: Version 0.15.1-alpha
+2024-08-05 20:44:18.568 [INF] BTCW: Server TLS is disabled.  Only legacy RPC may be used
+2024-08-05 20:44:18.568 [WRN] BTCW: `localhost` is not a valid IP address
+2024-08-05 20:44:48.926 [WRN] BTCW: open wallet/btcwallet.conf: no such file or directory
+2024-08-05 20:44:48.926 [INF] BTCW: Version 0.15.1-alpha
+2024-08-05 20:44:48.926 [INF] BTCW: Server TLS is disabled.  Only legacy RPC may be used
+2024-08-05 20:44:48.926 [WRN] BTCW: `localhost` is not a valid IP address
+2024-08-05 20:44:48.926 [ERR] BTCW: Unable to create RPC servers: failed to create listeners for legacy RPC server
+2024-08-05 20:47:22.110 [WRN] BTCW: open wallet/btcwallet.conf: no such file or directory
+2024-08-05 20:47:22.110 [INF] BTCW: Version 0.15.1-alpha
+2024-08-05 20:47:22.110 [INF] BTCW: Server TLS is disabled.  Only legacy RPC may be used
+2024-08-05 20:47:22.111 [INF] RPCS: Listening on 127.0.0.1:8001
+2024-08-05 20:47:22.111 [INF] BTCW: Chain server RPC TLS is disabled
+2024-08-05 20:47:22.111 [INF] BTCW: Attempting RPC client connection to 127.0.0.1:8000
+2024-08-05 20:47:22.111 [INF] CHNS: Established connection to RPC server 127.0.0.1:8000
+2024-08-05 20:47:22.869 [INF] WLLT: Opened wallet
+2024-08-05 20:47:22.870 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:47:22.898 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:47:27.898 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:47:27.903 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:47:32.906 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:47:32.908 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:47:37.908 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:47:37.912 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:47:42.912 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:47:42.914 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:47:47.917 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:47:47.924 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:47:52.924 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:47:52.928 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:47:57.931 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:47:57.936 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:02.938 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:02.940 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:07.941 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:07.947 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:12.948 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:12.950 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:17.952 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:17.954 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:22.956 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:22.960 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:27.961 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:27.967 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:32.968 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:32.972 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:37.972 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:37.974 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:42.975 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:42.977 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:47.979 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:47.984 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:52.984 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:52.990 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:48:57.990 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:48:57.993 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:49:02.993 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:49:02.997 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:49:07.999 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:49:08.003 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:49:08.950 [INF] BTCW: Received signal (terminated).  Shutting down...
+2024-08-05 20:49:08.950 [WRN] BTCW: Stopping legacy RPC server...
+2024-08-05 20:49:08.950 [INF] WLLT: Stopped waiting for wallet sync due to error: wallet shutting down
+2024-08-05 20:49:08.950 [INF] BTCW: Legacy RPC server shutdown
+2024-08-05 20:49:08.950 [INF] BTCW: Shutdown complete2024-08-05 20:49:34.281 [WRN] BTCW: open wallet/btcwallet.conf: no such file or directory
+2024-08-05 20:49:34.282 [INF] BTCW: Version 0.15.1-alpha
+2024-08-05 20:49:34.282 [INF] BTCW: Server TLS is disabled.  Only legacy RPC may be used
+2024-08-05 20:49:34.282 [INF] RPCS: Listening on 127.0.0.1:8001
+2024-08-05 20:49:34.282 [INF] BTCW: Chain server RPC TLS is disabled
+2024-08-05 20:49:34.282 [INF] BTCW: Attempting RPC client connection to 127.0.0.1:8000
+2024-08-05 20:49:34.283 [INF] CHNS: Established connection to RPC server 127.0.0.1:8000
+2024-08-05 20:49:35.182 [INF] WLLT: Opened wallet
+2024-08-05 20:49:35.182 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:49:35.201 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:49:40.203 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:49:40.209 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:49:45.209 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:49:45.213 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:49:50.215 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:49:50.221 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range
+2024-08-05 20:49:55.224 [INF] WLLT: RECOVERY MODE ENABLED -- rescanning for used addresses with recovery_window=250
+2024-08-05 20:49:55.230 [ERR] WLLT: Unable to synchronize wallet to chain, trying again in 5s: -1: Block number out of range

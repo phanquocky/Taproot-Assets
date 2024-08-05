@@ -1,0 +1,35 @@
+2024-08-05 20:46:12.483 [INF] BTCD: Version 0.24.2-beta
+2024-08-05 20:46:12.483 [INF] BTCD: Loading block database from 'simnet/btcd/simnet/blocks_ffldb'
+2024-08-05 20:46:12.595 [INF] BTCD: Block database loaded
+2024-08-05 20:46:12.599 [INF] INDX: Transaction index is enabled
+2024-08-05 20:46:12.599 [INF] INDX: Committed filter index is enabled
+2024-08-05 20:46:12.599 [INF] CHAN: Pre-alloacting for 251 MiB
+2024-08-05 20:46:12.601 [INF] INDX: Catching up indexes from height -1 to 0
+2024-08-05 20:46:12.601 [INF] INDX: Indexes caught up to height 0
+2024-08-05 20:46:12.601 [INF] CHAN: Chain state (height 0, hash 683e86bd5c6d110d91b94b97137ba6bfe02dbbdb8e3dff722a669b5d69d77af6, totaltx 1, work 2)
+2024-08-05 20:46:12.601 [ERR] BTCD: Unable to start server on [:18555]: 'localhost' is not a valid IP address
+2024-08-05 20:46:12.601 [INF] BTCD: Gracefully shutting down the database...
+2024-08-05 20:46:12.700 [INF] BTCD: Shutdown complete
+2024-08-05 20:46:42.693 [INF] BTCD: Version 0.24.2-beta
+2024-08-05 20:46:42.694 [INF] BTCD: Loading block database from 'simnet/btcd/simnet/blocks_ffldb'
+2024-08-05 20:46:42.805 [INF] BTCD: Block database loaded
+2024-08-05 20:46:42.808 [INF] INDX: Transaction index is enabled
+2024-08-05 20:46:42.809 [INF] INDX: Committed filter index is enabled
+2024-08-05 20:46:42.809 [INF] CHAN: Pre-alloacting for 251 MiB
+2024-08-05 20:46:42.810 [INF] CHAN: Loading block index...
+2024-08-05 20:46:42.814 [INF] CHAN: Chain state (height 0, hash 683e86bd5c6d110d91b94b97137ba6bfe02dbbdb8e3dff722a669b5d69d77af6, totaltx 1, work 2)
+2024-08-05 20:46:42.814 [INF] RPCS: RPC server listening on 127.0.0.1:8000
+2024-08-05 20:46:42.814 [INF] AMGR: Loaded 0 addresses from file 'simnet/btcd/simnet/peers.json'
+2024-08-05 20:46:42.815 [INF] CMGR: Server listening on 0.0.0.0:18555
+2024-08-05 20:46:42.815 [INF] CMGR: Server listening on [::]:18555
+2024-08-05 20:46:44.989 [INF] BTCD: Received signal (interrupt).  Shutting down...
+2024-08-05 20:46:44.989 [INF] BTCD: Gracefully shutting down the server...
+2024-08-05 20:46:44.989 [WRN] SRVR: Server shutting down
+2024-08-05 20:46:44.989 [WRN] RPCS: RPC server shutting down
+2024-08-05 20:46:44.989 [INF] RPCS: RPC server shutdown complete
+2024-08-05 20:46:44.990 [INF] SYNC: Sync manager shutting down
+2024-08-05 20:46:44.990 [INF] CHAN: Flushing UTXO cache of 97 MiB with 0 entries to disk. For large sizes, this can take up to several minutes...
+2024-08-05 20:46:44.990 [INF] AMGR: Address manager shutting down
+2024-08-05 20:46:44.992 [INF] SRVR: Server shutdown complete
+2024-08-05 20:46:44.992 [INF] BTCD: Gracefully shutting down the database...
+2024-08-05 20:46:45.033 [INF] BTCD: Shutdown complete
