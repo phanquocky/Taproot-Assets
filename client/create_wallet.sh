@@ -1,8 +1,11 @@
 #!/usr/bin/expect -f
 
+# Get the filename from the command line arguments
+set filename [lindex $argv 0]
+
 set password "admin"
 
-spawn ~/go/bin/btcwallet --create --simnet --noclienttls --noservertls -A wallet --btcdusername=admin --btcdpassword=admin123 -u admin -P admin123
+spawn ~/go/bin/btcwallet --create --simnet --noclienttls --noservertls -A "$filename" --btcdusername=admin --btcdpassword=admin123 -u admin -P admin123
 
 expect "Enter the private passphrase for your new wallet:" 
 send "$password\r"
