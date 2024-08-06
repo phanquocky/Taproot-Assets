@@ -14,7 +14,8 @@ const (
 	MockBtcPass      = "admin123"
 	MiningAddress    = ""
 	MineTime         = 1 * time.Minute
-	MiningAddr       = "SjWdgLgjJWwMysCdEPXvTZ93KysgQMkpjx"
+	MiningAddr       = "SYWoVPCb7tVtHhgqX9G3uQ1nTd76B15rir"
+	MiningAddr2      = "SjWdgLgjJWwMysCdEPXvTZ93KysgQMkpjx"
 	WalletPassphrase = "admin"
 )
 
@@ -77,7 +78,7 @@ func (b *BitcoinRuntime) StartBTCD() error {
 	rpcUser := fmt.Sprintf("--rpcuser=%s", MockBtcUser)
 	rpcPass := fmt.Sprintf("--rpcpass=%s", MockBtcPass)
 	// btcd --simnet --txindex --notls --datadir simnet/btcd --logdir simnet/btcd/logs --miningaddr SgWABqYDjsugfAbPZmTniuTHxnZjHzxe5Z --rpcuser=admin --rpcpass=admin123 --rpclisten 127.0.0.1:8000
-	b.btcdCmd = exec.Command("btcd", "--simnet", "--txindex", "--notls", "--datadir", "simnet/btcd", "--logdir", "simnet/btcd/logs", "--miningaddr", MiningAddr, rpcUser, rpcPass, "--rpclisten", "127.0.0.1:8000", "&")
+	b.btcdCmd = exec.Command("btcd", "--simnet", "--txindex", "--notls", "--datadir", "simnet/btcd", "--logdir", "simnet/btcd/logs", "--miningaddr", MiningAddr, "--miningaddr", MiningAddr2, rpcUser, rpcPass, "--rpclisten", "127.0.0.1:8000", "&")
 	// set child process group id to the same as parent process id, so that KILL signal can kill both parent and child processes
 	b.btcdCmd.SysProcAttr = &syscall.SysProcAttr{
 		Setpgid: true,
