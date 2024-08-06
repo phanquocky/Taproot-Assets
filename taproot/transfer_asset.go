@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"reflect"
 
 	"github.com/btcsuite/btcd/btcutil"
 	"github.com/btcsuite/btcd/wire"
@@ -356,6 +357,7 @@ func (t *Taproot) prepareBtcOutputs(
 		return nil, nil, err
 	}
 
+	rootLocator := commitment.NewLocatorByAsset(returnAsset[0])
 	returnAsset[0] = splitCommitment.RootAsset
 
 	ca := classifyAsset(returnAsset)
@@ -372,10 +374,8 @@ func (t *Taproot) prepareBtcOutputs(
 	}
 	btcOutputInfos = append(btcOutputInfos, onchain.NewBtcOutputInfo(returnOutputInfo, DEFAULT_OUTPUT_AMOUNT, returnAsset...))
 
-	rootLocator := commitment.NewLocatorByAsset(returnAsset[0])
-
 	for locator, splitAsset := range splitCommitment.SplitAssets {
-		if locator == *rootLocator {
+		if reflect.DeepEqual(locator, *rootLocator) {
 			continue
 		}
 
