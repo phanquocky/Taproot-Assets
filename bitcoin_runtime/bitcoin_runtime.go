@@ -26,7 +26,7 @@ var (
 	MiningAddr2 string
 )
 
-func init() {
+func loadenv() {
 	err := godotenv.Load("../client-1/.env")
 	if err != nil {
 		fmt.Println("Error loading .env file")
@@ -34,7 +34,7 @@ func init() {
 	}
 	MiningAddr = os.Getenv("WADDR")
 
-	err = godotenv.Load("../client-2/.env")
+	err = godotenv.Overload("../client-2/.env")
 	if err != nil {
 		fmt.Println("Error loading .env file")
 		panic(err)
@@ -100,6 +100,7 @@ func (b *BitcoinRuntime) startBtcwallet() error {
 }
 
 func (b *BitcoinRuntime) StartBTCD() error {
+	loadenv()
 	// setup bitcoin node running in simnet mode
 	rpcUser := fmt.Sprintf("--rpcuser=%s", MockBtcUser)
 	rpcPass := fmt.Sprintf("--rpcpass=%s", MockBtcPass)

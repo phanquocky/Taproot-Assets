@@ -1,6 +1,7 @@
 create_wallet:
+	rm -r wallet;\
 	export WPORT=$(wport)
-	./create_wallet.sh $(username) $(wport)
+	./create_wallet.sh $(username) $(wport) 
 
 
 create_addr:

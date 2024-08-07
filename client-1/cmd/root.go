@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"io"
 	"log"
 	"os"
 
@@ -56,5 +57,5 @@ func newTaprootClient() taproot.Interface {
 }
 
 func init() {
-	// log.SetOutput(io.Discard)
+	log.SetOutput(io.Discard)
 }

@@ -11,17 +11,17 @@ import (
 // SignRawTx function sign input btc
 func (c *Client) SignRawTx(rawTx *wire.MsgTx) (*wire.MsgTx, error) {
 
+	log.Println("SignRawTx")
 	finalTx, isSign, err := c.client.SignRawTransaction(rawTx)
 	if err != nil {
 		log.Printf("cannot sign raw transaction (isSign = %v, err = %v) \n", isSign, err)
 		return nil, fmt.Errorf("cannot sign raw transaction")
 	}
 
+	log.Println("SignRawTx success")
 	var signedTx buffer.Buffer
 
 	finalTx.Serialize(&signedTx)
-
-	log.Printf("signedTx: %x \n", signedTx)
 
 	return finalTx, nil
 }

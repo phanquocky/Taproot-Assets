@@ -62,10 +62,12 @@ func (t *Taproot) createTxOnChain(
 		return nil, err
 	}
 
+	log.Println("[createTxOnChain] txMaker.Tx: ", txMaker.Tx)
 	finalTx, err := t.btcClient.SignRawTx(txMaker.Tx)
 	if err != nil {
 		return nil, err
 	}
+	log.Println("[createTxOnChain] finalTx: ", finalTx)
 
 	return &onchain.TxIncludeOutPubKey{
 		Tx:         finalTx,

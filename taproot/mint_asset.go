@@ -36,9 +36,12 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		return nil, err
 	}
 
+	// log.Printf("ListUTXOs success, utxos: %v \n", btcUTXOs)
+
 	if len(btcUTXOs) == 0 {
 		return nil, errors.New("utxos is empty")
 	}
+	log.Println("Create btcOutputInfos success, btcOutputInfos: ")
 
 	bestUTXOs, err := chooseBestUTXOs(btcUTXOs, expectBtcAmount)
 	if err != nil {
@@ -46,33 +49,42 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 		return nil, err
 	}
 
+	log.Println("Create btcOutputInfos success, btcOutputInfos: ")
 	firstPrevOut := bestUTXOs[0].Outpoint
 	mintAssets := genAssets(assetNames, assetAmounts, firstPrevOut, userPubKey)
 
+	log.Println("Create btcOutputInfos success, btcOutputInfos: ")
 	assetCommitments, err := genAssetCommitments(ctx, mintAssets)
 	if err != nil {
 		return nil, err
 	}
 
+	log.Println("Create btcOutputInfos success, btcOutputInfos: ")
 	tapCommitment, err := commitment.NewTapCommitment(assetCommitments...)
 	if err != nil {
 		return nil, err
 	}
 
+	log.Println("Create btcOutputInfos success, btcOutputInfos: ")
 	mintTapAddress, err := t.addressMaker.CreateTapAddr(userPubKey, tapCommitment)
 	if err != nil {
 		return nil, err
 	}
 
+	log.Println("Create btcOutputInfos success, btcOutputInfos: ")
 	btcOutputInfos := []*onchain.BtcOutputInfo{
 		onchain.NewBtcOutputInfo(mintTapAddress, DEFAULT_OUTPUT_AMOUNT, mintAssets...),
 	}
+
+	log.Println("Create btcOutputInfos success, btcOutputInfos: ")
 
 	txIncludeOutPubKey, err := t.createTxOnChain(bestUTXOs, nil,
 		btcOutputInfos, btcutil.Amount(DEFAULT_FEE), true)
 	if err != nil {
 		return nil, err
 	}
+
+	log.Println("Create tx success, tx: ", txIncludeOutPubKey.Tx.TxHash())
 
 	mintProof, err := t.createMintProof(
 		txIncludeOutPubKey,
