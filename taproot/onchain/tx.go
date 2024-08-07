@@ -197,10 +197,11 @@ func (t *TxMaker) SignTaprootInput(privKey *btcec.PrivateKey) error {
 				unspent.AmtSats,
 				unspent.InternalKey,
 				tapScriptRootHash,
-				txscript.SigHashSingle,
+				txscript.SigHashDefault,
 				privKey,
 			)
 			if err != nil {
+				fmt.Println("error sign taproot input: ", err)
 				return err
 			}
 
