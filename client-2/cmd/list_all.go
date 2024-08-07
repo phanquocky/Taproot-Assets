@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/spf13/cobra"
@@ -22,7 +23,7 @@ var listAllCmd = &cobra.Command{
 		}
 
 		for _, asset := range assets {
-			log.Printf("Asset ID: %x, Amount: %v, Name: %v", asset.AssetID, asset.Amount, asset.Name)
+			fmt.Printf("Asset ID: %x, Amount: %v, Name: %v \n", asset.AssetID, asset.Amount, asset.Name)
 		}
 	},
 }

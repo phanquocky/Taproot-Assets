@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/spf13/cobra"
@@ -17,8 +18,8 @@ var getPubkeyCmd = &cobra.Command{
 		log.Printf("******************************** setup runtime success ********************************\n")
 
 		pubkey := taprootClient.GetPubKey()
-		log.Printf("Public key compress: %x", pubkey.SerializeCompressed())
-		log.Printf("Public key uncompressed: %x", pubkey.SerializeUncompressed())
+		fmt.Printf("Public key compress: %x \n", pubkey.SerializeCompressed())
+		fmt.Printf("Public key uncompressed: %x \n", pubkey.SerializeUncompressed())
 	},
 }
 

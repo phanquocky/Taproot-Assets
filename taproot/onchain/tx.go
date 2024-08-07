@@ -65,9 +65,7 @@ func (t *TxMaker) CreateTemplateTx() error {
 
 	if t.unspentAssets != nil { // TODO:
 		for _, unspent := range t.unspentAssets {
-			fmt.Printf("unspent: %v\n", unspent)
 			inputAmount += btcutil.Amount(unspent.AmtSats)
-			fmt.Printf("unspend outpoint %v\n", unspent.Outpoint)
 			tx.AddTxIn(wire.NewTxIn(unspent.Outpoint, nil, nil))
 
 		}
@@ -171,11 +169,8 @@ func (t *TxMaker) createPrevOutFetchers() *txscript.MultiPrevOutFetcher {
 
 	// TODO:
 	for _, unspent := range t.unspentAssets {
-		fmt.Println("scriptOutput: ", unspent.ScriptOutput)
 		prevOutFetchers.AddPrevOut(*unspent.Outpoint, wire.NewTxOut(int64(unspent.AmtSats), unspent.ScriptOutput))
 	}
-
-	fmt.Println("prevOutFetchers: ", prevOutFetchers)
 
 	return prevOutFetchers
 

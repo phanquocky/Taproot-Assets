@@ -21,7 +21,7 @@ func (c *Client) SignRawTx(rawTx *wire.MsgTx) (*wire.MsgTx, error) {
 
 	finalTx.Serialize(&signedTx)
 
-	fmt.Printf("signedTx: %x \n", signedTx)
+	log.Printf("signedTx: %x \n", signedTx)
 
 	return finalTx, nil
 }

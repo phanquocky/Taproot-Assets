@@ -101,10 +101,6 @@ func (t *Taproot) TransferAsset(receiverPubKey []asset.SerializedKey, assetId st
 		}
 	}
 
-	// fmt.Printf("anchortx: %s\n", txIncludeOutPubKey.Tx.TxHash().String())
-
-	// fmt.Printf("anchortx bytes: %x\n", txIncludeOutPubKey.Tx.SerializeSize())
-
 	data := transfer.TransferReq{
 		GenesisAsset:     &assetUTXOs.GenesisAsset,
 		AnchorTx:         txIncludeOutPubKey.Tx,

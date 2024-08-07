@@ -104,6 +104,8 @@ func (t *Taproot) MintAsset(ctx context.Context, assetNames []string, assetAmoun
 
 	log.Printf("asset-id", zap.Reflect("asset-id", assetIDs))
 
+	fmt.Println("Mint asset success, assetIDs: ", assetIDs)
+
 	return assetIDs, nil
 }
 

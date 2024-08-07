@@ -1,7 +1,6 @@
 package taproot
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/btcsuite/btcd/btcutil"
@@ -32,8 +31,6 @@ func (t *Taproot) createTxOnChain(
 	if err != nil {
 		return nil, err
 	}
-
-	fmt.Printf("unspentAssetsOnChains: %v\n", unspentAssetsOnChains)
 
 	senderBtcAddr, err := t.btcClient.GetSenderAddress()
 	if err != nil {

@@ -2,22 +2,48 @@ package bitcoin_runtime
 
 import (
 	"fmt"
+	"log"
+	"os"
 	"os/exec"
 	"syscall"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/quocky/taproot-asset/bitcoin_runtime/utils"
 )
 
 const (
-	MockBtcUser      = "admin"
-	MockBtcPass      = "admin123"
-	MiningAddress    = ""
-	MineTime         = 1 * time.Minute
-	MiningAddr       = "Sg7NRbAMJqBQpodiRztLe333ogjEBrpzFo"
-	MiningAddr2      = "ScisFEv9ryGEM8YWv3htqvTwkAW1TV31SV"
+	MockBtcUser   = "admin"
+	MockBtcPass   = "admin123"
+	MiningAddress = ""
+	MineTime      = 1 * time.Minute
+
 	WalletPassphrase = "admin"
 )
+
+var (
+	MiningAddr  string
+	MiningAddr2 string
+)
+
+func init() {
+	err := godotenv.Load("../client-1/.env")
+	if err != nil {
+		fmt.Println("Error loading .env file")
+		panic(err)
+	}
+	MiningAddr = os.Getenv("WADDR")
+
+	err = godotenv.Load("../client-2/.env")
+	if err != nil {
+		fmt.Println("Error loading .env file")
+		panic(err)
+	}
+	MiningAddr2 = os.Getenv("WADDR")
+
+	log.Println("MiningAddr: ", MiningAddr)
+	log.Println("MiningAddr2: ", MiningAddr2)
+}
 
 type BitcoinRuntime struct {
 	btcdCmd      *exec.Cmd

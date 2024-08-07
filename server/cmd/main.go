@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
+	"os"
+	"os/signal"
 
 	"github.com/btcsuite/btcd/rpcclient"
 	"github.com/gin-gonic/gin"
@@ -28,10 +30,6 @@ func main() {
 	if err := br.StartBTCD(); err != nil {
 		panic(err)
 	}
-	defer func() {
-		fmt.Println("stop btcd")
-		br.StopBtcd()
-	}()
 
 	logger.Init()
 
@@ -66,6 +64,16 @@ func main() {
 
 	// register routes
 	api.RegisterRoutes(router, mintController)
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		<-c
+		fmt.Println("Shutting down...")
+		fmt.Println("stop btcd")
+		br.StopBtcd()
+		os.Exit(1)
+	}()
 
 	router.Run()
 }

@@ -129,8 +129,6 @@ func extractFromAllUnspentOutpoints(allUnspentOutpoints []*assetoutpoint.Unspent
 	)
 
 	for _, uo := range allUnspentOutpoints {
-		fmt.Println("unspentOutpoint", uo.TxID, uo.Amount)
-
 		filename := fmt.Sprintf(proof.LocatorFilePath, uo.ProofLocator)
 
 		fileBytes, err := proof.FileBytesFromName(filename)

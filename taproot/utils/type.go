@@ -1,13 +1,13 @@
 package utils
 
-import "fmt"
+import "log"
 
 func ToPtr[T any](x T) *T {
 	return &x
 }
 
 func PrintStruct(obj any) {
-	fmt.Printf("%+v\n", obj)
+	log.Printf("%+v\n", obj)
 }
 
 func ToSliceAny[T any](arr []T) []any {

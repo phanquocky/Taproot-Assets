@@ -56,4 +56,5 @@ func newTaprootClient() taproot.Interface {
 }
 
 func init() {
+	// log.SetOutput(io.Discard)
 }

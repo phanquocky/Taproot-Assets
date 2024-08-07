@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -61,8 +60,6 @@ func (c *MintController) UnspentAssetsByID(g *gin.Context) {
 
 		return
 	}
-
-	fmt.Println("UnspentAssetsByID", req.AssetID)
 
 	unspentAsset, err := c.utxoUseCase.GetUnspentAssetsById(g,
 		req.AssetID,
